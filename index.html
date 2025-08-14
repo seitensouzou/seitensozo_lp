@@ -337,11 +337,13 @@
     });
   })();
 </script>
-    <!-- あなたの UI 用 JS -->
-  <script src="app.js"></script>
+    <!-- Sanity クライアント（UMD版） -->
+<script src="https://cdn.jsdelivr.net/npm/@sanity/client@6/dist/sanityClient.umd.min.js"></script>
+<!-- あなたのCMSロジック -->
+<script src="cms.js"></script>
+</body>
+</html>
 
-  <!-- CMS（fetch版）※1回だけ・module不要 -->
-  <script src="cms.js"></script>
 </body>
 </html>
 
