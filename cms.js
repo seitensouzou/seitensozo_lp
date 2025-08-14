@@ -82,7 +82,7 @@ function pickIconSvg(icon=""){
 }
 
 // ===== GROQ =====
-const qModels = `*[_type == "model"]|order(order asc){_id, name, role, profile, youtubeUrl, links, "imageUrl": coalesce(imageUrl, image.asset->url, "")}`;
+const qModels = `*[_type == "model"]|order(order asc){_id, name, role, profile, youtubeUrl, links, "imageUrl": image.asset->url}`;
 const qNews = `*[_type == "news"]|order(date desc){_id,title,body,tag,date}`;
 const qServices = `*[_type == "service"]|order(order asc){_id,title,summary,detail,icon}`;
 
@@ -239,7 +239,7 @@ async function renderNews() {
       `;
     }).join("");
 
-    // Accordion logic for news
+    // ↓↓↓ レイアウト崩れを直すためのコード ↓↓↓
     qsa("#newsList .news").forEach(n => {
       const head = n.querySelector(".news-head");
       const t = n.querySelector(".news-toggle");
