@@ -1,5 +1,21 @@
 // app.js (修正版)
-
+// Sanityライブラリを強制的に読み込む
+(function() {
+  if (window.sanityClient) return; // すでに存在すれば何もしない
+  const script = document.createElement('script');
+  script.src = 'https://unpkg.com/@sanity/client/dist/sanityClient.browser.min.js';
+  script.onload = () => {
+    console.log('Sanityライブラリの動的読み込みに成功しました！');
+    // 成功したら、手動でCMSの処理を開始する
+    if (window.cms && typeof window.cms.init === 'function') {
+      window.cms.init();
+    }
+  };
+  script.onerror = () => {
+    console.error('Sanityライブラリの動的読み込みに失敗しました。');
+  };
+  document.head.appendChild(script);
+})();
 const qs =(s,sc=document)=>sc.querySelector(s);
 const qsa=(s,sc=document)=>[...sc.querySelectorAll(s)];
 
