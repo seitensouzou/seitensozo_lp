@@ -32,13 +32,174 @@ function sanityImageUrl(ref) {
 }
 
 // ====== GROQ クエリ ======
+/* === MODELS (CMS) — BEGIN (for profile/links/youtubeUrl schema) === */
+
+/** GROQ（既存スキーマ） */
 const qModels = `
 *[_type == "model"]|order(order asc){
   _id, name, role, profile, youtubeUrl,
   links{spotify, applemusic, deezer, amazonmusic},
-  // 文字列URL or image型の両対応
   "imageUrl": coalesce(imageUrl, image.asset->url, "")
 }
+`;
+
+/** profile を 4カードに分割する（音楽性/テーマ/スタイル/パーソナリティ） */
+function splitProfileToSections(profile=''){
+  const raw = (profile || '').trim();
+
+  // ラベル候補（日本語と英語のゆらぎも拾う）
+  const labels = [
+    {key:'音楽性', re:/^\s*(音楽性|music|musicality)\s*[:：]/i},
+    {key:'テーマ', re:/^\s*(テーマ|theme)\s*[:：]/i},
+    {key:'スタイル', re:/^\s*(スタイル|style|ビジュアル|visual)\s*[:：]/i},
+    {key:'パーソナリティ', re:/^\s*(パーソナリティ|personality)\s*[:：]/i},
+  ];
+
+  // 行単位で解析
+  const lines = raw.split(/\r?\n/).map(l=>l.trim()).filter(Boolean);
+
+  // 収集用
+  const map = { 音楽性:'', テーマ:'', スタイル:'', パーソナリティ:'' };
+  let current = null;
+
+  for(const line of lines){
+    const hit = labels.find(l => l.re.test(line));
+    if(hit){
+      current = hit.key;
+      // 見出しを除いた本文
+      const body = line.replace(hit.re,'').trim();
+      if(body) map[current] += (map[current]?'\n':'') + body;
+      continue;
+    }
+    if(current){
+      map[current] += (map[current]?'\n':'') + line;
+    }else{
+      // 見出しが無く全部1行のときのフォールバック：音楽性に入れる
+      map.音楽性 += (map.音楽性?'\n':'') + line;
+    }
+  }
+
+  // 表示順で配列に
+  return [
+    {title:'音楽性', body:map.音楽性},
+    {title:'テーマ', body:map.テーマ},
+    {title:'スタイル', body:map.スタイル},
+    {title:'パーソナリティ', body:map.パーソナリティ},
+  ].filter(s => s.body && s.body.trim());
+}
+
+/** ストリーミングリンク（links{} → pills） */
+function linksToPillsHtml(links={}){
+  const defs = [
+    {key:'spotify',     label:'Spotify',      color:'#1DB954'},
+    {key:'applemusic',  label:'Apple Music',  color:'#FA2D48'},
+    {key:'deezer',      label:'Deezer',       color:'#FF1F1F'},
+    {key:'amazonmusic', label:'Amazon Music', color:'#146EB4'},
+  ];
+  const pills = defs
+    .filter(d => links[d.key])
+    .map(d => `<a class="pill" style="background:${d.color}" href="${links[d.key]}" target="_blank" rel="noopener">${d.label}</a>`)
+    .join('');
+  return pills ? `<div class="streams mt-4">${pills}</div>` : '';
+}
+
+/** YouTube ID 抽出 */
+function extractYouTubeId(url=''){
+  try{
+    const u = new URL(url);
+    if (u.hostname.includes('youtu.be')) return u.pathname.slice(1);
+    if (u.searchParams.get('v')) return u.searchParams.get('v');
+    const m = u.pathname.match(/\/embed\/([^?/]+)/);
+    return m ? m[1] : '';
+  }catch{ return ''; }
+}
+
+/** Models の描画 */
+async function renderModels(){
+  const wrap = document.querySelector('#modelsCards');
+  if(!wrap) return;
+
+  const models = await client.fetch(qModels);
+  if(!models?.length){ wrap.innerHTML=''; return; }
+
+  wrap.innerHTML = models.map(m=>{
+    const cover = m.imageUrl || 'https://placehold.co/800x1000/E0E0E0/333?text=MODEL';
+    const sections = splitProfileToSections(m.profile || '');
+    const yt = extractYouTubeId(m.youtubeUrl || '');
+
+    return `
+    <article class="card flip" data-card>
+      <div class="wrap3d">
+        <!-- FRONT -->
+        <div class="face front">
+          <img src="${cover}" alt="${m.name}" class="cover">
+          <div class="meta">
+            <div>
+              <div class="font-serif" style="font-size:20px">${m.name}</div>
+              <p class="small meta-sub">${m.role || ''}</p>
+            </div>
+            <button class="openbtn" title="開く">＋</button>
+          </div>
+        </div>
+
+        <!-- BACK -->
+        <div class="face back">
+          <button class="close" title="閉じる">×</button>
+          <div class="back-inner">
+            <div><div class="font-serif" style="font-size:20px">${m.name}</div><p class="small">${m.role || ''}</p></div>
+
+            <div class="profile grid">
+              ${sections.map(s => `
+                <div class="carded">
+                  <h5>${s.title}</h5>
+                  <p>${s.body.replace(/\n/g,'<br>')}</p>
+                </div>
+              `).join('')}
+            </div>
+
+            ${yt ? `
+              <div class="yt mt-2">
+                <iframe width="100%" height="260"
+                  src="https://www.youtube-nocookie.com/embed/${yt}?rel=0"
+                  title="${m.name} YouTube" frameborder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  referrerpolicy="strict-origin-when-cross-origin"
+                  allowfullscreen></iframe>
+              </div>` : ''}
+
+            ${linksToPillsHtml(m.links || {})}
+          </div>
+        </div>
+      </div>
+    </article>`;
+  }).join('');
+
+  attachModelFlipHandlers();
+}
+
+/** フリップの挙動（既存の書き方に合わせて） */
+function attachModelFlipHandlers(){
+  const cards = [...document.querySelectorAll('[data-card]')];
+  const closeAll = (except)=> cards.forEach(c => { if(c!==except) c.classList.remove('open'); });
+  cards.forEach(card=>{
+    card.addEventListener('click',(e)=>{
+      const openBtn  = e.target.closest('.openbtn');
+      const closeBtn = e.target.closest('.close');
+      if(openBtn){
+        const isOpen = card.classList.contains('open');
+        closeAll(card);
+        if(!isOpen) card.classList.add('open');
+        return;
+      }
+      if(closeBtn){
+        card.classList.remove('open');
+        return;
+      }
+    }, {passive:true});
+  });
+}
+/* === MODELS (CMS) — END === */
+
 `;
 
 const qNews = `
