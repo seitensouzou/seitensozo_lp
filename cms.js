@@ -192,26 +192,6 @@ async function renderServices() {
       </div>
     `).join("");
 
-    // ↓↓↓ このブロックを追加 ↓↓↓
-    qsa("#servicesGrid .svc-item").forEach(item => {
-      const head = item.querySelector(".svc-head");
-      const btn = item.querySelector(".svc-toggle");
-      const toggle = () => {
-        item.classList.toggle("open");
-        btn.textContent = item.classList.contains("open") ? "×" : "＋";
-        btn.setAttribute("aria-expanded", item.classList.contains("open"));
-      };
-      head.addEventListener("click", (e) => {
-        if (e.target.closest(".svc-toggle") || !e.target.closest(".svc-panel")) toggle();
-      });
-    });
-
-  } catch (e) {
-    console.error("[CMS] services fetch error:", e);
-    grid.innerHTML = "<p class='small' style='color:#b91c1c'>業務内容の読み込みに失敗しました。</p>";
-  }
-}
-
     // Accordion logic for services
     qsa("#servicesGrid .svc-item").forEach(item => {
       const head = item.querySelector(".svc-head");
@@ -263,7 +243,7 @@ async function renderNews() {
       `;
     }).join("");
 
-    // ↓↓↓ レイアウト崩れを直すためのコード ↓↓↓
+    // Accordion logic for news
     qsa("#newsList .news").forEach(n => {
       const head = n.querySelector(".news-head");
       const t = n.querySelector(".news-toggle");
