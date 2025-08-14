@@ -1,9 +1,11 @@
-const $=(s,sc=document)=>sc.querySelector(s);
-const $$=(s,sc=document)=>[...sc.querySelectorAll(s)];
+// app.js (修正版)
+
+const qs =(s,sc=document)=>sc.querySelector(s);
+const qsa=(s,sc=document)=>[...sc.querySelectorAll(s)];
 
 /* ===== Hero fallback image (if poster missing) ===== */
 (()=>{
-  const hero=$("#heroImg");
+  const hero=qs("#heroImg");
   if(!hero) return;
   setTimeout(()=>{
     if(!hero.complete || hero.naturalWidth===0){
@@ -15,21 +17,21 @@ const $$=(s,sc=document)=>[...sc.querySelectorAll(s)];
 
 /* ===== Mobile menu (slide from right, ease-in-out) ===== */
 (()=>{
-  const body=document.body,h=$("#hamb"),mask=$("#mmask"),nav=$("#mnav"),x=$("#mclose");
+  const body=document.body,h=qs("#hamb"),mask=qs("#mmask"),nav=qs("#mnav"),x=qs("#mclose");
   const open=()=>{ body.classList.add("menu-open"); mask.hidden=false; nav.setAttribute("aria-hidden","false"); body.style.overflow="hidden"; };
   const close=()=>{ body.classList.remove("menu-open"); mask.hidden=true; nav.setAttribute("aria-hidden","true"); body.style.overflow="auto"; };
   h?.addEventListener("click",open);
   x?.addEventListener("click",close);
   mask?.addEventListener("click",close);
-  $$(".mlink").forEach(a=>a.addEventListener("click",close));
+  qsa(".mlink").forEach(a=>a.addEventListener("click",close));
   matchMedia("(min-width:768px)").addEventListener?.("change",e=>{if(e.matches) close();});
 })();
 
 /* ===== CF counter & progress ===== */
 (()=>{
   const targetDate=new Date("2025-09-28T23:59:59");
-  const dd=$("#dd"),hh=$("#hh"),mm=$("#mm"),ss=$("#ss"),
-        nowEl=$("#cfNow"), tgtEl=$("#cfTarget"), bar=$("#cfBar");
+  const dd=qs("#dd"),hh=qs("#hh"),mm=qs("#mm"),ss=qs("#ss"),
+        nowEl=qs("#cfNow"), tgtEl=qs("#cfTarget"), bar=qs("#cfBar");
   const current=325000, target=10000000;
   nowEl.textContent="¥"+current.toLocaleString();
   tgtEl.textContent="¥"+target.toLocaleString();
@@ -53,7 +55,7 @@ const $$=(s,sc=document)=>[...sc.querySelectorAll(s)];
 
 /* ===== Philosophy accordion ===== */
 (()=>{
-  const acc=$("#acc-phil"),btn=acc?.querySelector(".plus");
+  const acc=qs("#acc-phil"),btn=acc?.querySelector(".plus");
   btn?.addEventListener("click",()=>{
     acc.classList.toggle("open");
     btn.setAttribute("aria-expanded",acc.classList.contains("open"));
@@ -62,8 +64,8 @@ const $$=(s,sc=document)=>[...sc.querySelectorAll(s)];
 
 /* ===== Services accordion ===== */
 /* =========================
-   SERVICES（+ ボタンのみで開閉／安定版）
-   ========================= */
+    SERVICES（+ ボタンのみで開閉／安定版）
+    ========================= */
 (() => {
   const grid = document.querySelector('#services .grid');
   if (!grid) return;
@@ -111,8 +113,8 @@ const $$=(s,sc=document)=>[...sc.querySelectorAll(s)];
   }, { capture: true });
 })();
 /* =========================
-   MODELS（＋/× 安定版・委譲1本）
-   ========================= */
+    MODELS（＋/× 安定版・委譲1本）
+    ========================= */
 (() => {
   const wrap = document.querySelector('#models .cards');
   if (!wrap) return;
@@ -153,8 +155,8 @@ const $$=(s,sc=document)=>[...sc.querySelectorAll(s)];
 
 
 /* =========================
-   NEWS（+ / × の同期／安定版）
-   ========================= */
+    NEWS（+ / × の同期／安定版）
+    ========================= */
 (() => {
   const list = document.querySelector('#news .newslist');
   if (!list) return;
@@ -193,11 +195,11 @@ const $$=(s,sc=document)=>[...sc.querySelectorAll(s)];
 
 
 /* ===== Footer year ===== */
-$("#year").textContent=new Date().getFullYear();
+qs("#year").textContent=new Date().getFullYear();
 
 /* ===== Center modal (Privacy / Terms) ===== */
 (()=>{
-  const body=document.body,mask=$("#modalMask"),modal=$("#modal"),title=$("#modalTitle"),content=$("#modalBody"),close=$("#modalClose");
+  const body=document.body,mask=qs("#modalMask"),modal=qs("#modal"),title=qs("#modalTitle"),content=qs("#modalBody"),close=qs("#modalClose");
   const open=(t,html)=>{
     title.textContent=t; content.innerHTML=html;
     mask.hidden=false; body.classList.add("modal-open");
@@ -207,21 +209,9 @@ $("#year").textContent=new Date().getFullYear();
     mask.hidden=true; body.classList.remove("modal-open");
     modal.setAttribute("aria-hidden","true"); body.style.overflow="auto";
   };
-  $("#openPrivacy").addEventListener("click",e=>{
+  qs("#openPrivacy").addEventListener("click",e=>{
     e.preventDefault();
     open("Privacy Policy",
       `<p>当サイトでは、お問い合わせ対応およびサービス提供のために必要な範囲で個人情報を取得・利用します。法令に基づく場合を除き、本人の同意なく第三者提供は行いません。</p>
        <p>Cookie等によるアクセス解析は現時点では行っていません。将来的に導入する場合は本ポリシーを更新します。</p>
-       <p>開示・訂正・削除のご請求はお問い合わせフォームよりご連絡ください。</p>`);
-  });
-  $("#openTerms").addEventListener("click",e=>{
-    e.preventDefault();
-    open("Terms of Service",
-      `<p>本サイトの情報は現状有姿で提供され、正確性や完全性を保証しません。利用により生じたいかなる損害についても責任を負いません。</p>
-       <p>コンテンツの著作権は特段の明示がない限り晴天想造ENTERTAINMENT.に帰属します。</p>
-       <p>外部サービスの利用には各サービスの規約が適用されます。</p>`);
-  });
-  mask.addEventListener("click",hide);
-  close.addEventListener("click",hide);
-  window.addEventListener("keydown",e=>{if(e.key==="Escape") hide();});
-})();
+       <p>開示・訂正・削除のご請求はお問い合わせフォームよりご連絡
