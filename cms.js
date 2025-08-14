@@ -1,7 +1,7 @@
-// cms.js (業務内容の処理を削除)
+// cms.js (最終完成版)
 
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@sanity/client@6/+esm';
-import { qs, qsa } from './app.js';
+import { qs, qsa } from './app.js'; // app.jsからヘルパー関数を読み込む
 
 // ====== 設定 ======
 const SANITY = {
@@ -71,7 +71,7 @@ function linksToPillsHtml(links = {}) {
 }
 
 // ===== GROQ =====
-const qModels = `*[_type == "model"]|order(order asc){_id, name, role, profile, youtubeUrl, links, "imageUrl": image.asset->url}`;
+const qModels = `*[_type == "model"]|order(order asc){_id, name, role, profile, youtubeUrl, links, image{asset->{url}}}`;
 const qNews = `*[_type == "news"]|order(date desc){_id,title,body,tag,date}`;
 
 // ===== RENDER FUNCTIONS =====
@@ -86,7 +86,7 @@ async function renderModels() {
       return;
     }
     wrap.innerHTML = data.map(m => {
-      const cover = m.imageUrl || "https://placehold.co/800x1000/E0E0E0/333?text=MODEL";
+      const cover = m.image?.asset?.url || "https://placehold.co/800x1000/E0E0E0/333?text=MODEL";
       const sections = splitProfileToSections(m.profile || "");
       const yt = extractYouTubeId(m.youtubeUrl || "");
       return `
@@ -96,7 +96,7 @@ async function renderModels() {
               <img src="${cover}" alt="${m.name}" class="cover">
               <div class="meta">
                 <div>
-                  <div class="font-serif" style="font-size:20px">${m.name}</div>
+                  <div class="font-serif" style="font-size:20px">${m.name || ''}</div>
                   <p class="small meta-sub">${m.role || ""}</p>
                 </div>
                 <button class="openbtn" title="開く">＋</button>
@@ -105,7 +105,7 @@ async function renderModels() {
             <div class="face back">
               <button class="close" title="閉じる">×</button>
               <div class="back-inner">
-                <div><div class="font-serif" style="font-size:20px">${m.name}</div><p class="small">${m.role || ""}</p></div>
+                <div><div class="font-serif" style="font-size:20px">${m.name || ''}</div><p class="small">${m.role || ""}</p></div>
                 <div class="profile grid">
                   ${sections.map(s => `
                     <div class="carded">
