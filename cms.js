@@ -20,8 +20,8 @@ const SANITY = {
   console.info("[CMS] client", SANITY.projectId, SANITY.dataset, SANITY.apiVersion);
 
   // ===== ヘルパー =====
-  const $  = (s, sc=document) => sc.querySelector(s);
-  const $$ = (s, sc=document) => [...sc.querySelectorAll(s)];
+  const qs  = (s, sc=document) => sc.querySelector(s);      // ← 名前を変更
+  const qsa = (s, sc=document) => [...sc.querySelectorAll(s)];  // ← 名前を変更
   const safeBR = (t="") => String(t||"").replace(/\n/g,"<br>");
 
   function extractYouTubeId(url="") {
