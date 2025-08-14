@@ -337,10 +337,11 @@
     });
   })();
 </script>
-    <!-- Sanity クライアント（UMD版） -->
+   <!-- UMD を先に -->
 <script src="https://cdn.jsdelivr.net/npm/@sanity/client@6/dist/sanityClient.umd.min.js"></script>
-<!-- あなたのCMSロジック -->
-<script src="cms.js"></script>
+<!-- その次に自作 -->
+<script src="./cms.js?v=2"></script>
+
 </body>
 </html>
 
