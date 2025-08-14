@@ -337,13 +337,11 @@
     });
   })();
 </script>
-  <script src="./cms.js" defer></script>
-  <!-- Sanity client (ESM) -->
-<script type="module" src="https://cdn.jsdelivr.net/npm/@sanity/client@6/+esm"></script>
-<!-- あなたのCMS接続ロジック -->
-<script type="module" src="cms.js"></script>
+    <!-- あなたの UI 用 JS -->
+  <script src="app.js"></script>
+
+  <!-- CMS（fetch版）※1回だけ・module不要 -->
+  <script src="cms.js"></script>
 </body>
 </html>
 
-</body>
-</html>
