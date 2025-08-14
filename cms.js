@@ -1,185 +1,260 @@
-/* ========= Sanity Client (no-token, read-only) ========= */
-const SANITY = {
-  projectId: "9iu2dx4s",        // ← あなたの Project ID
-  dataset:   "production",       // ← データセット
-  apiVersion:"2024-08-01",       // 任意の固定日付（CDN向け）
-  useCdn:    true
-};
+// cms.js  —  index.html と同じ階層
+// そのままコピペOK。Sanityの projectId / dataset はあなたの値をセット済み。
 
-// 便利: GROQ を実行（失敗時は空配列/undefinedを返す）
-async function querySanity(groq, params = {}) {
-  const base = `https://${SANITY.projectId}.api.sanity.io/${SANITY.apiVersion}/data/query/${SANITY.dataset}`;
-  const url  = new URL(base);
-  url.searchParams.set("query", groq);
-  if (params && Object.keys(params).length) {
-    url.searchParams.set("params", JSON.stringify(params));
-  }
+import {createClient} from "https://cdn.jsdelivr.net/npm/@sanity/client@6/+esm";
+
+// ====== Sanity 設定 ======
+const projectId = "9iu2dx4s";
+const dataset   = "production";
+const apiVersion = "2025-08-14";
+
+// dataset を「Public（読み取り可）」にしていれば token は不要
+// Private の場合は Read 権限の token を入れてください（漏洩注意！）
+const token = undefined;
+
+const client = createClient({ projectId, dataset, apiVersion, token, useCdn: true });
+
+// ====== DOM ショートカット ======
+const $  = (s, sc=document) => sc.querySelector(s);
+const $$ = (s, sc=document) => [...sc.querySelectorAll(s)];
+
+// ====== Sanity 画像ref → URL 変換（image型にも対応）======
+function sanityImageUrl(ref) {
+  // ref 例: "image-<hash>-<width>x<height>-<format>"
   try {
-    const res = await fetch(url.toString(), { cache: "force-cache" });
-    if (!res.ok) throw new Error(await res.text());
-    const { result } = await res.json();
-    return result;
-  } catch (e) {
-    console.warn("[Sanity] query error:", e.message);
-    return undefined;
+    if (!ref || !ref.startsWith("image-")) return "";
+    const [, id, size, format] = ref.split("-");
+    const [w, h] = (size || "1200x1200").split("x");
+    return `https://cdn.sanity.io/images/${projectId}/${dataset}/${id}.${format}?w=${w}&h=${h}&auto=format`;
+  } catch {
+    return "";
   }
 }
 
-/* ========= フォーマッタ等 ========= */
-const fmt = {
-  date(d) {
-    try {
-      return new Intl.DateTimeFormat("ja-JP", { year:"numeric", month:"2-digit", day:"2-digit" })
-        .format(new Date(d)).replace(/\//g, ".");
-    } catch { return d || ""; }
-  }
-};
-function escapeHtml(s=""){ return s.replace(/[&<>"']/g,m=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[m])); }
-
-/* ========= News ========= */
-// あなたのスキーマに合わせて必要なら調整
-const Q_NEWS = `
-  *[_type=="news" && !(_id in path("drafts.**"))]
-  | order(date desc)[0..9]{
-    _id, title, date, tag, body
-  }
+// ====== GROQ クエリ ======
+const qModels = `
+*[_type == "model"]|order(order asc){
+  _id, name, role, profile, youtubeUrl,
+  links{spotify, applemusic, deezer, amazonmusic},
+  // 文字列URL or image型の両対応
+  "imageUrl": coalesce(imageUrl, image.asset->url, "")
+}
 `;
-async function hydrateNews() {
-  const container =
-    document.querySelector('[data-cms="news"]') ||
-    document.querySelector("#news .newslist");
-  if (!container) return; // 置き場所がなければ何もしない
 
-  const items = await querySanity(Q_NEWS);
-  if (!Array.isArray(items) || !items.length) return;
+const qNews = `
+*[_type == "news"]|order(date desc){
+  _id, title, body, tag, date
+}
+`;
 
-  const tagClass = (t) => {
-    const s = String(t||"").toLowerCase();
-    if (s.includes("press"))   return "press";
-    if (s.includes("music"))   return "music";
-    if (s.includes("project")) return "project";
-    return "press";
-  };
+const qServices = `
+*[_type == "service"]|order(order asc){
+  _id, title, summary, detail, icon
+}
+`;
 
-  container.innerHTML = items.map(n=>`
+// ====== レンダリング ======
+async function renderModels() {
+  const wrap = $("#modelsCards");
+  if (!wrap) return;
+  const data = await client.fetch(qModels);
+
+  // ない場合はそのまま
+  if (!data?.length) { wrap.innerHTML = ""; return; }
+
+  wrap.innerHTML = data.map(m => {
+    const img =
+      m.imageUrl?.startsWith("image-") ? sanityImageUrl(m.imageUrl) :
+      (m.imageUrl || "https://placehold.co/800x1000/E0E0E0/333?text=MODEL");
+    const links = m.links || {};
+    return `
+      <article class="card flip" data-card>
+        <div class="wrap3d">
+          <div class="face front">
+            <img src="${img}" alt="${m.name}" style="width:100%;height:100%;object-fit:cover">
+            <div class="meta">
+              <div>
+                <div class="font-serif" style="font-size:20px">${m.name}</div>
+                <p class="small" style="color:#e5e7eb">${m.role ?? ""}</p>
+              </div>
+              <button class="openbtn" title="開く">＋</button>
+            </div>
+          </div>
+          <div class="face back">
+            <button class="close" title="閉じる">×</button>
+            <div style="position:absolute;inset:0;padding:18px;display:flex;flex-direction:column">
+              <div>
+                <div class="font-serif" style="font-size:20px">${m.name}</div>
+                <p class="small">${m.role ?? ""}</p>
+              </div>
+
+              <div class="mt-2" style="border:1px solid var(--line);border-radius:12px;padding:12px">
+                <p class="small"><strong>音楽性</strong>・<strong>テーマ</strong>・<strong>スタイル/ビジュアル</strong>・<strong>パーソナリティ</strong> などを自由に記述：<br>${(m.profile ?? "").replace(/\n/g,"<br>")}</p>
+              </div>
+
+              ${m.youtubeUrl ? `
+                <div class="mt-3">
+                  <div class="small" style="margin-bottom:6px;color:var(--muted)">YouTube</div>
+                  <div style="position:relative;padding-top:56.25%;border-radius:12px;overflow:hidden;border:1px solid var(--line)">
+                    <iframe src="https://www.youtube-nocookie.com/embed/${extractYouTubeId(m.youtubeUrl)}" title="${m.name} YouTube"
+                      frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      referrerpolicy="strict-origin-when-cross-origin" allowfullscreen
+                      style="position:absolute;inset:0;width:100%;height:100%"></iframe>
+                  </div>
+                </div>` : ""}
+
+              <div class="streams mt-4" style="margin-top:auto">
+                ${links.spotify     ? `<a style="background:#1DB954"  href="${links.spotify}"     target="_blank" rel="noreferrer">Spotify</a>`      : ""}
+                ${links.applemusic  ? `<a style="background:#FA2D48"  href="${links.applemusic}"  target="_blank" rel="noreferrer">Apple Music</a>`  : ""}
+                ${links.deezer      ? `<a style="background:#FF1F1F"  href="${links.deezer}"      target="_blank" rel="noreferrer">Deezer</a>`       : ""}
+                ${links.amazonmusic ? `<a style="background:#146EB4"  href="${links.amazonmusic}" target="_blank" rel="noreferrer">Amazon Music</a>` : ""}
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+    `;
+  }).join("");
+
+  // フリップの挙動を付与（あなたの既存JSと同じ動き）
+  attachModelFlipHandlers();
+}
+
+function attachModelFlipHandlers() {
+  const cards = $$("[data-card]");
+  const closeAll = (except)=> cards.forEach(c => { if (c!==except) c.classList.remove("open"); });
+
+  cards.forEach(card=>{
+    card.addEventListener("click",(e)=>{
+      const openBtn  = e.target.closest(".openbtn");
+      const closeBtn = e.target.closest(".close");
+      if (openBtn){
+        const isOpen = card.classList.contains("open");
+        closeAll(card);
+        if (!isOpen) card.classList.add("open");
+        return;
+      }
+      if (closeBtn){
+        card.classList.remove("open");
+        return;
+      }
+    }, {passive:true});
+  });
+}
+
+async function renderServices() {
+  const grid = $("#servicesGrid");
+  if (!grid) return;
+  const data = await client.fetch(qServices);
+  if (!data?.length) { grid.innerHTML = ""; return; }
+
+  grid.innerHTML = data.map(s => `
+    <div class="svc-item">
+      <div class="svc-head">
+        <div style="display:flex;gap:10px;align-items:flex-start">
+          ${pickIconSvg(s.icon)}
+          <div>
+            <div class="svc-title">${s.title}</div>
+            <p class="small">${s.summary ?? ""}</p>
+          </div>
+        </div>
+        <button class="svc-toggle" aria-label="開閉">＋</button>
+      </div>
+      <div class="svc-panel small">${(s.detail ?? "").replace(/\n/g,"<br>")}</div>
+    </div>
+  `).join("");
+
+  // アコーディオン挙動
+  $$("#servicesGrid .svc-item").forEach(item=>{
+    const btn = item.querySelector(".svc-toggle");
+    const head = item.querySelector(".svc-head");
+    const toggle = ()=> {
+      item.classList.toggle("open");
+      btn.textContent = item.classList.contains("open") ? "×" : "＋";
+      btn.setAttribute("aria-expanded", item.classList.contains("open"));
+    };
+    head.addEventListener("click",(e)=>{
+      if (e.target.closest(".svc-toggle") || !e.target.closest(".svc-panel")) toggle();
+    });
+  });
+}
+
+async function renderNews() {
+  const list = $("#newsList");
+  if (!list) return;
+  const data = await client.fetch(qNews);
+  if (!data?.length) { list.innerHTML = ""; return; }
+
+  list.innerHTML = data.map(n => `
     <article class="news">
       <button class="news-head" aria-expanded="false">
-        <div class="news-date small">${fmt.date(n.date)}</div>
+        <div class="news-date small">${formatDate(n.date)}</div>
         <div style="flex:1">
-          <div class="news-title">${escapeHtml(n.title || "")}</div>
-          <div class="badges"><span class="badge ${tagClass(n.tag)}">${escapeHtml((n.tag||"").toUpperCase())}</span></div>
+          <div class="news-title">${n.title}</div>
+          <div class="badges">${renderBadge(n.tag)}</div>
         </div>
         <span class="news-toggle">＋</span>
       </button>
-      <div class="news-panel small">
-        ${escapeHtml(n.body || "")}
-      </div>
+      <div class="news-panel small">${(n.body ?? "").replace(/\n/g,"<br>")}</div>
     </article>
   `).join("");
 
-  // 既存コードと同じトグル挙動を付与
-  container.querySelectorAll(".news").forEach(n=>{
+  // NEWS のトグル
+  $$("#newsList .news").forEach(n=>{
     const head = n.querySelector(".news-head");
-    const tgl  = n.querySelector(".news-toggle");
-    head?.addEventListener("click", ()=>{
+    const t = n.querySelector(".news-toggle");
+    head.addEventListener("click",()=>{
       n.classList.toggle("open");
       head.setAttribute("aria-expanded", n.classList.contains("open"));
-      if (tgl) tgl.textContent = n.classList.contains("open") ? "×" : "＋";
+      t.textContent = n.classList.contains("open") ? "×" : "＋";
     });
   });
 }
 
-/* ========= Models ========= */
-// あなたのスキーマに合わせて必要なら調整
-const Q_MODELS = `
-  *[_type=="model" && !(_id in path("drafts.**"))]{
-    _id, name, role, profile, youtube,
-    "imageUrl": image.asset->url
-  }
-`;
-function setIf(el, cb){ try{ if(el) cb(el); }catch{} }
-function ytEmbed(url=""){
+// ====== ユーティリティ ======
+function extractYouTubeId(url=""){
   try{
-    // youtu.be/xxxx, youtube.com/watch?v=xxxx 両対応
-    const id = url.match(/(?:youtu\.be\/|v=)([A-Za-z0-9_-]{6,})/)?.[1];
-    if(!id) return "";
-    return `https://www.youtube-nocookie.com/embed/${id}?rel=0&modestbranding=1`;
+    const u = new URL(url);
+    if (u.hostname.includes("youtu.be")) return u.pathname.slice(1);
+    if (u.searchParams.get("v")) return u.searchParams.get("v");
+    // /embed/<id>
+    const m = u.pathname.match(/\/embed\/([^?/]+)/);
+    return m ? m[1] : "";
   }catch{ return ""; }
 }
-async function hydrateModels() {
-  const cards = [...document.querySelectorAll('[data-model]')];
-  if (!cards.length) return;
 
-  const rows = await querySanity(Q_MODELS);
-  if (!Array.isArray(rows) || !rows.length) return;
-
-  const byName = Object.fromEntries(
-    rows.map(m => [String(m.name||"").toLowerCase(), m])
-  );
-
-  cards.forEach(card=>{
-    const key = String(card.getAttribute("data-model")||"").toLowerCase();
-    const data = byName[key];
-    if (!data) return;
-
-    // FRONT
-    setIf(card.querySelector(".face.front img"), img=>{
-      if (data.imageUrl) img.src = `${data.imageUrl}?w=1200&auto=format`;
-    });
-    setIf(card.querySelector(".face.front .small"), el=>{
-      if (data.role) el.textContent = data.role;
-    });
-
-    // BACK: プロフィール本文
-    const profileTarget =
-      card.querySelector("[data-model-profile]") ||
-      card.querySelector(".face.back p.small, .face.back p");
-    setIf(profileTarget, el=>{
-      if (data.profile) el.textContent = data.profile;
-    });
-
-    // BACK: YouTube
-    setIf(card.querySelector("[data-model-youtube]"), iframe=>{
-      const src = ytEmbed(data.youtube || "");
-      if (src) iframe.src = src;
-    });
-  });
+function formatDate(d){
+  if(!d) return "";
+  // Sanityのdate型 → YYYY-MM-DD 形式を想定
+  return d.replaceAll("-", ".");
 }
 
-/* ========= Services ========= */
-// あなたのスキーマに合わせて必要なら調整
-const Q_SERVICES = `
-  *[_type=="service" && !(_id in path("drafts.**"))]{
-    _id, t, d, detail
+function renderBadge(tag=""){
+  const t = (tag || "").toLowerCase();
+  if (t === "press")   return `<span class="badge press">PRESS</span>`;
+  if (t === "music")   return `<span class="badge music">MUSIC</span>`;
+  if (t === "project") return `<span class="badge project">PROJECT</span>`;
+  return t ? `<span class="badge press">${t.toUpperCase()}</span>` : "";
+}
+
+// サービスのピクト（簡易的に5種類）
+function pickIconSvg(icon=""){
+  const n = icon.toLowerCase();
+  const base = `class="svc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"`;
+  if (n.includes("音楽") || n.includes("music"))        return `<svg ${base}><path d="M9 18V5l11-2v13"/><circle cx="7" cy="18" r="3"/><circle cx="20" cy="16" r="3"/></svg>`;
+  if (n.includes("映像") || n.includes("video"))        return `<svg ${base}><path d="M3 10h18v10H3z"/><path d="M3 10l3-7 7 3 7-3v7"/></svg>`;
+  if (n.includes("企業") || n.includes("行政")||n.includes("collab")||n.includes("corporate")) return `<svg ${base}><path d="M3 21h18"/><path d="M6 21V8h12v13"/><path d="M9 8V3h6v5"/></svg>`;
+  if (n.includes("クリエ")|| n.includes("creative"))     return `<svg ${base}><path d="M12 12l7-7 2 2-7 7"/><path d="M14 10l-8 8H4v-2l8-8"/></svg>`;
+  if (n.includes("個人") || n.includes("personal"))      return `<svg ${base}><path d="M12 21s-6-4.35-9-7.35a6 6 0 019-8.65 6 6 0 019 8.65C18 16.65 12 21 12 21z"/></svg>`;
+  // デフォルト音楽
+  return `<svg ${base}><path d="M9 18V5l11-2v13"/><circle cx="7" cy="18" r="3"/><circle cx="20" cy="16" r="3"/></svg>`;
+}
+
+// ====== 実行 ======
+(async function init(){
+  try {
+    await Promise.all([renderModels(), renderServices(), renderNews()]);
+  } catch (e) {
+    console.error("CMS load error:", e);
   }
-`;
-async function hydrateServices() {
-  // data-svc-key="音楽活動" のように一致させる
-  const svcNodes = [...document.querySelectorAll("[data-svc-key]")];
-  if (!svcNodes.length) return;
-
-  const rows = await querySanity(Q_SERVICES);
-  if (!Array.isArray(rows) || !rows.length) return;
-
-  const byKey = Object.fromEntries(rows.map(s => [String(s.t||"").trim(), s]));
-
-  svcNodes.forEach(node=>{
-    const k = String(node.getAttribute("data-svc-key")||"").trim();
-    const s = byKey[k];
-    if (!s) return;
-
-    setIf(node.querySelector(".svc-title"), el => el.textContent = s.t || k);
-    setIf(node.querySelector(".svc-head .small"), el => el.textContent = s.d || "");
-    setIf(node.querySelector(".svc-panel"), el => el.innerHTML = escapeHtml(s.detail || ""));
-  });
-}
-
-/* ========= Boot ========= */
-(async function bootCMS(){
-  await Promise.all([
-    hydrateNews(),
-    hydrateModels(),
-    hydrateServices(),
-  ]);
-  // ここまで失敗してもサイト全体は壊れない
 })();
