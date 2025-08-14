@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>晴天想造ENTERTAINMENT. | LP</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- ===== HEADER ===== -->
+  <header class="header">
+    <div class="inner container">
+      <a class="logo" href="#top">
+        <div class="title font-serif">晴天想造</div>
+        <div class="sub">ENTERT<span style="color:#ec4899">AI</span>NMENT<span style="color:#ec4899">.</span></div>
+      </a>
+      <nav class="nav">
+        <a href="#feature">Feature</a><a href="#philosophy">Philosophy</a><a href="#models">Models</a>
+        <a href="#services">Services</a><a href="#news">News</a><a href="#contact">Contact</a>
+      </nav>
+      <button id="hamb" class="hamb" aria-label="メニュー">
+        <span class="bars"><span></span><span></span><span></span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ===== MOBILE NAV ===== -->
+  <div id="mmask" class="mmask" hidden></div>
+  <aside id="mnav" class="mnav" aria-hidden="true" role="dialog" aria-label="モバイルメニュー">
+    <button id="mclose" class="close" aria-label="閉じる">×</button>
+    <a class="mlink" href="#feature">Feature</a><a class="mlink" href="#philosophy">Philosophy</a><a class="mlink" href="#models">Models</a>
+    <a class="mlink" href="#services">Services</a><a class="mlink" href="#news">News</a><a class="mlink" href="#contact">Contact</a>
+  </aside>
+
+  <main id="top">
+    <!-- ===== HERO (video + fallback image) ===== -->
+    <section class="hero">
+      <video class="bg" src="hero1.mp4" autoplay muted loop playsinline poster="hero_poster.png"></video>
+      <img id="heroImg" class="bg" src="hero_poster.png" alt="Hero Poster">
+      <div class="shade"></div>
+      <div class="copy container">
+        <div>
+          <p class="kicker small">SEITEN SOZO ENTERTAINMENT</p>
+          <h1 class="font-serif">愛とAIが織りなす、<br/>新世代エンタメを世界へ。</h1>
+          <p class="mt-3 hero-sub">
+            LuLuとku No.06の音楽を出発点に、新会社「晴天想造ENTERTAINMENT.」を設立。音楽・映像・広告・イベントまで、ジャンルを超えた新しい表現の場を切り拓きます。
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== CF ===== -->
+    <section class="cf">
+      <div class="container" style="max-width:820px">
+        <h3 class="font-serif center" style="font-size:22px">クラウドファンディング挑戦中</h3>
+        <p class="small center">皆様の応援が、私たちの未来を創る力になります。</p>
+        <div class="grid mt-4">
+          <div class="box"><div class="val" id="dd">00</div><div class="small">Days</div></div>
+          <div class="box"><div class="val" id="hh">00</div><div class="small">Hours</div></div>
+          <div class="box"><div class="val" id="mm">00</div><div class="small">Minutes</div></div>
+          <div class="box"><div class="val" id="ss">00</div><div class="small">Seconds</div></div>
+        </div>
+        <div class="mt-4">
+          <div class="meta">
+            <div class="small">現在の支援総額</div>
+            <div class="small">目標 <span id="cfTarget">¥0</span></div>
+          </div>
+          <div class="progress"><i id="cfBar"></i></div>
+          <div class="mt-2 cf-now" id="cfNow">¥0</div>
+          <a class="btn centered mt-4" href="https://camp-fire.jp/projects/view/864465" target="_blank" rel="noopener">プロジェクトを支援する</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== FEATURE ===== -->
+    <section id="feature" class="section">
+      <div class="container figgrid">
+        <figure>
+          <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?q=80&w=1600&auto=format&fit=crop" alt="Feature visual">
+          <figcaption class="small center mt-2">LuLu & ZERO — Our Story's Origin</figcaption>
+        </figure>
+        <div>
+          <p class="font-serif feature-lead">
+            モデル事務所やデザイン事務所の誌面を意識し、余白・文字組・階層のコントロールで上質さを演出。写真とタイポグラフィの緊張感あるレイアウトで、ブランドストーリーを端的に伝えます。
+          </p>
+          <div class="mt-4 feature-cols">
+            <div>
+              <h4 class="font-serif feature-title">編集方針</h4>
+              <ul class="small feature-list"><li>余白は大胆に、情報は厳選</li><li>細線・小見出しで階層化</li><li>写真はフルブリードで印象づけ</li></ul>
+            </div>
+            <div>
+              <h4 class="font-serif feature-title">トーン&マナー</h4>
+              <ul class="small feature-list"><li>白×黒・明朝体が基調</li><li>キーワードは“静謐・緊張・品”</li><li>装飾は最小限、質感で魅せる</li></ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== PHILOSOPHY ===== -->
+    <section id="philosophy" class="section philo">
+      <div class="container">
+        <h3 class="font-serif center" style="font-size:26px">PHILOSOPHY</h3>
+        <div id="acc-phil" class="acc mt-4">
+          <div class="head">
+            <p class="small kicker">CONSIDERATION FOR OTHERS</p>
+            <h4 class="font-serif title mt-2">たった一つの大原則</h4>
+            <p class="font-serif principle">【大原則】相手を想うこと</p>
+            <button class="plus" aria-expanded="false" aria-controls="phil-panel" title="開閉">＋</button>
+          </div>
+          <div id="phil-panel" class="panel">
+            <div class="center small panel-body">
+              <p class="mt-3">私たちの生きる世界や、これから私たちが取り組むエンターテイメント事業は、様々な問題や要因が絡み合い、時に複雑化します。しかし、私たちは、どんなに複雑に見える問題も、その解決の糸口は、常に一つのシンプルな思想にあると信じています。</p>
+              <p class="mt-2">この想いを全ての行動の原点に置くことで、私たち自身の判断は常に明確になり、ファン、クライアント、そして関わる全ての方々との関係が、信頼に基づいた、円滑で温かいものになると、私たちは確信しています。</p>
+
+              <!-- 枠付きカードの4本柱 -->
+              <div class="pillars mt-4">
+                <div class="pillar"><strong>愛 (Love)</strong><p class="small">作品・ファン・仲間・自分自身に、常に愛情と敬意を。</p></div>
+                <div class="pillar"><strong>希望 (Hope)</strong><p class="small">困難の中にも可能性を見出し、諦めない姿勢を。</p></div>
+                <div class="pillar"><strong>平和 (Peace)</strong><p class="small">多様性を尊重し、建設的な対話で調和を目指す。</p></div>
+                <div class="pillar"><strong>誠実 (Integrity)</strong><p class="small">常に正直で透明であることを約束する。</p></div>
+              </div>
+
+              <p class="mt-3">これらを完璧に体現し続けることは容易ではありません。それでも私たちは、迷ったときに必ず立ち返る「原点」として、この理念を掲げ続けます。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== MODELS ===== -->
+    <section id="models" class="section models">
+      <div class="container">
+        <h3 class="font-serif" style="font-size:26px">MODELS</h3>
+        <div class="cards mt-4">
+          <!-- LuLu -->
+          <article class="card flip" data-card>
+            <div class="wrap3d">
+              <div class="face front">
+                <img src="lulu.png" alt="LuLu" class="cover">
+                <div class="meta">
+                  <div><div class="font-serif" style="font-size:20px">LuLu</div><p class="small meta-sub">Vocal / Model</p></div>
+                  <button class="openbtn" title="開く">＋</button>
+                </div>
+              </div>
+              <div class="face back">
+                <button class="close" title="閉じる">×</button>
+                <div class="back-inner">
+                  <div><div class="font-serif" style="font-size:20px">LuLu</div><p class="small">Vocal / Model</p></div>
+
+                  <!-- プロフィールを枠付きカードで -->
+                  <div class="profile mt-2">
+                    <div class="sect"><h5>音楽性</h5><p>シティポップ×オーガニック（ピアノ／ギター）のハイブリッド</p></div>
+                    <div class="sect"><h5>テーマ</h5><p>愛・希望・平和・誠実、多様性を祝福する COLORFUL なメッセージ</p></div>
+                    <div class="sect"><h5>スタイル</h5><p>アースカラー、シンプル、エレガントなスタイルが好き</p></div>
+                    <div class="sect"><h5>パーソナリティ</h5><p>やさしく、まっすぐ。ときどきお茶目</p></div>
+                  </div>
+
+                  <div class="yt mt-2">
+                    <iframe width="100%" height="180" src="https://www.youtube.com/embed/hahJNJtnLiM?rel=0"
+                      title="LuLu YouTube" frameborder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      allowfullscreen></iframe>
+                  </div>
+
+                  <div class="streams mt-4">
+                    <a style="background:#1DB954" href="#" target="_blank" rel="noopener">Spotify</a>
+                    <a style="background:#FA2D48" href="#" target="_blank" rel="noopener">Apple Music</a>
+                    <a style="background:#FF1F1F" href="#" target="_blank" rel="noopener">Deezer</a>
+                    <a style="background:#146EB4" href="#" target="_blank" rel="noopener">Amazon Music</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- ku No.06 -->
+          <article class="card flip" data-card>
+            <div class="wrap3d">
+              <div class="face front">
+                <img src="ku.png" alt="ku No.06" class="cover">
+                <div class="meta">
+                  <div><div class="font-serif" style="font-size:20px">ku No.06</div><p class="small meta-sub">Producer / Rapper / Model</p></div>
+                  <button class="openbtn" title="開く">＋</button>
+                </div>
+              </div>
+              <div class="face back">
+                <button class="close" title="閉じる">×</button>
+                <div class="back-inner">
+                  <div><div class="font-serif" style="font-size:20px">ku No.06</div><p class="small">Producer / Rapper / Model</p></div>
+
+                  <!-- プロフィールを枠付きカードで -->
+                  <div class="profile mt-2">
+                    <div class="sect"><h5>音楽性</h5><p>サイバーパンク・ヒップホップ × ポエトリーリーディング</p></div>
+                    <div class="sect"><h5>テーマ</h5><p>空（くう）・哲学・自由・反骨</p></div>
+                    <div class="sect"><h5>ビジュアル</h5><p>上質なストリートファッションが好み。白が好き。</p></div>
+                    <div class="sect"><h5>パーソナリティ</h5><p>寡黙で思慮深く、情熱は誰よりも強い</p></div>
+                  </div>
+
+                  <div class="yt mt-2">
+                    <iframe width="100%" height="180" src="https://www.youtube.com/embed/1WYIT-eNyCU?rel=0"
+                      title="ku No.06 YouTube" frameborder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      allowfullscreen></iframe>
+                  </div>
+
+                  <div class="streams mt-4">
+                    <a style="background:#1DB954" href="#" target="_blank" rel="noopener">Spotify</a>
+                    <a style="background:#FA2D48" href="#" target="_blank" rel="noopener">Apple Music</a>
+                    <a style="background:#FF1F1F" href="#" target="_blank" rel="noopener">Deezer</a>
+                    <a style="background:#146EB4" href="#" target="_blank" rel="noopener">Amazon Music</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SERVICES ===== -->
+    <section id="services" class="section services">
+      <div class="container">
+        <!-- 下線は削除（CSSでも打消しを入れてあります） -->
+        <h3 class="font-serif" style="font-size:26px">業務内容</h3>
+        <div class="grid mt-4">
+          <div class="svc-item">
+            <div class="svc-head">
+              <div class="svc-left">
+                <svg class="svc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 18V5l11-2v13"/><circle cx="7" cy="18" r="3"/><circle cx="20" cy="16" r="3"/></svg>
+                <div><div class="svc-title">音楽活動</div><p class="small">新曲リリース、ライブ配信、ツアー、国内外フェス出演</p></div>
+              </div>
+              <button class="svc-toggle" type="button" aria-label="開閉">＋</button>
+
+            </div>
+            <div class="svc-panel small">・オリジナル楽曲制作（作詞作曲/編曲）<br>・各種配信プラットフォームへの展開<br>・オンライン/オフラインでのライブ企画運営</div>
+          </div>
+
+          <div class="svc-item">
+            <div class="svc-head">
+              <div class="svc-left">
+                <svg class="svc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 10h18v10H3z"/><path d="M3 10l3-7 7 3 7-3v7"/></svg>
+                <div><div class="svc-title">映像・出演</div><p class="small">映画・ドラマ・アニメ・ゲーム出演、CMソング制作</p></div>
+              </div>
+              <button class="svc-toggle" aria-label="開閉">＋</button>
+            </div>
+            <div class="svc-panel small">・AIアーティストの映像/音声出演キャスティング<br>・CMソング/劇伴/主題歌制作<br>・MV/ティザー/Behind the Scenes 企画制作</div>
+          </div>
+
+          <div class="svc-item">
+            <div class="svc-head">
+              <div class="svc-left">
+                <svg class="svc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 21h18"/><path d="M6 21V8h12v13"/><path d="M9 8V3h6v5"/></svg>
+                <div><div class="svc-title">企業・行政コラボ</div><p class="small">広告モデル生成、ブランドキャラクター制作、テーマソング提供</p></div>
+              </div>
+              <button class="svc-toggle" aria-label="開閉">＋</button>
+            </div>
+            <div class="svc-panel small">・AIモデル/キャラクター開発と運用<br>・ブランドアンバサダー/広報起用<br>・自治体/施設のAI受付・案内導入支援</div>
+          </div>
+
+          <div class="svc-item">
+            <div class="svc-head">
+              <div class="svc-left">
+                <svg class="svc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 12l7-7 2 2-7 7"/><path d="M14 10l-8 8H4v-2l8-8"/></svg>
+                <div><div class="svc-title">クリエイティブ制作</div><p class="small">広告・MV・SNS用動画・空間デザイン・写真撮影</p></div>
+              </div>
+              <button class="svc-toggle" aria-label="開閉">＋</button>
+            </div>
+            <div class="svc-panel small">・キービジュアル撮影/レタッチ<br>・LP/バナー/ポスター/空間デザイン<br>・SNSクリエイティブ（短尺動画/静止画）</div>
+          </div>
+
+          <div class="svc-item">
+            <div class="svc-head">
+              <div class="svc-left">
+                <svg class="svc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s-6-4.35-9-7.35a6 6 0 019-8.65 6 6 0 019 8.65C18 16.65 12 21 12 21z"/></svg>
+                <div><div class="svc-title">個人向けサービス</div><p class="small">記念日のオリジナルソング、SNS用キャラ制作、サプライズ演出</p></div>
+              </div>
+              <button class="svc-toggle" aria-label="開閉">＋</button>
+            </div>
+            <div class="svc-panel small">・記念日ソング/ムービー制作<br>・パーソナルAIキャラクター設計<br>・サプライズ企画/演出サポート</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== NEWS ===== -->
+    <section id="news" class="section" style="background:#fff">
+      <div class="container">
+        <h3 class="font-serif" style="font-size:26px">NEWS</h3>
+        <div class="newslist mt-4">
+          <article class="news">
+            <button class="news-head" aria-expanded="false">
+              <div class="news-date small">2025.08.06</div>
+              <div class="news-main">
+                <div class="news-title">新会社「晴天想造ENTERTAINMENT.」設立およびクラウドファンディング開始のお知らせ</div>
+                <div class="badges mt-2"><span class="badge press">PRESS</span></div>
+              </div>
+              <span class="news-toggle">＋</span>
+            </button>
+            <div class="news-panel small">新会社「晴天想造ENTERTAINMENT.」の設立と、その第一歩となるクラウドファンディングを開始したことをお知らせします。LuLuとku No.06の音楽活動を核に、音楽・映像・広告・イベントまで横断するクリエイションを推進していきます。</div>
+          </article>
+
+          <article class="news">
+            <button class="news-head" aria-expanded="false">
+              <div class="news-date small">2025.08.15</div>
+              <div class="news-main">
+                <div class="news-title">LuLu &amp; ku No.06 2ndシングル制作を開始</div>
+                <div class="badges mt-2"><span class="badge music">MUSIC</span></div>
+              </div>
+              <span class="news-toggle">＋</span>
+            </button>
+            <div class="news-panel small">2ndシングルとMV制作を始動しました。秋以降の公開を目指して制作中です。</div>
+          </article>
+
+          <article class="news">
+            <button class="news-head" aria-expanded="false">
+              <div class="news-date small">2025.08.25</div>
+              <div class="news-main">
+                <div class="news-title">自治体向けAI受付の実証実験を準備中</div>
+                <div class="badges mt-2"><span class="badge project">PROJECT</span></div>
+              </div>
+              <span class="news-toggle">＋</span>
+            </button>
+            <div class="news-panel small">市役所・観光案内所向けのAI受付の導入実験を準備しています。詳細は追ってお知らせします。</div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== CONTACT ===== -->
+    <section id="contact" class="section">
+      <div class="container">
+        <h3 class="font-serif" style="font-size:26px">お問い合わせ</h3>
+        <form class="form mt-4" onsubmit="event.preventDefault(); alert('送信ありがとうございます！（ダミー）'); this.reset();">
+          <div class="row"><label class="small">お名前</label><input class="input" required placeholder="山田 太郎"></div>
+          <div class="row"><label class="small">メールアドレス</label><input class="input" type="email" required placeholder="you@example.com"></div>
+          <div class="row wide">
+            <span class="small">ご相談区分</span>
+            <label class="small radio"><input type="radio" name="aud" value="個人" checked> 個人</label>
+            <label class="small radio"><input type="radio" name="aud" value="企業・法人"> 企業・法人</label>
+          </div>
+          <div class="row wide"><label class="small">ご相談内容</label><textarea class="textarea" required placeholder="目的・期日・参考URLなど"></textarea></div>
+          <div class="row wide"><button class="btn">送信する</button></div>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <div class="container fbar">
+      <div class="logo"><div class="title font-serif">晴天想造</div><div class="sub">ENTERT<span style="color:#ec4899">AI</span>NMENT<span style="color:#ec4899">.</span></div></div>
+      <nav class="fnav">
+        <a href="#feature">Feature</a><a href="#philosophy">Philosophy</a><a href="#models">Models</a>
+        <a href="#services">Services</a><a href="#news">News</a><a href="#contact">Contact</a>
+        <a href="#" id="openPrivacy">Privacy</a><a href="#" id="openTerms">Terms</a>
+      </nav>
+      <div class="fcopy">
+        <p class="small">© <span id="year"></span> Seiten Souzou ENTERTAINMENT. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ===== Modal ===== -->
+  <div id="modalMask" class="modal-mask" hidden></div>
+  <div id="modal" class="modal" aria-hidden="true" role="dialog" aria-label="ポリシー">
+    <header><strong class="font-serif" id="modalTitle">Title</strong><button class="x" id="modalClose" aria-label="閉じる">×</button></header>
+    <div id="modalBody" class="body small"></div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
