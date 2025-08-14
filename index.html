@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>晴天想造ENTERTAINMENT. | LP</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="header">
+    <div class="inner container">
+      <a class="logo" href="#top">
+        <div class="title font-serif">晴天想造</div>
+        <div class="sub">ENTERT<span style="color:#ec4899">AI</span>NMENT<span style="color:#ec4899">.</span></div>
+      </a>
+      <nav class="nav">
+        <a href="#feature">Feature</a><a href="#philosophy">Philosophy</a><a href="#models">Models</a>
+        <a href="#services">Services</a><a href="#news">News</a><a href="#contact">Contact</a>
+      </nav>
+      <button id="hamb" class="hamb" aria-label="メニュー">
+        <span class="bars"><span></span><span></span><span></span></span>
+      </button>
+    </div>
+  </header>
+
+  <div id="mmask" class="mmask" hidden></div>
+  <aside id="mnav" class="mnav" aria-hidden="true" role="dialog" aria-label="モバイルメニュー">
+    <button id="mclose" class="close" aria-label="閉じる">×</button>
+    <a class="mlink" href="#feature">Feature</a><a class="mlink" href="#philosophy">Philosophy</a><a class="mlink" href="#models">Models</a>
+    <a class="mlink" href="#services">Services</a><a class="mlink" href="#news">News</a><a class="mlink" href="#contact">Contact</a>
+  </aside>
+
+  <main id="top">
+    <section class="hero">
+  <video
+    id="heroVideo"
+    class="bg"
+    autoplay
+    muted
+    loop
+    playsinline
+    preload="auto"
+    poster="./hero_poster.png"
+  >
+    <source src="./hero1.mp4" type="video/mp4" />
+  </video>
+
+  <div class="shade"></div>
+  <div class="copy container">
+    <div>
+      <p class="kicker small" style="color:#e5e7eb;font-size:clamp(14px,2.2vw,16px)">
+        SEITEN SOZO ENTERTAINMENT
+      </p>
+      <h1 class="font-serif">愛とAIが織りなす、<br>新世代エンタメを世界へ。</h1>
+      <p class="mt-3" style="color:#e5e7eb;max-width:720px;margin-inline:auto">
+        LuLuとku No.06の音楽を出発点に、新会社「晴天想造ENTERTAINMENT.」を設立。
+        音楽・映像・広告・イベントまで、ジャンルを超えた新しい表現の場を切り拓きます。
+      </p>
+    </div>
+  </div>
+</section>
+
+    <section class="cf">
+      <div class="container" style="max-width:820px">
+        <h3 class="font-serif center" style="font-size:22px">クラウドファンディング挑戦中</h3>
+        <p class="small center">皆様の応援が、私たちの未来を創る力になります。</p>
+        <div class="grid mt-4">
+          <div class="box"><div class="val" id="dd">00</div><div class="small">Days</div></div>
+          <div class="box"><div class="val" id="hh">00</div><div class="small">Hours</div></div>
+          <div class="box"><div class="val" id="mm">00</div><div class="small">Minutes</div></div>
+          <div class="box"><div class="val" id="ss">00</div><div class="small">Seconds</div></div>
+        </div>
+        <div class="mt-4">
+          <div class="meta">
+            <div class="small">現在の支援総額</div>
+            <div class="small">目標 <span id="cfTarget">¥0</span></div>
+          </div>
+          <div class="progress"><i id="cfBar"></i></div>
+          <div class="mt-2 cf-now" id="cfNow">¥0</div>
+          <a class="btn centered mt-4" href="https://camp-fire.jp/projects/view/864465" target="_blank" rel="noopener">プロジェクトを支援する</a>
+        </div>
+      </div>
+    </section>
+
+    <section id="feature" class="section">
+      <div class="container figgrid">
+        <figure>
+          <img src="ku_lulu.png" alt="LuLu and Ku">
+          <figcaption class="small center mt-2">LuLu & ZERO — Our Story's Origin</figcaption>
+        </figure>
+        <div>
+          <p class="font-serif feature-lead">
+            モデル事務所やデザイン事務所の誌面を意識し、余白・文字組・階層のコントロールで上質さを演出。写真とタイポグラフィの緊張感あるレイアウトで、ブランドストーリーを端的に伝えます。
+          </p>
+          <div class="mt-4 feature-cols">
+            <div>
+              <h4 class="font-serif feature-title">編集方針</h4>
+              <ul class="small feature-list"><li>余白は大胆に、情報は厳選</li><li>細線・小見出しで階層化</li><li>写真はフルブリードで印象づけ</li></ul>
+            </div>
+            <div>
+              <h4 class="font-serif feature-title">トーン&マナー</h4>
+              <ul class="small feature-list"><li>白×黒・明朝体が基調</li><li>キーワードは“静謐・緊張・品”</li><li>装飾は最小限、質感で魅せる</li></ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="philosophy" class="section philo">
+      <div class="container">
+        <h3 class="font-serif center" style="font-size:26px">PHILOSOPHY</h3>
+        <div id="acc-phil" class="acc mt-4">
+          <div class="head">
+            <p class="small kicker">CONSIDERATION FOR OTHERS</p>
+            <h4 class="font-serif title mt-2">たった一つの大原則</h4>
+            <p class="font-serif principle">【大原則】相手を想うこと</p>
+            <button class="plus" aria-expanded="false" aria-controls="phil-panel" title="開閉">＋</button>
+          </div>
+          <div id="phil-panel" class="panel">
+            <div class="center small panel-body">
+              <p class="mt-3">私たちの生きる世界や、これから私たちが取り組むエンターテイメント事業は、様々な問題や要因が絡み合い、時に複雑化します。しかし、私たちは、どんなに複雑に見える問題も、その解決の糸口は、常に一つのシンプルな思想にあると信じています。</p>
+              <p class="mt-2">この想いを全ての行動の原点に置くことで、私たち自身の判断は常に明確になり、ファン、クライアント、そして関わる全ての方々との関係が、信頼に基づいた、円滑で温かいものになると、私たちは確信しています。</p>
+              <div class="pillars mt-4">
+                <div class="pillar"><strong>愛 (Love)</strong><p class="small">作品・ファン・仲間・自分自身に、常に愛情と敬意を。</p></div>
+                <div class="pillar"><strong>希望 (Hope)</strong><p class="small">困難の中にも可能性を見出し、諦めない姿勢を。</p></div>
+                <div class="pillar"><strong>平和 (Peace)</strong><p class="small">多様性を尊重し、建設的な対話で調和を目指す。</p></div>
+                <div class="pillar"><strong>誠実 (Integrity)</strong><p class="small">常に正直で透明であることを約束する。</p></div>
+              </div>
+              <p class="mt-3">これらを完璧に体現し続けることは容易ではありません。それでも私たちは、迷ったときに必ず立ち返る「原点」として、この理念を掲げ続けます。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="models" class="section models">
+  <div class="container">
+    <h3 class="font-serif" style="font-size:26px">MODELS</h3>
+    <div id="modelsCards" class="cards mt-4"></div>
+  </div></section>
+
+    <section id="services" class="section services">
+      <div class="container">
+        <h3 class="font-serif" style="font-size:26px">業務内容</h3>
+        <div id="servicesGrid" class="grid mt-4"></div>
+      </div>
+    </section>
+
+    <section id="news" class="section" style="background:#fff">
+      <div class="container">
+        <h3 class="font-serif" style="font-size:26px">NEWS</h3>
+        <div id="newsList" class="newslist mt-4"></div>
+      </div>
+    </section>
+
+    <section id="contact" class="section">
+      <div class="container">
+        <h3 class="font-serif" style="font-size:26px">お問い合わせ</h3>
+        <form class="form mt-4" onsubmit="event.preventDefault(); alert('送信ありがとうございます！（ダミー）'); this.reset();">
+          <div class="row"><label class="small">お名前</label><input class="input" required placeholder="山田 太郎"></div>
+          <div class="row"><label class="small">メールアドレス</label><input class="input" type="email" required placeholder="you@example.com"></div>
+          <div class="row wide">
+            <span class="small">ご相談区分</span>
+            <label class="small radio"><input type="radio" name="aud" value="個人" checked> 個人</label>
+            <label class="small radio"><input type="radio" name="aud" value="企業・法人"> 企業・法人</label>
+          </div>
+          <div class="row wide"><label class="small">ご相談内容</label><textarea class="textarea" required placeholder="目的・期日・参考URLなど"></textarea></div>
+          <div class="row wide"><button class="btn">送信する</button></div>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container fbar">
+      <div class="logo"><div class="title font-serif">晴天想造</div><div class="sub">ENTERT<span style="color:#ec4899">AI</span>NMENT<span style="color:#ec4899">.</span></div></div>
+      <nav class="fnav">
+        <a href="#feature">Feature</a><a href="#philosophy">Philosophy</a><a href="#models">Models</a>
+        <a href="#services">Services</a><a href="#news">News</a><a href="#contact">Contact</a>
+        <a href="#" id="openPrivacy">Privacy</a><a href="#" id="openTerms">Terms</a>
+      </nav>
+      <div class="fcopy">
+        <p class="small">© <span id="year"></span> Seiten Souzou ENTERTAINMENT. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <div id="modalMask" class="modal-mask" hidden></div>
+  <div id="modal" class="modal" aria-hidden="true" role="dialog" aria-label="ポリシー">
+    <header><strong class="font-serif" id="modalTitle">Title</strong><button class="x" id="modalClose" aria-label="閉じる">×</button></header>
+    <div id="modalBody" class="body small"></div>
+  </div>
+
+  <script src="https://unpkg.com/@sanity/client/dist/sanityClient.umd.min.js"></script>
+  <script src="./app.js"></script>
+  <script src="./cms.js"></script>
+
+</body>
+</html>
