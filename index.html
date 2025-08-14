@@ -35,21 +35,37 @@
   </aside>
 
   <main id="top">
-    <!-- ===== HERO (video + fallback image) ===== -->
-    <section class="hero">
-      <video class="bg" src="hero1.mp4" autoplay muted loop playsinline poster="hero_poster.png"></video>
-      <img id="heroImg" class="bg" src="hero_poster.png" alt="Hero Poster">
-      <div class="shade"></div>
-      <div class="copy container">
-        <div>
-          <p class="kicker small">SEITEN SOZO ENTERTAINMENT</p>
-          <h1 class="font-serif">愛とAIが織りなす、<br/>新世代エンタメを世界へ。</h1>
-          <p class="mt-3 hero-sub">
-            LuLuとku No.06の音楽を出発点に、新会社「晴天想造ENTERTAINMENT.」を設立。音楽・映像・広告・イベントまで、ジャンルを超えた新しい表現の場を切り拓きます。
-          </p>
-        </div>
-      </div>
-    </section>
+    <!-- HERO -->
+<section class="hero">
+  <video
+    id="heroVideo"
+    class="bg"
+    autoplay
+    muted
+    loop
+    playsinline
+    preload="auto"
+    poster="./hero_poster.png"
+  >
+    <!-- 可能なら webm も追加すると再生成功率↑ -->
+    <!-- <source src="./hero1.webm" type="video/webm" /> -->
+    <source src="./hero1.mp4" type="video/mp4" />
+  </video>
+
+  <div class="shade"></div>
+  <div class="copy container">
+    <div>
+      <p class="kicker small" style="color:#e5e7eb;font-size:clamp(14px,2.2vw,16px)">
+        SEITEN SOZO ENTERTAINMENT
+      </p>
+      <h1 class="font-serif">愛とAIが織りなす、<br>新世代エンタメを世界へ。</h1>
+      <p class="mt-3" style="color:#e5e7eb;max-width:720px;margin-inline:auto">
+        LuLuとku No.06の音楽を出発点に、新会社「晴天想造ENTERTAINMENT.」を設立。
+        音楽・映像・広告・イベントまで、ジャンルを超えた新しい表現の場を切り拓きます。
+      </p>
+    </div>
+  </div>
+</section>
 
     <!-- ===== CF ===== -->
     <section class="cf">
@@ -372,5 +388,36 @@
   </div>
 
   <script src="app.js"></script>
+  <script>
+  // 動画が読み込めない場合はポスターのまま（静止画）にフォールバック
+  (function () {
+    const v = document.getElementById('heroVideo');
+    if (!v) return;
+    let tried = false;
+
+    const fallback = () => {
+      // もし video が失敗したら、img に置き換えて確実に背景表示
+      if (tried) return;
+      tried = true;
+      const parent = v.parentElement;
+      const img = document.createElement('img');
+      img.className = 'bg';
+      img.src = './hero_poster.png';
+      img.alt = 'Hero Poster';
+      parent.insertBefore(img, v);
+      v.remove();
+    };
+
+    v.addEventListener('error', fallback);
+    v.addEventListener('stalled', () => setTimeout(fallback, 1500));
+    v.addEventListener('loadeddata', () => {
+      // iOS 対策：明示的に再生を試みる（muted必須）
+      const play = v.play?.();
+      if (play && typeof play.catch === 'function') {
+        play.catch(() => {/* 失敗しても無視（ポスター表示） */});
+      }
+    });
+  })();
+</script>
 </body>
 </html>
