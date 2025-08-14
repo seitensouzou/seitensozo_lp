@@ -1,11 +1,11 @@
 // cms.js  —  index.html と同じ階層
-// そのままコピペOK。Sanityの projectId / dataset はあなたの値をセット済み。
+// Sanity: projectId / dataset はあなたの値をセット済み。
 
 import {createClient} from "https://cdn.jsdelivr.net/npm/@sanity/client@6/+esm";
 
 // ====== Sanity 設定 ======
-const projectId = "9iu2dx4s";
-const dataset   = "production";
+const projectId  = "9iu2dx4s";
+const dataset    = "production";
 const apiVersion = "2025-08-14";
 
 // dataset を「Public（読み取り可）」にしていれば token は不要
@@ -14,27 +14,23 @@ const token = undefined;
 
 const client = createClient({ projectId, dataset, apiVersion, token, useCdn: true });
 
-// ====== DOM ショートカット ======
+// ====== DOM ユーティリティ ======
 const $  = (s, sc=document) => sc.querySelector(s);
 const $$ = (s, sc=document) => [...sc.querySelectorAll(s)];
 
-// ====== Sanity 画像ref → URL 変換（image型にも対応）======
+// ====== Sanity 画像 ref → URL（image型の ref 文字列にも対応）======
 function sanityImageUrl(ref) {
-  // ref 例: "image-<hash>-<width>x<height>-<format>"
   try {
     if (!ref || !ref.startsWith("image-")) return "";
     const [, id, size, format] = ref.split("-");
     const [w, h] = (size || "1200x1200").split("x");
     return `https://cdn.sanity.io/images/${projectId}/${dataset}/${id}.${format}?w=${w}&h=${h}&auto=format`;
-  } catch {
-    return "";
-  }
+  } catch { return ""; }
 }
 
-// ====== GROQ クエリ ======
-/* === MODELS (CMS) — BEGIN (for profile/links/youtubeUrl schema) === */
+/* === MODELS (CMS) — BEGIN (profile/links/youtubeUrl 用) === */
 
-/** GROQ（既存スキーマ） */
+// GROQ
 const qModels = `
 *[_type == "model"]|order(order asc){
   _id, name, role, profile, youtubeUrl,
@@ -43,22 +39,16 @@ const qModels = `
 }
 `;
 
-/** profile を 4カードに分割する（音楽性/テーマ/スタイル/パーソナリティ） */
+// profile を 4カード（音楽性/テーマ/スタイル/パーソナリティ）に分割
 function splitProfileToSections(profile=''){
   const raw = (profile || '').trim();
-
-  // ラベル候補（日本語と英語のゆらぎも拾う）
   const labels = [
     {key:'音楽性', re:/^\s*(音楽性|music|musicality)\s*[:：]/i},
     {key:'テーマ', re:/^\s*(テーマ|theme)\s*[:：]/i},
     {key:'スタイル', re:/^\s*(スタイル|style|ビジュアル|visual)\s*[:：]/i},
     {key:'パーソナリティ', re:/^\s*(パーソナリティ|personality)\s*[:：]/i},
   ];
-
-  // 行単位で解析
   const lines = raw.split(/\r?\n/).map(l=>l.trim()).filter(Boolean);
-
-  // 収集用
   const map = { 音楽性:'', テーマ:'', スタイル:'', パーソナリティ:'' };
   let current = null;
 
@@ -66,7 +56,6 @@ function splitProfileToSections(profile=''){
     const hit = labels.find(l => l.re.test(line));
     if(hit){
       current = hit.key;
-      // 見出しを除いた本文
       const body = line.replace(hit.re,'').trim();
       if(body) map[current] += (map[current]?'\n':'') + body;
       continue;
@@ -74,21 +63,19 @@ function splitProfileToSections(profile=''){
     if(current){
       map[current] += (map[current]?'\n':'') + line;
     }else{
-      // 見出しが無く全部1行のときのフォールバック：音楽性に入れる
       map.音楽性 += (map.音楽性?'\n':'') + line;
     }
   }
 
-  // 表示順で配列に
   return [
-    {title:'音楽性', body:map.音楽性},
-    {title:'テーマ', body:map.テーマ},
-    {title:'スタイル', body:map.スタイル},
+    {title:'音楽性',       body:map.音楽性},
+    {title:'テーマ',       body:map.テーマ},
+    {title:'スタイル',     body:map.スタイル},
     {title:'パーソナリティ', body:map.パーソナリティ},
   ].filter(s => s.body && s.body.trim());
 }
 
-/** ストリーミングリンク（links{} → pills） */
+// ストリーミングリンク → pill
 function linksToPillsHtml(links={}){
   const defs = [
     {key:'spotify',     label:'Spotify',      color:'#1DB954'},
@@ -103,18 +90,19 @@ function linksToPillsHtml(links={}){
   return pills ? `<div class="streams mt-4">${pills}</div>` : '';
 }
 
-
-
-/** Models の描画 */
+// MODELS の描画（新カードUI）
 async function renderModels(){
-  const wrap = document.querySelector('#modelsCards');
+  const wrap = $("#modelsCards");
   if(!wrap) return;
 
   const models = await client.fetch(qModels);
   if(!models?.length){ wrap.innerHTML=''; return; }
 
   wrap.innerHTML = models.map(m=>{
-    const cover = m.imageUrl || 'https://placehold.co/800x1000/E0E0E0/333?text=MODEL';
+    const cover =
+      m.imageUrl?.startsWith?.("image-") ? sanityImageUrl(m.imageUrl) :
+      (m.imageUrl || "https://placehold.co/800x1000/E0E0E0/333?text=MODEL");
+
     const sections = splitProfileToSections(m.profile || '');
     const yt = extractYouTubeId(m.youtubeUrl || '');
 
@@ -123,7 +111,7 @@ async function renderModels(){
       <div class="wrap3d">
         <!-- FRONT -->
         <div class="face front">
-          <img src="${cover}" alt="${m.name}" class="cover">
+          <img src="${cover}" alt="${m.name}" class="cover" style="width:100%;height:100%;object-fit:cover">
           <div class="meta">
             <div>
               <div class="font-serif" style="font-size:20px">${m.name}</div>
@@ -136,7 +124,7 @@ async function renderModels(){
         <!-- BACK -->
         <div class="face back">
           <button class="close" title="閉じる">×</button>
-          <div class="back-inner">
+          <div class="back-inner" style="position:absolute;inset:0;padding:18px;display:flex;flex-direction:column">
             <div><div class="font-serif" style="font-size:20px">${m.name}</div><p class="small">${m.role || ''}</p></div>
 
             <div class="profile grid">
@@ -168,22 +156,22 @@ async function renderModels(){
   attachModelFlipHandlers();
 }
 
-/** フリップの挙動（既存の書き方に合わせて） */
+// フリップ挙動
 function attachModelFlipHandlers(){
-  const cards = [...document.querySelectorAll('[data-card]')];
-  const closeAll = (except)=> cards.forEach(c => { if(c!==except) c.classList.remove('open'); });
+  const cards = $$("[data-card]");
+  const closeAll = (except)=> cards.forEach(c => { if(c!==except) c.classList.remove("open"); });
   cards.forEach(card=>{
-    card.addEventListener('click',(e)=>{
-      const openBtn  = e.target.closest('.openbtn');
-      const closeBtn = e.target.closest('.close');
+    card.addEventListener("click",(e)=>{
+      const openBtn  = e.target.closest(".openbtn");
+      const closeBtn = e.target.closest(".close");
       if(openBtn){
-        const isOpen = card.classList.contains('open');
+        const isOpen = card.classList.contains("open");
         closeAll(card);
-        if(!isOpen) card.classList.add('open');
+        if(!isOpen) card.classList.add("open");
         return;
       }
       if(closeBtn){
-        card.classList.remove('open');
+        card.classList.remove("open");
         return;
       }
     }, {passive:true});
@@ -191,8 +179,7 @@ function attachModelFlipHandlers(){
 }
 /* === MODELS (CMS) — END === */
 
-`;
-
+// ====== NEWS / SERVICES ======
 const qNews = `
 *[_type == "news"]|order(date desc){
   _id, title, body, tag, date
@@ -205,95 +192,6 @@ const qServices = `
 }
 `;
 
-// ====== レンダリング ======
-async function renderModels() {
-  const wrap = $("#modelsCards");
-  if (!wrap) return;
-  const data = await client.fetch(qModels);
-
-  // ない場合はそのまま
-  if (!data?.length) { wrap.innerHTML = ""; return; }
-
-  wrap.innerHTML = data.map(m => {
-    const img =
-      m.imageUrl?.startsWith("image-") ? sanityImageUrl(m.imageUrl) :
-      (m.imageUrl || "https://placehold.co/800x1000/E0E0E0/333?text=MODEL");
-    const links = m.links || {};
-    return `
-      <article class="card flip" data-card>
-        <div class="wrap3d">
-          <div class="face front">
-            <img src="${img}" alt="${m.name}" style="width:100%;height:100%;object-fit:cover">
-            <div class="meta">
-              <div>
-                <div class="font-serif" style="font-size:20px">${m.name}</div>
-                <p class="small" style="color:#e5e7eb">${m.role ?? ""}</p>
-              </div>
-              <button class="openbtn" title="開く">＋</button>
-            </div>
-          </div>
-          <div class="face back">
-            <button class="close" title="閉じる">×</button>
-            <div style="position:absolute;inset:0;padding:18px;display:flex;flex-direction:column">
-              <div>
-                <div class="font-serif" style="font-size:20px">${m.name}</div>
-                <p class="small">${m.role ?? ""}</p>
-              </div>
-
-              <div class="mt-2" style="border:1px solid var(--line);border-radius:12px;padding:12px">
-                <p class="small"><strong>音楽性</strong>・<strong>テーマ</strong>・<strong>スタイル/ビジュアル</strong>・<strong>パーソナリティ</strong> などを自由に記述：<br>${(m.profile ?? "").replace(/\n/g,"<br>")}</p>
-              </div>
-
-              ${m.youtubeUrl ? `
-                <div class="mt-3">
-                  <div class="small" style="margin-bottom:6px;color:var(--muted)">YouTube</div>
-                  <div style="position:relative;padding-top:56.25%;border-radius:12px;overflow:hidden;border:1px solid var(--line)">
-                    <iframe src="https://www.youtube-nocookie.com/embed/${extractYouTubeId(m.youtubeUrl)}" title="${m.name} YouTube"
-                      frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                      referrerpolicy="strict-origin-when-cross-origin" allowfullscreen
-                      style="position:absolute;inset:0;width:100%;height:100%"></iframe>
-                  </div>
-                </div>` : ""}
-
-              <div class="streams mt-4" style="margin-top:auto">
-                ${links.spotify     ? `<a style="background:#1DB954"  href="${links.spotify}"     target="_blank" rel="noreferrer">Spotify</a>`      : ""}
-                ${links.applemusic  ? `<a style="background:#FA2D48"  href="${links.applemusic}"  target="_blank" rel="noreferrer">Apple Music</a>`  : ""}
-                ${links.deezer      ? `<a style="background:#FF1F1F"  href="${links.deezer}"      target="_blank" rel="noreferrer">Deezer</a>`       : ""}
-                ${links.amazonmusic ? `<a style="background:#146EB4"  href="${links.amazonmusic}" target="_blank" rel="noreferrer">Amazon Music</a>` : ""}
-              </div>
-            </div>
-          </div>
-        </div>
-      </article>
-    `;
-  }).join("");
-
-  // フリップの挙動を付与（あなたの既存JSと同じ動き）
-  attachModelFlipHandlers();
-}
-
-function attachModelFlipHandlers() {
-  const cards = $$("[data-card]");
-  const closeAll = (except)=> cards.forEach(c => { if (c!==except) c.classList.remove("open"); });
-
-  cards.forEach(card=>{
-    card.addEventListener("click",(e)=>{
-      const openBtn  = e.target.closest(".openbtn");
-      const closeBtn = e.target.closest(".close");
-      if (openBtn){
-        const isOpen = card.classList.contains("open");
-        closeAll(card);
-        if (!isOpen) card.classList.add("open");
-        return;
-      }
-      if (closeBtn){
-        card.classList.remove("open");
-        return;
-      }
-    }, {passive:true});
-  });
-}
-
 async function renderServices() {
   const grid = $("#servicesGrid");
   if (!grid) return;
@@ -304,7 +202,7 @@ async function renderServices() {
     <div class="svc-item">
       <div class="svc-head">
         <div style="display:flex;gap:10px;align-items:flex-start">
-          ${pickIconSvg(s.icon)}
+          ${pickIconSvg(s.icon || '')}
           <div>
             <div class="svc-title">${s.title}</div>
             <p class="small">${s.summary ?? ""}</p>
@@ -316,9 +214,8 @@ async function renderServices() {
     </div>
   `).join("");
 
-  // アコーディオン挙動
   $$("#servicesGrid .svc-item").forEach(item=>{
-    const btn = item.querySelector(".svc-toggle");
+    const btn  = item.querySelector(".svc-toggle");
     const head = item.querySelector(".svc-head");
     const toggle = ()=> {
       item.classList.toggle("open");
@@ -351,7 +248,6 @@ async function renderNews() {
     </article>
   `).join("");
 
-  // NEWS のトグル
   $$("#newsList .news").forEach(n=>{
     const head = n.querySelector(".news-head");
     const t = n.querySelector(".news-toggle");
@@ -369,7 +265,6 @@ function extractYouTubeId(url=""){
     const u = new URL(url);
     if (u.hostname.includes("youtu.be")) return u.pathname.slice(1);
     if (u.searchParams.get("v")) return u.searchParams.get("v");
-    // /embed/<id>
     const m = u.pathname.match(/\/embed\/([^?/]+)/);
     return m ? m[1] : "";
   }catch{ return ""; }
@@ -377,7 +272,6 @@ function extractYouTubeId(url=""){
 
 function formatDate(d){
   if(!d) return "";
-  // Sanityのdate型 → YYYY-MM-DD 形式を想定
   return d.replaceAll("-", ".");
 }
 
@@ -389,20 +283,18 @@ function renderBadge(tag=""){
   return t ? `<span class="badge press">${t.toUpperCase()}</span>` : "";
 }
 
-// サービスのピクト（簡易的に5種類）
 function pickIconSvg(icon=""){
-  const n = icon.toLowerCase();
+  const n = (icon || "").toLowerCase();
   const base = `class="svc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"`;
   if (n.includes("音楽") || n.includes("music"))        return `<svg ${base}><path d="M9 18V5l11-2v13"/><circle cx="7" cy="18" r="3"/><circle cx="20" cy="16" r="3"/></svg>`;
   if (n.includes("映像") || n.includes("video"))        return `<svg ${base}><path d="M3 10h18v10H3z"/><path d="M3 10l3-7 7 3 7-3v7"/></svg>`;
   if (n.includes("企業") || n.includes("行政")||n.includes("collab")||n.includes("corporate")) return `<svg ${base}><path d="M3 21h18"/><path d="M6 21V8h12v13"/><path d="M9 8V3h6v5"/></svg>`;
   if (n.includes("クリエ")|| n.includes("creative"))     return `<svg ${base}><path d="M12 12l7-7 2 2-7 7"/><path d="M14 10l-8 8H4v-2l8-8"/></svg>`;
   if (n.includes("個人") || n.includes("personal"))      return `<svg ${base}><path d="M12 21s-6-4.35-9-7.35a6 6 0 019-8.65 6 6 0 019 8.65C18 16.65 12 21 12 21z"/></svg>`;
-  // デフォルト音楽
   return `<svg ${base}><path d="M9 18V5l11-2v13"/><circle cx="7" cy="18" r="3"/><circle cx="20" cy="16" r="3"/></svg>`;
 }
 
-// ====== 実行 ======
+// ====== 起動 ======
 (async function init(){
   try {
     await Promise.all([renderModels(), renderServices(), renderNews()]);
