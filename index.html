@@ -150,7 +150,7 @@
     <section id="models" class="section models">
       <div class="container">
         <h3 class="font-serif" style="font-size:26px">MODELS</h3>
-        <div class="cards mt-4">
+        <div id="modelsCards" class="cards mt-4"><!-- ← ここにCMSから描画 --></div>
           <!-- LuLu -->
           <article class="card flip" data-card>
             <div class="wrap3d">
@@ -242,7 +242,7 @@
       <div class="container">
         <!-- 下線は削除（CSSでも打消しを入れてあります） -->
         <h3 class="font-serif" style="font-size:26px">業務内容</h3>
-        <div class="grid mt-4">
+        <div id="servicesGrid" class="grid mt-4"><!-- ← ここにCMSから描画 --></div>
           <div class="svc-item">
             <div class="svc-head">
               <div class="svc-left">
@@ -306,7 +306,7 @@
     <section id="news" class="section" style="background:#fff">
       <div class="container">
         <h3 class="font-serif" style="font-size:26px">NEWS</h3>
-        <div class="newslist mt-4">
+        <div id="newsList" class="newslist mt-4"><!-- ← ここにCMSから描画 --></div>
           <article class="news">
             <button class="news-head" aria-expanded="false">
               <div class="news-date small">2025.08.06</div>
@@ -420,5 +420,12 @@
   })();
 </script>
   <script src="./cms.js" defer></script>
+  <!-- Sanity client (ESM) -->
+<script type="module" src="https://cdn.jsdelivr.net/npm/@sanity/client@6/+esm"></script>
+<!-- あなたのCMS接続ロジック -->
+<script type="module" src="./cms.js"></script>
+</body>
+</html>
+
 </body>
 </html>
