@@ -1,7 +1,7 @@
-// cms.js (最終完成版)
+// cms.js (業務内容の処理を削除)
 
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@sanity/client@6/+esm';
-import { qs, qsa } from './app.js'; // app.jsからヘルパー関数を読み込む
+import { qs, qsa } from './app.js';
 
 // ====== 設定 ======
 const SANITY = {
@@ -70,22 +70,9 @@ function linksToPillsHtml(links = {}) {
   return pills ? `<div class="streams mt-4">${pills}</div>` : '';
 }
 
-function pickIconSvg(icon=""){
-    const n = (icon||"").toLowerCase();
-    const base = `class="svc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"`;
-    if (n.includes("音楽") || n.includes("music"))       return `<svg ${base}><path d="M9 18V5l11-2v13"/><circle cx="7" cy="18" r="3"/><circle cx="20" cy="16" r="3"/></svg>`;
-    if (n.includes("映像") || n.includes("video"))       return `<svg ${base}><path d="M3 10h18v10H3z"/><path d="M3 10l3-7 7 3 7-3v7"/></svg>`;
-    if (n.includes("企業") || n.includes("行政")||n.includes("collab")||n.includes("corporate")) return `<svg ${base}><path d="M3 21h18"/><path d="M6 21V8h12v13"/><path d="M9 8V3h6v5"/></svg>`;
-    if (n.includes("クリエ")|| n.includes("creative"))   return `<svg ${base}><path d="M12 12l7-7 2 2-7 7"/><path d="M14 10l-8 8H4v-2l8-8"/></svg>`;
-    if (n.includes("個人") || n.includes("personal"))   return `<svg ${base}><path d="M12 21s-6-4.35-9-7.35a6 6 0 019-8.65 6 6 0 019 8.65C18 16.65 12 21 12 21z"/></svg>`;
-    // デフォルトのアイコン
-    return `<svg ${base}><path d="M9 18V5l11-2v13"/><circle cx="7" cy="18" r="3"/><circle cx="20" cy="16" r="3"/></svg>`;
-}
-
 // ===== GROQ =====
 const qModels = `*[_type == "model"]|order(order asc){_id, name, role, profile, youtubeUrl, links, "imageUrl": image.asset->url}`;
 const qNews = `*[_type == "news"]|order(date desc){_id,title,body,tag,date}`;
-const qServices = `*[_type == "service"]|order(order asc){_id,title,summary,detail,icon}`;
 
 // ===== RENDER FUNCTIONS =====
 async function renderModels() {
@@ -165,53 +152,6 @@ async function renderModels() {
   }
 }
 
-async function renderServices() {
-  const grid = qs("#servicesGrid");
-  if (!grid) return;
-  try {
-    const data = await client.fetch(qServices);
-    console.info("[CMS] services fetched:", data?.length);
-    if (!data?.length) { 
-      grid.innerHTML = "<p class='small' style='color:#6b7280'>業務内容はまだありません。</p>"; 
-      return; 
-    }
-    
-    grid.innerHTML = data.map(s => `
-      <div class="svc-item">
-        <div class="svc-head">
-          <div class="svc-left">
-            ${pickIconSvg(s.icon || "")}
-            <div>
-              <div class="svc-title">${s.title || ""}</div>
-              <p class="small">${s.summary || ""}</p>
-            </div>
-          </div>
-          <button class="svc-toggle" type="button" aria-label="開閉">＋</button>
-        </div>
-        <div class="svc-panel small">${safeBR(s.detail || "")}</div>
-      </div>
-    `).join("");
-
-    // Accordion logic for services
-    qsa("#servicesGrid .svc-item").forEach(item => {
-      const head = item.querySelector(".svc-head");
-      const btn = item.querySelector(".svc-toggle");
-      const toggle = () => {
-        item.classList.toggle("open");
-        btn.textContent = item.classList.contains("open") ? "×" : "＋";
-        btn.setAttribute("aria-expanded", item.classList.contains("open"));
-      };
-      head.addEventListener("click", (e) => {
-        if (e.target.closest(".svc-toggle") || !e.target.closest(".svc-panel")) toggle();
-      });
-    });
-
-  } catch (e) {
-    console.error("[CMS] services fetch error:", e);
-    grid.innerHTML = "<p class='small' style='color:#b91c1c'>業務内容の読み込みに失敗しました。</p>";
-  }
-}
-
 async function renderNews() {
   const list = qs("#newsList");
   if (!list) return;
@@ -262,5 +202,5 @@ async function renderNews() {
 
 // ===== 実行 =====
 (async () => {
-  await Promise.all([renderModels(), renderServices(), renderNews()]);
+  await Promise.all([renderModels(), renderNews()]);
 })();
