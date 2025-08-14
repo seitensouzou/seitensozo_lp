@@ -2,21 +2,25 @@
 // 必須: index.html の最後に UMD の sanityClient を読み込んでから、このファイルを読み込むこと
 
 // ---- 設定 ----
+// cms.js の冒頭〜client生成まわりだけ差し替え
 const SANITY = {
   projectId: "9iu2dx4s",
   dataset:   "production",
-  apiVersion:"2023-10-01", // 安定版
-  token:     undefined,    // dataset が Public 読み取りなら不要
+  apiVersion:"2023-10-01",
+  token:     undefined,
   useCdn:    true,
 };
 
-// ---- 安全な client 生成 ----
 (function initCMS() {
-  if (!window.SanityClient || !window.SanityClient.createClient) {
+  // ▼ここを sanityClient に
+  if (!window.sanityClient || !window.sanityClient.createClient) {
     console.error("[CMS] Sanity UMD が読み込まれていません。index.html の <script> 順序を確認してください。");
     return;
   }
-  const client = window.SanityClient.createClient(SANITY);
+  const client = window.sanityClient.createClient(SANITY);
+  // 以降の処理はそのまま
+})();
+
   console.info("[CMS] Sanity client ready:", {projectId: SANITY.projectId, dataset: SANITY.dataset, apiVersion: SANITY.apiVersion});
 
   // ===== ヘルパー =====
