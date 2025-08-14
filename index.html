@@ -337,14 +337,17 @@
     });
   })();
   </script>
-<!-- Sanity UMD クライアント（先に読み込む） -->
-<!-- Sanity UMD版クライアントを先に読み込む -->
-<!-- Sanity UMD クライアント（正しいURL） -->
-<script src="https://cdn.sanity.io/v2023-10-01/client/umd.min.js"></script>
+<script src="app.js"></script>
+  <script>
+    // 動画のフォールバック用インラインスクリプト (この部分は変更不要)
+  </script>
 
-<!-- その後に cms.js を読み込む -->
-<script src="cms.js"></script>
+  <script src="https://unpkg.com/@sanity/client/dist/sanityClient.umd.min.js"></script>
 
+  <script src="cms.js"></script>
+
+</body>
+</html>
 
 
 </body>
