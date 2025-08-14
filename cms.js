@@ -1,7 +1,7 @@
-// cms.js (最終完成版)
+// cms.js (最終完成版 - スキーマ定義に完全一致)
 
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@sanity/client@6/+esm';
-import { qs, qsa } from './app.js'; // app.jsからヘルパー関数を読み込む
+import { qs, qsa } from './app.js';
 
 // ====== 設定 ======
 const SANITY = {
@@ -27,51 +27,33 @@ function extractYouTubeId(url = "") {
   } catch { return ""; }
 }
 
-function splitProfileToSections(profile = '') {
-  const raw = (profile || '').trim();
-  const labels = [
-    { key: '音楽性', re: /^\s*(音楽性|music|musicality)\s*[:：]/i },
-    { key: 'テーマ', re: /^\s*(テーマ|theme)\s*[:：]/i },
-    { key: 'スタイル', re: /^\s*(スタイル|style|ビジュアル|visual)\s*[:：]/i },
-    { key: 'パーソナリティ', re: /^\s*(パーソナリティ|personality)\s*[:：]/i },
-  ];
-  const lines = raw.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
-  const map = { 音楽性: '', テーマ: '', スタイル: '', パーソナリティ: '' };
-  let current = null;
-  for (const line of lines) {
-    const hit = labels.find(l => l.re.test(line));
-    if (hit) {
-      current = hit.key;
-      const body = line.replace(hit.re, '').trim();
-      if (body) map[current] += (map[current] ? '\n' : '') + body;
-      continue;
-    }
-    if (current) map[current] += (map[current] ? '\n' : '') + line;
-    else map.音楽性 += (map.音楽性 ? '\n' : '') + line;
-  }
-  return [
-    { title: '音楽性', body: map.音楽性 },
-    { title: 'テーマ', body: map.テーマ },
-    { title: 'スタイル', body: map.スタイル },
-    { title: 'パーソナリティ', body: map.パーソナリティ },
-  ].filter(x => x.body && x.body.trim());
-}
-
-function linksToPillsHtml(links = {}) {
-  const defs = [
-    { key: 'spotify', label: 'Spotify', color: '#1DB954' },
-    { key: 'applemusic', label: 'Apple Music', color: '#FA2D48' },
-    { key: 'deezer', label: 'Deezer', color: '#FF1F1F' },
-    { key: 'amazonmusic', label: 'Amazon Music', color: '#146EB4' },
-  ];
-  const pills = defs.filter(d => links[d.key]).map(d =>
-    `<a class="pill" style="background:${d.color}" href="${links[d.key]}" target="_blank" rel="noopener">${d.label}</a>`
-  ).join('');
-  return pills ? `<div class="streams mt-4">${pills}</div>` : '';
+function linksToPillsHtml(links = []) {
+    const serviceMap = {
+        youtube: { label: 'YouTube', color: '#FF0000' },
+        spotify: { label: 'Spotify', color: '#1DB954' },
+        apple: { label: 'Apple Music', color: '#FA2D48' },
+        deezer: { label: 'Deezer', color: '#FF1F1F' },
+        amazon: { label: 'Amazon Music', color: '#146EB4' }
+    };
+    const pills = (links || []).map(link => {
+        const service = serviceMap[link.service];
+        if (!service) return '';
+        return `<a class="pill" style="background:${service.color}" href="${link.url}" target="_blank" rel="noopener">${service.label}</a>`;
+    }).join('');
+    return pills ? `<div class="streams mt-4">${pills}</div>` : '';
 }
 
 // ===== GROQ =====
-const qModels = `*[_type == "model"]|order(order asc){_id, name, role, profile, youtubeUrl, links, image{asset->{url}}}`;
+// スキーマ(model.ts)のフィールド名に完全に一致させる
+const qModels = `*[_type == "model"]|order(order asc){
+  _id, 
+  name, 
+  role, 
+  "imageUrl": cover.asset->url,
+  youtube,
+  sections,
+  streams
+}`;
 const qNews = `*[_type == "news"]|order(date desc){_id,title,body,tag,date}`;
 
 // ===== RENDER FUNCTIONS =====
@@ -80,20 +62,19 @@ async function renderModels() {
   if (!wrap) return;
   try {
     const data = await client.fetch(qModels);
-    console.info("[CMS] models fetched:", data?.length);
+    console.info("[CMS] models fetched:", data); // データの中身を確認
     if (!data || !data.length) {
       wrap.innerHTML = `<p class="small" style="color:#6b7280">公開済みのモデルはまだありません。</p>`;
       return;
     }
     wrap.innerHTML = data.map(m => {
-      const cover = m.image?.asset?.url || "https://placehold.co/800x1000/E0E0E0/333?text=MODEL";
-      const sections = splitProfileToSections(m.profile || "");
-      const yt = extractYouTubeId(m.youtubeUrl || "");
+      const cover = m.imageUrl || "https://placehold.co/800x1000/E0E0E0/333?text=MODEL";
+      const yt = extractYouTubeId(m.youtube || "");
       return `
         <article class="card flip" data-card>
           <div class="wrap3d">
             <div class="face front">
-              <img src="${cover}" alt="${m.name}" class="cover">
+              <img src="${cover}" alt="${m.name || ''}" class="cover">
               <div class="meta">
                 <div>
                   <div class="font-serif" style="font-size:20px">${m.name || ''}</div>
@@ -107,10 +88,10 @@ async function renderModels() {
               <div class="back-inner">
                 <div><div class="font-serif" style="font-size:20px">${m.name || ''}</div><p class="small">${m.role || ""}</p></div>
                 <div class="profile grid">
-                  ${sections.map(s => `
+                  ${(m.sections || []).map(s => `
                     <div class="carded">
-                      <h5>${s.title}</h5>
-                      <p>${safeBR(s.body)}</p>
+                      <h5>${s.title || ''}</h5>
+                      <p>${safeBR(s.body || '')}</p>
                     </div>`).join("")}
                 </div>
                 ${yt ? `
@@ -121,7 +102,7 @@ async function renderModels() {
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                     referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
                 </div>` : ""}
-                ${linksToPillsHtml(m.links || {})}
+                ${linksToPillsHtml(m.streams)}
               </div>
             </div>
           </div>
@@ -157,7 +138,6 @@ async function renderNews() {
   if (!list) return;
   try {
     const data = await client.fetch(qNews);
-    console.info("[CMS] news fetched:", data?.length);
     if (!data?.length) {
       list.innerHTML = "<p class='small' style='color:#6b7280'>お知らせはまだありません。</p>";
       return;
