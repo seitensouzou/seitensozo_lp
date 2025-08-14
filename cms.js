@@ -20,8 +20,8 @@ const SANITY = {
   console.info("[CMS] client", SANITY.projectId, SANITY.dataset, SANITY.apiVersion);
 
   // ===== ヘルパー =====
-  const qs  = (s, sc=document) => sc.querySelector(s);      // ← 名前を変更
-  const qsa = (s, sc=document) => [...sc.querySelectorAll(s)];  // ← 名前を変更
+  const qs  = (s, sc=document) => sc.querySelector(s);
+  const qsa = (s, sc=document) => [...sc.querySelectorAll(s)];
   const safeBR = (t="") => String(t||"").replace(/\n/g,"<br>");
 
   function extractYouTubeId(url="") {
@@ -90,7 +90,7 @@ const SANITY = {
 
   // ===== MODELS =====
   async function renderModels(){
-    const wrap = $('#modelsCards');
+    const wrap = qs('#modelsCards');
     if(!wrap) return;
     let data = [];
     try {
@@ -151,7 +151,7 @@ const SANITY = {
     }).join("");
 
     // flip
-    const cards = $$('#modelsCards [data-card]');
+    const cards = qsa('#modelsCards [data-card]');
     const closeAll = (except)=> cards.forEach(c => { if (c!==except) c.classList.remove('open'); });
     cards.forEach(card=>{
       card.addEventListener('click',(e)=>{
@@ -170,7 +170,7 @@ const SANITY = {
 
   // ===== SERVICES =====
   async function renderServices(){
-    const grid = $("#servicesGrid");
+    const grid = qs("#servicesGrid");
     if(!grid) return;
     try {
       const data = await client.fetch(qServices);
@@ -192,7 +192,7 @@ const SANITY = {
         </div>
       `).join("");
 
-      $$("#servicesGrid .svc-item").forEach(item=>{
+      qsa("#servicesGrid .svc-item").forEach(item=>{
         const btn = item.querySelector(".svc-toggle");
         const head = item.querySelector(".svc-head");
         const toggle = ()=> {
@@ -211,7 +211,7 @@ const SANITY = {
 
   // ===== NEWS =====
   async function renderNews(){
-    const list = $("#newsList");
+    const list = qs("#newsList");
     if(!list) return;
     try {
       const data = await client.fetch(qNews);
@@ -224,8 +224,8 @@ const SANITY = {
             <div class="news-main">
               <div class="news-title">${n.title}</div>
               <div class="badges mt-2">${
-                (n.tag||"").toLowerCase()==="press"   ? '<span class="badge press">PRESS</span>' :
-                (n.tag||"").toLowerCase()==="music"   ? '<span class="badge music">MUSIC</span>' :
+                (n.tag||"").toLowerCase()==="press"    ? '<span class="badge press">PRESS</span>' :
+                (n.tag||"").toLowerCase()==="music"    ? '<span class="badge music">MUSIC</span>' :
                 (n.tag||"").toLowerCase()==="project" ? '<span class="badge project">PROJECT</span>' :
                 n.tag ? `<span class="badge press">${String(n.tag).toUpperCase()}</span>` : ""
               }</div>
@@ -236,7 +236,7 @@ const SANITY = {
         </article>
       `).join("");
 
-      $$("#newsList .news").forEach(n=>{
+      qsa("#newsList .news").forEach(n=>{
         const head = n.querySelector(".news-head");
         const t = n.querySelector(".news-toggle");
         head.addEventListener("click",()=>{
@@ -259,11 +259,11 @@ const SANITY = {
   function pickIconSvg(icon=""){
     const n = (icon||"").toLowerCase();
     const base = `class="svc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"`;
-    if (n.includes("音楽") || n.includes("music"))        return `<svg ${base}><path d="M9 18V5l11-2v13"/><circle cx="7" cy="18" r="3"/><circle cx="20" cy="16" r="3"/></svg>`;
-    if (n.includes("映像") || n.includes("video"))        return `<svg ${base}><path d="M3 10h18v10H3z"/><path d="M3 10l3-7 7 3 7-3v7"/></svg>`;
+    if (n.includes("音楽") || n.includes("music"))       return `<svg ${base}><path d="M9 18V5l11-2v13"/><circle cx="7" cy="18" r="3"/><circle cx="20" cy="16" r="3"/></svg>`;
+    if (n.includes("映像") || n.includes("video"))       return `<svg ${base}><path d="M3 10h18v10H3z"/><path d="M3 10l3-7 7 3 7-3v7"/></svg>`;
     if (n.includes("企業") || n.includes("行政")||n.includes("collab")||n.includes("corporate")) return `<svg ${base}><path d="M3 21h18"/><path d="M6 21V8h12v13"/><path d="M9 8V3h6v5"/></svg>`;
-    if (n.includes("クリエ")|| n.includes("creative"))     return `<svg ${base}><path d="M12 12l7-7 2 2-7 7"/><path d="M14 10l-8 8H4v-2l8-8"/></svg>`;
-    if (n.includes("個人") || n.includes("personal"))      return `<svg ${base}><path d="M12 21s-6-4.35-9-7.35a6 6 0 019-8.65 6 6 0 019 8.65C18 16.65 12 21 12 21z"/></svg>`;
+    if (n.includes("クリエ")|| n.includes("creative"))   return `<svg ${base}><path d="M12 12l7-7 2 2-7 7"/><path d="M14 10l-8 8H4v-2l8-8"/></svg>`;
+    if (n.includes("個人") || n.includes("personal"))   return `<svg ${base}><path d="M12 21s-6-4.35-9-7.35a6 6 0 019-8.65 6 6 0 019 8.65C18 16.65 12 21 12 21z"/></svg>`;
     return `<svg ${base}><path d="M9 18V5l11-2v13"/><circle cx="7" cy="18" r="3"/><circle cx="20" cy="16" r="3"/></svg>`;
   }
 })();
