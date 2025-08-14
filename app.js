@@ -214,4 +214,16 @@ qs("#year").textContent=new Date().getFullYear();
     open("Privacy Policy",
       `<p>当サイトでは、お問い合わせ対応およびサービス提供のために必要な範囲で個人情報を取得・利用します。法令に基づく場合を除き、本人の同意なく第三者提供は行いません。</p>
        <p>Cookie等によるアクセス解析は現時点では行っていません。将来的に導入する場合は本ポリシーを更新します。</p>
-       <p>開示・訂正・削除のご請求はお問い合わせフォームよりご連絡
+       <p>開示・訂正・削除のご請求はお問い合わせフォームよりご連絡ください。</p>`);
+  });
+  qs("#openTerms").addEventListener("click",e=>{
+    e.preventDefault();
+    open("Terms of Service",
+      `<p>本サイトの情報は現状有姿で提供され、正確性や完全性を保証しません。利用により生じたいかなる損害についても責任を負いません。</p>
+       <p>コンテンツの著作権は特段の明示がない限り晴天想造ENTERTAINMENT.に帰属します。</p>
+       <p>外部サービスの利用には各サービスの規約が適用されます。</p>`);
+  });
+  mask.addEventListener("click",hide);
+  close.addEventListener("click",hide);
+  window.addEventListener("keydown",e=>{if(e.key==="Escape") hide();});
+})();
