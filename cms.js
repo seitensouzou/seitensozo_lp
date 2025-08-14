@@ -1,5 +1,4 @@
-// cms.js  — UMD版。index.html の最後で UMD を読み込んだ“後”に読み込むこと。
-// 必須: window.sanityClient が存在すること
+// cms.js (最終修正版)
 
 // ====== 設定 ======
 const SANITY = {
@@ -20,8 +19,7 @@ const SANITY = {
   console.info("[CMS] client", SANITY.projectId, SANITY.dataset, SANITY.apiVersion);
 
   // ===== ヘルパー =====
-  const qs  = (s, sc=document) => sc.querySelector(s);
-  const qsa = (s, sc=document) => [...sc.querySelectorAll(s)];
+  // app.jsで定義済みの qs, qsa を使うので、ここでは定義しない！
   const safeBR = (t="") => String(t||"").replace(/\n/g,"<br>");
 
   function extractYouTubeId(url="") {
