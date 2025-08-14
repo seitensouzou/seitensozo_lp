@@ -338,9 +338,12 @@
   })();
   </script>
 <!-- Sanity UMD クライアント（先に読み込む） -->
-<script src="https://cdn.jsdelivr.net/npm/@sanity/client@6/dist/sanityClient.umd.min.js"></script>
-<!-- あなたの CMS ロジック（後に読み込む / キャッシュバスター付き） -->
-<script src="./cms.js?v=4"></script>
+<!-- Sanity UMD版クライアントを先に読み込む -->
+<script src="https://cdn.sanity.io/client/v2023-10-01/sanityClient.umd.min.js"></script>
+
+<!-- その後にcms.jsを読み込む -->
+<script src="./cms.js"></script>
+
 
 </body>
 </html>
