@@ -103,16 +103,7 @@ function linksToPillsHtml(links={}){
   return pills ? `<div class="streams mt-4">${pills}</div>` : '';
 }
 
-/** YouTube ID 抽出 */
-function extractYouTubeId(url=''){
-  try{
-    const u = new URL(url);
-    if (u.hostname.includes('youtu.be')) return u.pathname.slice(1);
-    if (u.searchParams.get('v')) return u.searchParams.get('v');
-    const m = u.pathname.match(/\/embed\/([^?/]+)/);
-    return m ? m[1] : '';
-  }catch{ return ''; }
-}
+
 
 /** Models の描画 */
 async function renderModels(){
