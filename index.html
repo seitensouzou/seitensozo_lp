@@ -211,15 +211,15 @@
     <section id="contact" class="section">
       <div class="container">
         <h3 class="font-serif" style="font-size:26px">お問い合わせ</h3>
-        <form class="form mt-4" onsubmit="event.preventDefault(); alert('送信ありがとうございます！（ダミー）'); this.reset();">
-          <div class="row"><label class="small">お名前</label><input class="input" required placeholder="山田 太郎"></div>
-          <div class="row"><label class="small">メールアドレス</label><input class="input" type="email" required placeholder="you@example.com"></div>
+        <form class="form mt-4" action="https://formspree.io/f/manbzwok" method="POST">
+          <div class="row"><label class="small">お名前</label><input class="input" required placeholder="山田 太郎" name="お名前">
+          <div class="row"><label class="small">メールアドレス</label><input class="input" type="email" required placeholder="you@example.com" name="メールアドレス">
           <div class="row wide">
             <span class="small">ご相談区分</span>
-            <label class="small radio"><input type="radio" name="aud" value="個人" checked> 個人</label>
-            <label class="small radio"><input type="radio" name="aud" value="企業・法人"> 企業・法人</label>
+            <label class="small radio"><input type="radio" name="ご相談区分" value="個人" checked> 個人</label>
+            <label class="small radio"><input type="radio" name="ご相談区分" value="企業・法人"> 企業・法人</label>
           </div>
-          <div class="row wide"><label class="small">ご相談内容</label><textarea class="textarea" required placeholder="目的・期日・参考URLなど"></textarea></div>
+          <div class="row wide"><label class="small">ご相談内容</label><textarea class="textarea" required placeholder="目的・期日・参考URLなど" name="メッセージ"></textarea>
           <div class="row wide"><button class="btn">送信する</button></div>
         </form>
       </div>
