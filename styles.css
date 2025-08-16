@@ -192,3 +192,43 @@ body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans JP",
 .modal .x{width:36px;height:36px;border:1px solid #d1d5db;border-radius:999px;display:grid;place-items:center}
 .modal-open .modal-mask{opacity:1;pointer-events:auto}
 .modal-open .modal{opacity:1;transform:translate(-50%,-50%) scale(1)}
+
+/* ===== お問い合わせフォームのスタイル ===== */
+.form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px; /* 行間のスペース */
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.form .row {
+  flex: 1 1 45%; /* 基本的に2列に並ぶようにする */
+  display: flex;
+  flex-direction: column;
+}
+
+.form .row.wide {
+  flex-basis: 100%; /* wideクラスを持つ行は1列（全幅）にする */
+}
+
+.form .input,
+.form .textarea {
+  margin-top: 8px;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.form .radio {
+  display: inline-flex;
+  align-items: center;
+  margin-right: 20px;
+}
+
+.form .btn {
+  width: 100%;
+  justify-content: center;
+}
