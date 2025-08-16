@@ -225,8 +225,11 @@
     <section id="contact" class="section">
   <div class="container">
     <h3 class="font-serif" style="font-size:26px">お問い合わせ</h3>
-        <form class="form mt-4" action="https://formspree.io/f/manbzwok" method="POST">
-        <input type="hidden" name="_subject" value="晴天創造HPより、新しいお問い合わせがありました">
+    
+    <form id="contact-form" class="form mt-4" action="https://formspree.io/f/manbzwok" method="POST">
+      
+      <input type="hidden" name="_subject" value="晴天創造HPより、新しいお問い合わせがありました">
+      
       <div class="row">
         <label for="name" class="small">お名前</label>
         <input id="name" class="input" required placeholder="山田 太郎" name="お名前">
@@ -253,9 +256,10 @@
       <div class="row wide center">
         <button type="submit" class="btn">送信する</button>
       </div>
+      
+      <div id="form-status" style="width: 100%; text-align: center; margin-top: 16px;"></div>
 
     </form>
-
   </div>
 </section>
   </main>
