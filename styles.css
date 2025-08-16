@@ -189,28 +189,33 @@ body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans JP",
 .form {
   display: flex;
   flex-wrap: wrap;
-  gap: 20px; /* 行間のスペース */
-  max-width: 800px;
+  gap: 20px; /* パーツ間のスペース */
+  max-width: 960px;
   margin-left: auto;
   margin-right: auto;
+  padding: 0 20px;
 }
 
-.form .row {
-  flex: 1 1 45%; /* 基本的に2列に並ぶようにする */
+/* 「お名前」と「メールアドレス」の行 */
+.form .row:not(.wide) {
+  flex: 1 1 45%;
   display: flex;
   flex-direction: column;
 }
 
+/* 「ご相談区分」「ご相談内容」「ボタン」の行 */
 .form .row.wide {
-  flex-basis: 100%; /* wideクラスを持つ行は1列（全幅）にする */
+  flex-basis: 100%;
 }
 
-.form .row.wide {
-  flex-basis: 100%; /* wideクラスを持つ行は1列（全幅）にする */
-  flex-direction: row; /* ← この行を追加 */
-  align-items: center;   /* ← この行を追加 */
+/* 「ご相談区分」のラジオボタンを横並びにする */
+.form .row.wide-radio {
+  display: flex;
+  align-items: center;
+  gap: 20px;
 }
 
+/* 入力欄のスタイル */
 .form .input,
 .form .textarea {
   margin-top: 8px;
@@ -220,47 +225,15 @@ body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans JP",
   font-size: 16px;
 }
 
+/* ラジオボタンのスタイル */
 .form .radio {
   display: inline-flex;
   align-items: center;
-  margin-right: 20px;
+  gap: 6px;
 }
 
-.form .radio {
-  display: inline-flex;
-  align-items: center; /* ← この行を追加 */
-  margin-right: 20px;
-}
-
+/* ボタンのスタイル */
 .form .btn {
   width: 100%;
   justify-content: center;
 }
-
-.form .row.wide:nth-child(3) { /* ご相談区分の行 */
-  display: flex;
-  align-items: center; /* ラジオボタンと文字を中央揃え */
-  gap: 20px; /* ラジオボタン間のスペース */
-}
-
-.form .row.wide:not(:nth-child(3)) { /* ご相談区分以外の wide クラス */
-  flex-basis: 100%;
-}
-
-.form .radio {
-  margin-right: 0; /* 個々のラジオボタンのマージンを削除 */
-}
-
-/* ===== お問い合わせフォームのスタイル ===== */
-.form {
-  max-width: 960px; /* ← .containerと同じ幅に設定 */
-  padding: 0 20px;  /* ← .containerと同じ余白に設定 */
-  margin-left: auto;
-  margin-right: auto;
-  
-  /* 以下は変更なし */
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-}
-
