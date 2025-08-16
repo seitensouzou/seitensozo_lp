@@ -169,14 +169,6 @@ body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans JP",
 .news.open .news-panel{max-height:600px;opacity:1;padding-top:10px}
 .news.open .news-toggle{transform:rotate(45deg)}
 
-/* Contact */
-.form{display:grid;gap:12px;grid-template-columns:1fr 1fr}
-.row{display:grid;gap:6px}
-.input,.textarea{border:1px solid #d1d5db;padding:12px 14px;border-radius:12px}
-.textarea{min-height:140px}
-.wide{grid-column:1/-1}
-.radio{display:inline-flex;gap:6px;margin-right:14px}
-@media (max-width:760px){.form{grid-template-columns:1fr}}
 
 /* Footer & modal */
 .footer{border-top:1px solid var(--line);padding:34px 0;color:#6b7280;font-size:14px}
