@@ -168,3 +168,45 @@ if(yearEl) yearEl.textContent = new Date().getFullYear();
     if (e.key === "Escape") hide();
   });
 })();
+
+/* ===== お問い合わせフォームの非同期送信 ===== */
+(() => {
+  const form = qs('#contact-form');
+  const formStatus = qs('#form-status');
+
+  if (!form) return;
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault(); // ページ遷移をキャンセル
+
+    formStatus.textContent = '送信中...';
+    formStatus.style.color = '#666';
+
+    const formData = new FormData(form);
+    
+    try {
+      const response = await fetch(form.action, {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'Accept': 'application/json'
+        }
+      });
+
+      if (response.ok) {
+        formStatus.textContent = 'ありがとうございます。メッセージは正常に送信されました。';
+        formStatus.style.color = '#059669'; // 成功の色（緑）
+        form.reset(); // フォームの中身をリセット
+      } else {
+        // Formspree側でエラーがあった場合
+        formStatus.textContent = '送信に失敗しました。時間をおいて再度お試しください。';
+        formStatus.style.color = '#b91c1c'; // エラーの色（赤）
+      }
+    } catch (error) {
+      // ネットワークエラーなどの場合
+      console.error('Form submission error:', error);
+      formStatus.textContent = '送信に失敗しました。ネットワーク接続を確認してください。';
+      formStatus.style.color = '#b91c1c'; // エラーの色（赤）
+    }
+  });
+})();
