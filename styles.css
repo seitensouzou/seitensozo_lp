@@ -239,3 +239,67 @@ body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans JP",
   align-items: center;
   gap: 6px;
 }
+
+/* ===== お問い合わせフォームのスタイル調整 ===== */
+
+/* フォーム全体のラッパー */
+#contact .container {
+  max-width: 100%; /* containerの幅制限を解除 */
+}
+
+/* フォームの最大幅をNEWSセクション（960px）に合わせる */
+.form {
+  max-width: 960px; /* NEWSセクションの一般的な最大幅に設定 */
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 20px 20px; /* 行と列の隙間を同時に設定 */
+}
+
+/* フォームの各行の基本設定 */
+.form .row {
+  width: 100%;
+  margin-bottom: 0; /* gapで隙間を管理するためリセット */
+}
+
+/* PC表示時（768px以上）に「お名前」と「メールアドレス」を横並びにする */
+@media (min-width: 768px) {
+  .form .row:not(.wide) {
+    width: calc(50% - 10px); /* 隙間を考慮した幅 */
+  }
+}
+
+/* ご相談区分のラジオボタンを横並びに */
+.form .radio-group {
+  display: flex;
+  align-items: center;
+  gap: 24px; /* 項目間のスペース */
+}
+
+/* ラジオボタンとラベルのスタイル */
+.form .radio {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+/* ご相談内容のテキストエリアの高さ */
+.form .textarea {
+  height: 200px;
+  resize: vertical; /* 縦方向のリサイズを許可 */
+}
+
+/* 送信ボタンを中央寄せ */
+.form .row.center {
+  text-align: center;
+}
+
+.form .btn {
+  width: 100%;
+  max-width: 320px; /* ボタンの最大幅を設定 */
+  padding: 14px 22px;
+}
+
