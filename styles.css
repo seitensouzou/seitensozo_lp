@@ -299,7 +299,6 @@ body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans JP",
 
 .form .btn {
   width: 100%;
-  max-width: 320px; /* ボタンの最大幅を設定 */
   padding: 14px 22px;
 }
 
