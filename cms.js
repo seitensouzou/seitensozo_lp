@@ -55,6 +55,7 @@ const qModels = `*[_type == "model"]|order(order asc){
   streams
 }`;
 const qNews = `*[_type == "news"]|order(date desc){_id,title,body,tag,date}`;
+const qGallery = `*[_type == "galleryItem"]|order(order asc){ "imageUrl": image.asset->url, caption }`;
 
 // ===== RENDER FUNCTIONS =====
 async function renderModels() {
@@ -162,6 +163,57 @@ async function renderNews() {
         </article>
       `;
     }).join("");
+
+    async function renderGallery() {
+  const grid = qs('#galleryGrid');
+  if (!grid) return;
+
+  try {
+    const data = await client.fetch(qGallery);
+    if (!data || !data.length) {
+      grid.innerHTML = `<p class="small">まだ写真がありません。</p>`;
+      return;
+    }
+
+    grid.innerHTML = data.map(item => `
+      <a href="${item.imageUrl}" class="gallery-item">
+        <img src="${item.imageUrl}" alt="${item.caption || 'ギャラリー画像'}">
+      </a>
+    `).join('');
+
+    // ポップアップ機能
+    const lightbox = qs('#lightbox');
+    const lightboxImage = qs('#lightboxImage');
+    const lightboxClose = qs('#lightboxClose');
+
+    if (!lightbox) return; // ポップアップ要素がなければ処理を中断
+
+    grid.addEventListener('click', e => {
+      e.preventDefault();
+      const link = e.target.closest('.gallery-item');
+      if (link) {
+        lightboxImage.src = link.href;
+        lightbox.style.display = 'flex';
+      }
+    });
+
+    const closeLightbox = () => {
+      lightbox.style.display = 'none';
+      lightboxImage.src = '';
+    };
+
+    lightboxClose.addEventListener('click', closeLightbox);
+    lightbox.addEventListener('click', e => {
+      if (e.target === lightbox) {
+        closeLightbox();
+      }
+    });
+
+  } catch (err) {
+    console.error("[CMS] gallery fetch error:", err);
+    grid.innerHTML = `<p class="small" style="color:#b91c1c">ギャラリーの読み込みに失敗しました。</p>`;
+  }
+}
 
     // Accordion logic for news
     qsa("#newsList .news").forEach(n => {
