@@ -234,5 +234,5 @@ async function renderNews() {
 
 // ===== 実行 =====
 (async () => {
-  await Promise.all([renderModels(), renderNews()]);
+  await Promise.all([renderModels(), renderNews(), renderGallery()]);
 })();
