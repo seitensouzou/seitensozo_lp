@@ -288,7 +288,7 @@ body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans JP",
 
 /* ご相談内容のテキストエリアの高さ */
 .form .textarea {
-  height: 200px;
+  height: 400px;
   resize: vertical; /* 縦方向のリサイズを許可 */
 }
 
