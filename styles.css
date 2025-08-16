@@ -205,6 +205,12 @@ body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans JP",
   flex-basis: 100%; /* wideクラスを持つ行は1列（全幅）にする */
 }
 
+.form .row.wide {
+  flex-basis: 100%; /* wideクラスを持つ行は1列（全幅）にする */
+  flex-direction: row; /* ← この行を追加 */
+  align-items: center;   /* ← この行を追加 */
+}
+
 .form .input,
 .form .textarea {
   margin-top: 8px;
@@ -217,6 +223,12 @@ body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans JP",
 .form .radio {
   display: inline-flex;
   align-items: center;
+  margin-right: 20px;
+}
+
+.form .radio {
+  display: inline-flex;
+  align-items: center; /* ← この行を追加 */
   margin-right: 20px;
 }
 
