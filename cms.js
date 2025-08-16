@@ -1,4 +1,4 @@
-// cms.js (最終完成版 - スキーマ定義に完全一致)
+// cms.js (ギャラリー動画対応・最終完成版)
 
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@sanity/client@6/+esm';
 import { qs, qsa } from './app.js';
@@ -44,18 +44,9 @@ function linksToPillsHtml(links = []) {
 }
 
 // ===== GROQ =====
-// スキーマ(model.ts)のフィールド名に完全に一致させる
-const qModels = `*[_type == "model"]|order(order asc){
-  _id, 
-  name, 
-  role, 
-  "imageUrl": cover.asset->url,
-  youtube,
-  sections,
-  streams
-}`;
+const qModels = `*[_type == "model"]|order(order asc){_id, name, role, "imageUrl": cover.asset->url, youtube, sections, streams}`;
 const qNews = `*[_type == "news"]|order(date desc){_id,title,body,tag,date}`;
-const qGallery = `*[_type == "galleryItem"]|order(order asc){ "imageUrl": image.asset->url, caption }`;
+const qGallery = `*[_type == "galleryItem"]|order(order asc){ itemType, "imageUrl": image.asset->url, "videoUrl": videoFile.asset->url, caption }`;
 
 // ===== RENDER FUNCTIONS =====
 async function renderModels() {
@@ -63,7 +54,7 @@ async function renderModels() {
   if (!wrap) return;
   try {
     const data = await client.fetch(qModels);
-    console.info("[CMS] models fetched:", data); // データの中身を確認
+    console.info("[CMS] models fetched:", data);
     if (!data || !data.length) {
       wrap.innerHTML = `<p class="small" style="color:#6b7280">公開済みのモデルはまだありません。</p>`;
       return;
@@ -164,57 +155,6 @@ async function renderNews() {
       `;
     }).join("");
 
-    async function renderGallery() {
-  const grid = qs('#galleryGrid');
-  if (!grid) return;
-
-  try {
-    const data = await client.fetch(qGallery);
-    if (!data || !data.length) {
-      grid.innerHTML = `<p class="small">まだ写真がありません。</p>`;
-      return;
-    }
-
-    grid.innerHTML = data.map(item => `
-      <a href="${item.imageUrl}" class="gallery-item">
-        <img src="${item.imageUrl}" alt="${item.caption || 'ギャラリー画像'}">
-      </a>
-    `).join('');
-
-    // ポップアップ機能
-    const lightbox = qs('#lightbox');
-    const lightboxImage = qs('#lightboxImage');
-    const lightboxClose = qs('#lightboxClose');
-
-    if (!lightbox) return; // ポップアップ要素がなければ処理を中断
-
-    grid.addEventListener('click', e => {
-      e.preventDefault();
-      const link = e.target.closest('.gallery-item');
-      if (link) {
-        lightboxImage.src = link.href;
-        lightbox.style.display = 'flex';
-      }
-    });
-
-    const closeLightbox = () => {
-      lightbox.style.display = 'none';
-      lightboxImage.src = '';
-    };
-
-    lightboxClose.addEventListener('click', closeLightbox);
-    lightbox.addEventListener('click', e => {
-      if (e.target === lightbox) {
-        closeLightbox();
-      }
-    });
-
-  } catch (err) {
-    console.error("[CMS] gallery fetch error:", err);
-    grid.innerHTML = `<p class="small" style="color:#b91c1c">ギャラリーの読み込みに失敗しました。</p>`;
-  }
-}
-
     // Accordion logic for news
     qsa("#newsList .news").forEach(n => {
       const head = n.querySelector(".news-head");
@@ -229,6 +169,85 @@ async function renderNews() {
   } catch (e) {
     console.error("[CMS] news fetch error:", e);
     list.innerHTML = "<p class='small' style='color:#b91c1c'>お知らせの読み込みに失敗しました。</p>";
+  }
+}
+
+async function renderGallery() {
+  const grid = qs('#galleryGrid');
+  if (!grid) return;
+
+  try {
+    const data = await client.fetch(qGallery);
+    console.info("[CMS] gallery fetched:", data);
+    if (!data || !data.length) {
+      grid.innerHTML = `<p class="small">まだ作品がありません。</p>`;
+      return;
+    }
+
+    grid.innerHTML = data.map(item => {
+      if (item.itemType === 'video') {
+        return `
+          <a href="${item.videoUrl}" class="gallery-item video-item" data-type="video">
+            <video muted playsinline loop autoplay src="${item.videoUrl}#t=0.1" loading="lazy"></video>
+            <div class="play-icon">▶</div>
+          </a>
+        `;
+      }
+      // デフォルトは画像
+      return `
+        <a href="${item.imageUrl}" class="gallery-item" data-type="image">
+          <img src="${item.imageUrl}" alt="${item.caption || 'ギャラリー画像'}" loading="lazy">
+        </a>
+      `;
+    }).join('');
+
+    // ポップアップ機能
+    const lightbox = qs('#lightbox');
+    const lightboxContent = qs('#lightboxContent');
+    const lightboxClose = qs('#lightboxClose');
+
+    if (!lightbox) return;
+
+    grid.addEventListener('click', e => {
+      e.preventDefault();
+      const link = e.target.closest('.gallery-item');
+      if (link) {
+        const type = link.dataset.type;
+        const url = link.href;
+        
+        lightboxContent.innerHTML = '';
+
+        if (type === 'video') {
+          const video = document.createElement('video');
+          video.src = url;
+          video.controls = true;
+          video.autoplay = true;
+          lightboxContent.appendChild(video);
+        } else {
+          const img = document.createElement('img');
+          img.src = url;
+          lightboxContent.appendChild(img);
+        }
+        
+        lightbox.style.display = 'flex';
+      }
+    });
+
+    const closeLightbox = () => {
+      lightbox.style.display = 'none';
+      lightboxContent.innerHTML = '';
+    };
+
+    lightboxClose.addEventListener('click', closeLightbox);
+    lightbox.addEventListener('click', e => {
+      if (e.target === lightbox) {
+        closeLightbox();
+      }
+    });
+
+  } catch (err) {
+    console.error("[CMS] gallery fetch error:", err);
+    grid.innerHTML = `<p class="small" style="color:#b91c1c">ギャラリーの読み込みに失敗しました。</p>`;
   }
 }
 
