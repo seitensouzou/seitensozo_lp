@@ -232,3 +232,31 @@ body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans JP",
   width: 100%;
   justify-content: center;
 }
+
+.form .row.wide:nth-child(3) { /* ご相談区分の行 */
+  display: flex;
+  align-items: center; /* ラジオボタンと文字を中央揃え */
+  gap: 20px; /* ラジオボタン間のスペース */
+}
+
+.form .row.wide:not(:nth-child(3)) { /* ご相談区分以外の wide クラス */
+  flex-basis: 100%;
+}
+
+.form .radio {
+  margin-right: 0; /* 個々のラジオボタンのマージンを削除 */
+}
+
+/* ===== お問い合わせフォームのスタイル ===== */
+.form {
+  max-width: 960px; /* ← .containerと同じ幅に設定 */
+  padding: 0 20px;  /* ← .containerと同じ余白に設定 */
+  margin-left: auto;
+  margin-right: auto;
+  
+  /* 以下は変更なし */
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
