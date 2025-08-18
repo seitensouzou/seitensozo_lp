@@ -229,3 +229,8 @@ body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans JP",
 body > .skiptranslate {
   display: none !important;
 }
+
+/* "Powered by Google"のテキストを非表示にする */
+#google_translate_element .goog-te-gadget {
+  font-size: 0 !important;
+}
