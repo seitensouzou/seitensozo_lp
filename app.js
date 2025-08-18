@@ -258,7 +258,7 @@ if (window.particlesJS) {
       "events": {
         "onhover": {
           "enable": true,
-          "mode": "grab" // カーソルを合わせると線を掴む
+          "mode": "bubble" // カーソルを合わせると線を掴む
         },
         "onclick": {
           "enable": true,
