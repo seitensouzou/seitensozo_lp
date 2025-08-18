@@ -239,3 +239,13 @@ body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans JP",
 body > .skiptranslate {
   display: none !important;
 }
+
+/* "翻訳" の文字を非表示にする */
+.goog-te-gadget-simple .goog-te-menu-value span {
+  display: none;
+}
+
+/* Googleのロゴアイコンを非表示にする */
+.goog-te-gadget-simple .goog-te-gadget-icon {
+  display: none !important;
+}
