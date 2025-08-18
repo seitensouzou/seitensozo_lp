@@ -1,6 +1,6 @@
 /* Base */
 *{box-sizing:border-box}
-html,body{margin:0;padding:0}
+html,body{margin:0;padding:0; scroll-behavior: smooth;}
 img,video{max-width:100%;display:block}
 button{appearance:none;background:none;border:none;padding:0;cursor:pointer}
 a{text-decoration:none;color:inherit}
@@ -11,7 +11,7 @@ a{text-decoration:none;color:inherit}
 }
 body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans JP",Helvetica,Arial;color:var(--ink);background:#fff;line-height:1.65}
 .font-serif{font-family:"Noto Serif JP",serif}
-.container{width:min(1400px,92vw);margin-inline:auto}
+.container{width:min(1100px,92vw);margin-inline:auto}
 .kicker{letter-spacing:.18em;font-variant-caps:all-small-caps}
 .small{font-size:13px;color:var(--muted)}
 .mt-2{margin-top:.5rem}.mt-3{margin-top:.75rem}.mt-4{margin-top:1rem}
@@ -52,7 +52,9 @@ body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans JP",
 .feature-lead{font-size:17px}
 .feature-cols{display:grid;grid-template-columns:1fr 1fr;gap:20px}
 .feature-title{font-size:16px}
-.feature-list{margin:.5rem 0 0 1rem}
+.feature-list{margin:.5rem 0 0 1rem; padding-left: 0;}
+.feature-list li { list-style-type: disc; margin-left: 20px;}
+
 
 /* CF */
 .cf{padding:60px 20px}
@@ -63,8 +65,8 @@ body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans JP",
 .progress>i{display:block;height:100%;width:0;background:var(--pink)}
 .cf .meta{display:flex;justify-content:space-between;align-items:flex-end;margin-top:10px}
 .cf-now{font-weight:700}
-.btn{background:#111;color:#fff;border-radius:999px;padding:14px 22px;font-weight:700}
-/* ボタンを要素幅のまま中央寄せ */
+.btn{background:#111;color:#fff;border-radius:999px;padding:14px 22px;font-weight:700; border: 1px solid #111; transition: all .2s;}
+.btn:hover { background: #fff; color: #111;}
 .btn.centered{
   display:block;
   width:fit-content;
@@ -83,8 +85,6 @@ body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans JP",
 .acc.open .panel{max-height:1200px;opacity:1;padding-top:18px}
 .acc.open .plus{transform:rotate(45deg)}
 .panel-body{max-width:840px;margin-inline:auto}
-
-/* 4本柱を枠付きカードに */
 .pillars{display:grid;gap:14px;grid-template-columns:repeat(2,1fr)}
 .pillar{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px;box-shadow:0 6px 20px rgba(0,0,0,.04)}
 @media (max-width:680px){.pillars{grid-template-columns:1fr}}
@@ -104,55 +104,48 @@ body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans JP",
 .card .openbtn{width:40px;height:40px;border-radius:999px;display:grid;place-items:center;background:rgba(255,255,255,.22);backdrop-filter:blur(4px);color:#fff;font-size:22px}
 .card .close{position:absolute;right:12px;top:12px;width:40px;height:40px;border:1px solid #d1d5db;border-radius:999px;font-size:22px;display:grid;place-items:center;background:#fff;z-index:2}
 .back-inner{position:absolute;inset:0;padding:18px;display:flex;flex-direction:column;overflow-y:auto}
-
-/* プロフィールも枠付きカードで整える */
-.profile{display:grid;gap:10px;grid-template-columns:1fr 1fr}
-.profile .sect{border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:#fff;box-shadow:0 6px 18px rgba(0,0,0,.04)}
-.profile .sect h5{margin:0 0 4px 0;font-size:12px;letter-spacing:.08em;color:#555}
-@media (max-width:860px){.models .cards{grid-template-columns:1fr}}
-@media (max-width:520px){.profile{grid-template-columns:1fr}}
-.profile.grid{
-  display:grid; gap:14px;
-  grid-template-columns:repeat(2,minmax(0,1fr));
-  margin-top:12px;
-}
+.profile.grid{display:grid; gap:14px; grid-template-columns:repeat(2,minmax(0,1fr)); margin-top:12px;}
 @media (max-width:680px){ .profile.grid{ grid-template-columns:1fr; } }
-.profile .carded{
-  background:#fff; border:1px solid var(--line);
-  border-radius:12px; padding:14px;
-}
+.profile .carded{ background:#fff; border:1px solid var(--line); border-radius:12px; padding:14px;}
 .profile .carded h5{ font-family:"Noto Serif JP",serif; font-size:15px; margin:0 0 6px; }
 .profile .carded p{ margin:0; font-size:13px; color:#444; }
 .streams .pill{ display:inline-block; color:#fff; font-size:12px; padding:8px 10px; border-radius:999px; font-weight:600; margin:8px 8px 0 0; }
 .yt{ margin-top:12px; }
-
-
-.streams{margin-top:auto;display:flex;gap:8px;flex-wrap:wrap}
-.streams a{color:#fff;font-size:12px;padding:8px 10px;border-radius:999px;font-weight:600}
 .yt iframe{border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,.12)}
-/* クリック安定化 */
 .flip .back{pointer-events:none}
 .flip.open .back{pointer-events:auto}
 .flip.open .front{pointer-events:none}
-/* Models クリック優先度の調整 */
-.card .meta { pointer-events: none; }         /* 見出し帯はクリックを通す */
-.card .openbtn,
-.card .close { pointer-events: auto; z-index: 5; }  /* ボタンは確実に受け取る */
+.card .meta { pointer-events: none; }
+.card .openbtn, .card .close { pointer-events: auto; z-index: 5; }
+@media (max-width:860px){.models .cards{grid-template-columns:1fr}}
 
+/* Gallery Styles */
+.gallery-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; }
+.gallery-item { display: block; aspect-ratio: 1 / 1; border-radius: 8px; overflow: hidden; position: relative; transition: transform 0.2s; }
+.gallery-item:hover { transform: scale(1.05); }
+.gallery-item img, .gallery-item video { width: 100%; height: 100%; object-fit: cover; }
+.gallery-item.video-item { background-color: #000; display: flex; justify-content: center; align-items: center; }
+.gallery-item .play-icon { position: absolute; font-size: 30px; color: white; background-color: rgba(0,0,0,0.3); width: 50px; height: 50px; border-radius: 50%; display: grid; place-items: center; pointer-events: none; }
+@media (max-width: 768px) { .gallery-grid { grid-template-columns: repeat(3, 1fr); } }
+
+/* Lightbox Styles */
+.lightbox { position: fixed; inset: 0; background-color: rgba(0, 0, 0, 0.85); display: flex; justify-content: center; align-items: center; z-index: 1000; }
+.lightbox-content { position: relative; max-width: 90vw; max-height: 90vh; display: flex; justify-content: center; align-items: center; }
+.lightbox-content img, .lightbox-content video { max-width: 100%; max-height: 100%; display: block; box-shadow: 0 0 50px rgba(0,0,0,0.5); }
+.lightbox-close { position: absolute; top: 20px; right: 30px; font-size: 40px; color: white; background: none; border: none; cursor: pointer; }
 
 /* Services */
-.services .grid{display:grid;gap:26px;grid-template-columns:repeat(2,1fr)}
-.svc-item{border-top:1px solid var(--line);padding-top:14px}
-.svc-head{display:flex;gap:12px;align-items:flex-start;justify-content:space-between}
+.services .grid{display:grid;gap:14px;grid-template-columns:repeat(2,1fr)}
+.svc-item{border-top:1px solid var(--line);padding:20px 0}
+.svc-head{display:flex;gap:12px;align-items:flex-start;justify-content:space-between; cursor: pointer;}
 .svc-left{display:flex;gap:10px;align-items:flex-start}
 .svc-icon{width:24px;height:24px;flex:0 0 24px}
 .svc-title{font-family:"Noto Serif JP",serif;font-size:18px}
-.svc-toggle{font-size:22px}
+.svc-toggle{font-size:22px; transition: transform .25s;}
 .svc-panel{overflow:hidden;max-height:0;opacity:0;transition:max-height .45s cubic-bezier(.2,.7,0,1),opacity .45s cubic-bezier(.2,.7,0,1),padding .45s cubic-bezier(.2,.7,0,1)}
 .svc-item.open .svc-panel{max-height:800px;opacity:1;padding-top:12px}
+.svc-item.open .svc-toggle { transform: rotate(45deg); }
 @media (max-width:860px){.services .grid{grid-template-columns:1fr}}
-/* 見出し下線の打消し（万一HTML側に残っても無効化） */
-.services h3{border-bottom:0!important;padding-bottom:0!important}
 
 /* News */
 .newslist{border-top:1px solid var(--line)}
@@ -163,19 +156,28 @@ body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans JP",
 .badges{display:flex;gap:6px}
 .badge{color:#fff;font-size:11px;letter-spacing:.08em;padding:4px 8px;border-radius:999px;display:inline-block}
 .badge.press{background:var(--cat-press)}.badge.music{background:var(--cat-music)}.badge.project{background:var(--cat-proj)}
-.news-title{font-family:"Noto Serif JP",serif;font-size:16px;margin-top:0;text-align:left} /* ←左揃え維持 */
-.news-toggle{font-size:20px}
+.news-title{font-family:"Noto Serif JP",serif;font-size:16px;margin-top:0;text-align:left}
+.news-toggle{font-size:20px; transition: transform .25s;}
 .news-panel{overflow:hidden;max-height:0;opacity:0;transition:max-height .35s cubic-bezier(.2,.7,0,1),opacity .35s cubic-bezier(.2,.7,0,1),padding .35s cubic-bezier(.2,.7,0,1)}
 .news.open .news-panel{max-height:600px;opacity:1;padding-top:10px}
 .news.open .news-toggle{transform:rotate(45deg)}
 
+/* Contact Form */
+.form { display: flex; flex-wrap: wrap; justify-content: space-between; max-width: 960px; margin-left: auto; margin-right: auto; padding: 0 20px; }
+.form .row { width: calc(50% - 10px); display: flex; flex-direction: column; margin-bottom: 20px; }
+.form .row.wide { width: 100%; }
+.form .row.radio-group { flex-direction: row; align-items: center; gap: 20px; }
+.form label.small, .form span.small { margin-bottom: 8px; color: var(--muted); font-size: 13px; }
+.form .input, .form .textarea { padding: 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 16px; width: 100%; }
+.form .radio { display: inline-flex; align-items: center; gap: 6px; }
+.form .textarea {min-height: 140px;}
 
 /* Footer & modal */
 .footer{border-top:1px solid var(--line);padding:34px 0;color:#6b7280;font-size:14px}
-.fbar{display:grid;gap:16px;grid-template-columns:1fr auto;align-items:center}
-.fnav{display:flex;gap:28px;flex-wrap:wrap;justify-content:flex-end}
-.fcopy{grid-column:1/-1;display:flex;justify-content:space-between;gap:12px}
-@media (max-width:760px){.fbar{grid-template-columns:1fr}.fnav{justify-content:flex-start}}
+.fbar{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px;}
+.fnav{display:flex;gap:28px;flex-wrap:wrap;}
+.fcopy{width:100%;margin-top:20px;}
+@media (max-width:760px){.fbar{flex-direction:column;align-items:flex-start;}}
 
 .modal-mask{position:fixed;inset:0;background:rgba(0,0,0,.45);opacity:0;pointer-events:none;transition:opacity .25s;z-index:70}
 .modal{position:fixed;inset:50% auto auto 50%;transform:translate(-50%,-48%) scale(.98);transition:transform .25s,opacity .25s;opacity:0;z-index:71;background:#fff;border-radius:16px;box-shadow:0 40px 120px rgba(0,0,0,.2);width:min(680px,92vw)}
@@ -185,221 +187,10 @@ body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans JP",
 .modal-open .modal-mask{opacity:1;pointer-events:auto}
 .modal-open .modal{opacity:1;transform:translate(-50%,-50%) scale(1)}
 
-/* ===== お問い合わせフォームのスタイル ===== */
-
-/* フォーム全体のラッパーコンテナの調整 */
-#contact .container {
-  /* 親コンテナの幅制限を解除して、フォーム側で幅を制御できるようにする */
-  max-width: 100%;
-}
-
-/* フォーム全体のレイアウト設定 */
-.form {
-  /* フォームの最大幅を960pxに設定し、中央に配置 */
-  max-width: 960px;
-  margin-left: auto;
-  margin-right: auto;
-  padding: 0 20px; /* 画面幅が狭いときのための左右の余白 */
-
-  /* Flexboxを使って内部要素を配置 */
-  display: flex;
-  flex-wrap: wrap;
-  /* 要素間の隙間を設定（上下20px、左右20px） */
-  gap: 20px;
-}
-
-/* フォーム内の各行（row）の基本設定 */
-.form .row {
-  width: 100%; /* 基本は全幅 */
-  display: flex;
-  flex-direction: column;
-}
-
-/* PC表示時（画面幅768px以上）のレイアウト調整 */
-@media (min-width: 768px) {
-  /* .wideクラスが付いていない行（お名前、メールアドレス）を横並びにする */
-  .form .row:not(.wide) {
-    width: calc(50% - 10px); /* 全体の半分から隙間分を引いた幅 */
-  }
-}
-
-/* ラベル（「お名前」など）のスタイル */
-.form label.small, .form span.small {
-  margin-bottom: 8px;
-  color: var(--muted);
-  font-size: 13px;
-}
-
-/* 入力欄（input, textarea）共通のスタイル */
-.form .input,
-.form .textarea {
-  padding: 12px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 16px;
-  width: 100%;
-}
-
-/* ご相談内容（textarea）の高さ調整 */
-.form .textarea {
-  height: 400px;    /* 高さを400pxに設定 */
-  resize: vertical; /* 縦方向のみリサイズ可能に */
-}
-
-/* ご相談区分のラジオボタンのグループ */
-.form .radio-group {
-  display: flex;
-  flex-direction: row; /* 横並びに */
-  align-items: center;
-  gap: 24px; /* 各ボタンの間隔 */
-}
-
-/* 個々のラジオボタンとラベル */
-.form .radio {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  cursor: pointer;
-}
-
-/* 送信ボタンのスタイル */
-.form .btn {
-  width: 100%; /* 幅を100%に設定 */
-  /* max-width は指定しないことで、常に親要素いっぱいに広がる */
-  padding: 16px 22px; /* 少し高さを出して見栄えを調整 */
-  font-size: 16px;
-}
-
-/* ===== Gallery Styles ===== */
-.gallery-grid {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr); /* 横に5つ並べる */
-  gap: 16px;
-}
-
-.gallery-item {
-  display: block;
-  aspect-ratio: 1 / 1; /* 画像を正方形にする */
-  border-radius: 8px;
-  overflow: hidden;
-  position: relative;
-  transition: transform 0.2s;
-}
-
-.gallery-item:hover {
-  transform: scale(1.05);
-}
-
-.gallery-item img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover; /* 画像の比率を保ったままトリミング */
-}
-
-/* ポップアップ（ライトボックス）のスタイル */
-.lightbox {
-  position: fixed;
-  inset: 0;
-  background-color: rgba(0, 0, 0, 0.85);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-.lightbox img {
-  max-width: 90vw;
-  max-height: 90vh;
-  box-shadow: 0 0 50px rgba(0,0,0,0.5);
-}
-
-.lightbox-close {
-  position: absolute;
-  top: 20px;
-  right: 30px;
-  font-size: 40px;
-  color: white;
-  background: none;
-  border: none;
-  cursor: pointer;
-}
-
-/* 画面が小さいときは3列にする */
-@media (max-width: 768px) {
-  .gallery-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-/* ===== Gallery Styles (動画対応) ===== */
-.gallery-item.video-item {
-  background-color: #000;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.gallery-item.video-item video {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.gallery-item .play-icon {
-  position: absolute;
-  font-size: 30px;
-  color: white;
-  background-color: rgba(0,0,0,0.3);
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  pointer-events: none; /* アイコンがクリックの邪魔をしないように */
-}
-
-/* ポップアップ（ライトボックス）のスタイル修正 */
-.lightbox-content {
-  position: relative;
-  max-width: 90vw;
-  max-height: 90vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.lightbox-content img,
-.lightbox-content video {
-  max-width: 100%;
-  max-height: 100%;
-  display: block;
-  box-shadow: 0 0 50px rgba(0,0,0,0.5);
-}
-
-/* ===== Google Translate Widget Style ===== */
-
-/* ドロップダウン全体のデザイン */
-.goog-te-combo {
-  border: 1px solid #ccc; /* 枠線の色 */
-  border-radius: 4px;      /* 角の丸み */
-  padding: 8px;            /* 内側の余白 */
-  font-family: inherit;    /* サイトと同じフォントを使う */
-  color: var(--muted);     /* 文字色 */
-  background-color: #fff;  /* 背景色 */
-}
-
-/* Googleのロゴを非表示にする */
-.goog-logo-link {
-  display: none !important;
-}
-
-.goog-te-gadget {
-  font-size: 0 !important; /* "Powered by"の文字を非表示に */
-  color: transparent !important;
-}
-
-.skiptranslate {
-  display: none !important;
-  position: absolute;
-  top: 0;
-}
+/* Google Translate Widget */
+.translation-bar { padding: 16px 0; background-color: #f8f9fa; border-top: 1px solid var(--line); display: flex; justify-content: flex-end; }
+.goog-te-gadget-simple { display: inline-block; border: 1px solid #ccc; border-radius: 4px; background-color: #fff; padding: 4px; }
+.goog-te-combo { padding: 8px; border: none; background-color: transparent; font-family: inherit; color: var(--muted); cursor: pointer; }
+.goog-logo-link, .goog-te-gadget-icon { display: none !important; }
+.goog-te-banner-frame.skiptranslate { display: none !important; }
+body > .skiptranslate { display: none !important; }
