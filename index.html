@@ -272,6 +272,7 @@
         <a href="#services">Services</a><a href="#news">News</a><a href="#contact">Contact</a>
         <a href="#" id="openPrivacy">Privacy</a><a href="#" id="openTerms">Terms</a>
       </nav>
+      <div id="google_translate_element"></div>
       <div class="fcopy">
         <p class="small">© <span id="year"></span> Seiten Souzou ENTERTAINMENT. All rights reserved.</p>
       </div>
@@ -287,6 +288,12 @@
   
 <script type="module" src="./app.js"></script>
     <script type="module" src="./cms.js"></script>
+  <script type="text/javascript">
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement({pageLanguage: 'ja'}, 'google_translate_element');
+    }
+  </script>
+  <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
 </body>
 </html>
