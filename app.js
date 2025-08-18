@@ -258,7 +258,7 @@ if (window.particlesJS) {
       "events": {
         "onhover": {
           "enable": true,
-          "mode": "bubble" // カーソルを合わせると線を掴む
+          "mode": "repulse" // カーソルが近づくとパーティクルが逃げる
         },
         "onclick": {
           "enable": true,
