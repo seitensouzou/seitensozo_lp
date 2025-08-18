@@ -187,9 +187,9 @@ body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans JP",
 .modal-open .modal-mask{opacity:1;pointer-events:auto}
 .modal-open .modal{opacity:1;transform:translate(-50%,-50%) scale(1)}
 
-/* ===== Google Translate Widget Style (最終版) ===== */
+/* ===== Google Translate Widget Style (最終・完全版) ===== */
 
-/* 翻訳ウィジェットを配置するバー */
+/* ウィジェットを配置するバー */
 .translation-bar {
   padding: 16px 0;
   background-color: #f8f9fa;
@@ -197,55 +197,49 @@ body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans JP",
 }
 .translation-bar .container {
   display: flex;
-  justify-content: flex-end; /* 右寄せにする */
+  justify-content: flex-end;
 }
 
 /* ウィジェット本体のコンテナ */
 .goog-te-gadget-simple {
-  background-color: transparent !important;
+  background: none !important;
   border: none !important;
 }
 
 /* 言語選択のドロップダウンメニュー */
 .goog-te-combo {
   padding: 8px 12px;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  background-color: #fff;
-  font-family: inherit;
-  color: var(--muted);
+  border: 1px solid var(--line) !important;
+  border-radius: 999px !important;
+  background-color: #fff !important;
+  font-family: inherit !important;
+  color: var(--muted) !important;
   cursor: pointer;
-  appearance: none;
-  -webkit-appearance: none;
+  appearance: none !important;
+  -webkit-appearance: none !important;
 }
 
-/* ▼▼▼ Googleのロゴとクレジットを強制的に非表示にする ▼▼▼ */
-.goog-logo-link,
-.goog-te-gadget-icon {
+/* "Powered by Google 翻訳" のテキストとロゴをすべて非表示にする */
+.goog-te-gadget-simple span,
+.goog-te-gadget-simple .goog-te-gadget-icon,
+.goog-logo-link {
   display: none !important;
-  visibility: hidden !important;
-  width: 0px !important;
-  height: 0px !important;
-  margin: 0 !important;
-  padding: 0 !important;
 }
-.goog-te-gadget {
-  font-size: 0 !important;
-  color: transparent !important;
+
+/* ドロップダウンメニューの前に「言語を選択」というテキストを表示させる */
+.goog-te-gadget-simple::before {
+  content: "言語を選択";
+  font-size: 14px;
+  color: var(--muted);
+  margin-right: 8px;
+  vertical-align: middle;
 }
-.goog-te-banner-frame.skiptranslate {
-  display: none !important;
-} 
+
+/* 翻訳後の上部バナーを非表示にする */
+.goog-te-banner-frame.skiptranslate,
 body > .skiptranslate {
   display: none !important;
 }
-
-/* "翻訳" の文字を非表示にする */
-.goog-te-gadget-simple .goog-te-menu-value span {
-  display: none;
-}
-
-/* Googleのロゴアイコンを非表示にする */
-.goog-te-gadget-simple .goog-te-gadget-icon {
-  display: none !important;
+body {
+  top: 0px !important;
 }
