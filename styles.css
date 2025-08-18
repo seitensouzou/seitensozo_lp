@@ -188,7 +188,7 @@ body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans JP",
 .modal-open .modal{opacity:1;transform:translate(-50%,-50%) scale(1)}
 
 /* Google Translate Widget */
-.translation-bar { padding: 16px 0; background-color: #f8f9fa; border-top: 1px solid var(--line); display: flex; justify-content: flex-end; }
+.translation-bar { padding: 16px 0; background-color: #fff; border-top: 1px solid var(--line); display: flex; justify-content: flex-end; }
 .goog-te-gadget-simple { display: inline-block; border: 1px solid #ccc; border-radius: 4px; background-color: #fff; padding: 4px; }
 .goog-te-combo { padding: 8px; border: none; background-color: transparent; font-family: inherit; color: var(--muted); cursor: pointer; }
 .goog-logo-link, .goog-te-gadget-icon { display: none !important; }
