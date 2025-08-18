@@ -235,12 +235,10 @@
             <label for="email" class="small">メールアドレス</label>
             <input id="email" class="input" type="email" required placeholder="you@example.com" name="メールアドレス">
           </div>
-          <div class="row wide">
+          <div class="row wide radio-group">
             <span class="small">ご相談区分</span>
-            <div class="radio-group mt-2">
-              <label class="small radio"><input type="radio" name="ご相談区分" value="個人" checked> 個人</label>
-              <label class="small radio"><input type="radio" name="ご相談区分" value="企業・法人"> 企業・法人</label>
-            </div>
+            <label class="small radio"><input type="radio" name="ご相談区分" value="個人" checked> 個人</label>
+            <label class="small radio"><input type="radio" name="ご相談区分" value="企業・法人"> 企業・法人</label>
           </div>
           <div class="row wide">
             <label for="message" class="small">ご相談内容</label>
@@ -254,12 +252,6 @@
       </div>
     </section>
   </main>
-
-  <div class="translation-bar">
-    <div class="container">
-      <div id="google_translate_element"></div>
-    </div>
-  </div>
 
   <footer class="footer">
     <div class="container fbar">
@@ -288,12 +280,6 @@
 
   <script type="module" src="./app.js"></script>
   <script type="module" src="./cms.js"></script>
-  <script type="text/javascript">
-    function googleTranslateElementInit() {
-      new google.translate.TranslateElement({pageLanguage: 'ja'}, 'google_translate_element');
-    }
-  </script>
-  <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
 </body>
 </html>
