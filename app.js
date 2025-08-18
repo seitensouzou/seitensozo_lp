@@ -210,3 +210,72 @@ if(yearEl) yearEl.textContent = new Date().getFullYear();
     }
   });
 })();
+
+/* ===== マウス追従エフェクト (particles.js) ===== */
+if (window.particlesJS) {
+  particlesJS("particles-js", {
+    "particles": {
+      "number": {
+        "value": 80, // パーティクルの数
+        "density": {
+          "enable": true,
+          "value_area": 800
+        }
+      },
+      "color": {
+        "value": "#cccccc" // パーティクルの色
+      },
+      "shape": {
+        "type": "circle", // 形（円）
+      },
+      "opacity": {
+        "value": 0.5,
+        "random": false,
+      },
+      "size": {
+        "value": 3,
+        "random": true,
+      },
+      "line_linked": {
+        "enable": true,
+        "distance": 150, // 線で繋がる距離
+        "color": "#cccccc", // 線の色
+        "opacity": 0.4,
+        "width": 1
+      },
+      "move": {
+        "enable": true,
+        "speed": 2, // 動きの速さ
+        "direction": "none",
+        "random": false,
+        "straight": false,
+        "out_mode": "out",
+        "bounce": false,
+      }
+    },
+    "interactivity": {
+      "detect_on": "canvas",
+      "events": {
+        "onhover": {
+          "enable": true,
+          "mode": "grab" // カーソルを合わせると線を掴む
+        },
+        "onclick": {
+          "enable": true,
+          "mode": "push" // クリックするとパーティクルを追加
+        },
+        "resize": true
+      },
+      "modes": {
+        "grab": {
+          "distance": 140,
+          "line_opacity": 1
+        },
+        "push": {
+          "particles_nb": 4
+        }
+      }
+    },
+    "retina_detect": true
+  });
+}
