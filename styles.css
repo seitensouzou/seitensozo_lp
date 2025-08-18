@@ -185,3 +185,14 @@ body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans JP",
 .modal .x{width:36px;height:36px;border:1px solid #d1d5db;border-radius:999px;display:grid;place-items:center}
 .modal-open .modal-mask{opacity:1;pointer-events:auto}
 .modal-open .modal{opacity:1;transform:translate(-50%,-50%) scale(1)}
+
+/* ===== Particle Effect Style ===== */
+#particles-js {
+  position: fixed; /* 画面に固定 */
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: -1; /* 他のコンテンツの背面に配置 */
+  background-color: #ffffff; /* 背景色 */
+}
