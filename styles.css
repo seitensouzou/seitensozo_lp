@@ -189,7 +189,12 @@ body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans JP",
 
 /* ===== Google Translate Widget Style (最終版) ===== */
 
-/* 翻訳ウィジェットを配置するバーのコンテナ */
+/* 翻訳ウィジェットを配置するバー */
+.translation-bar {
+  padding: 16px 0;
+  background-color: #f8f9fa;
+  border-top: 1px solid var(--line);
+}
 .translation-bar .container {
   display: flex;
   justify-content: flex-end; /* 右寄せにする */
@@ -197,40 +202,40 @@ body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans JP",
 
 /* ウィジェット本体のコンテナ */
 .goog-te-gadget-simple {
-  background-color: transparent !important; /* 背景を透明に */
-  border: none !important; /* 枠線を消す */
-  font-size: 14px !important;
-  line-height: 1.5 !important;
-  display: inline-block;
-  cursor: pointer;
+  background-color: transparent !important;
+  border: none !important;
 }
 
 /* 言語選択のドロップダウンメニュー */
 .goog-te-combo {
   padding: 8px 12px;
-  border: 1px solid var(--line); /* 枠線 */
-  border-radius: 999px; /* 角を丸くしてボタン風に */
-  background-color: #fff; /* 背景色 */
-  font-family: inherit; /* サイトと同じフォント */
-  color: var(--muted);  /* 文字色 */
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background-color: #fff;
+  font-family: inherit;
+  color: var(--muted);
   cursor: pointer;
   appearance: none;
-  -webkit-appearance: none; /* 標準の矢印を消す */
+  -webkit-appearance: none;
 }
 
-/* Googleのロゴや不要な要素を非表示にする */
+/* ▼▼▼ Googleのロゴとクレジットを強制的に非表示にする ▼▼▼ */
 .goog-logo-link,
 .goog-te-gadget-icon {
   display: none !important;
+  visibility: hidden !important;
+  width: 0px !important;
+  height: 0px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+.goog-te-gadget {
+  font-size: 0 !important;
+  color: transparent !important;
 }
 .goog-te-banner-frame.skiptranslate {
   display: none !important;
 } 
 body > .skiptranslate {
   display: none !important;
-}
-
-/* "Powered by Google"のテキストを非表示にする */
-#google_translate_element .goog-te-gadget {
-  font-size: 0 !important;
 }
