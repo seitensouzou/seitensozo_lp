@@ -119,7 +119,7 @@ body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans JP",
 @media (max-width:860px){.models .cards{grid-template-columns:1fr}}
 
 /* Gallery Styles */
-.gallery-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; }
+.gallery-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; }
 .gallery-item { display: block; aspect-ratio: 1 / 1; border-radius: 8px; overflow: hidden; position: relative; transition: transform 0.2s; }
 .gallery-item:hover { transform: scale(1.05); }
 .gallery-item img, .gallery-item video { width: 100%; height: 100%; object-fit: cover; }
