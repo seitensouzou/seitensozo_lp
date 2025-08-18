@@ -375,3 +375,33 @@ body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans JP",
   display: block;
   box-shadow: 0 0 50px rgba(0,0,0,0.5);
 }
+
+/* ===== Google Translate Widget Style ===== */
+
+/* ドロップダウン全体のデザイン */
+.goog-te-combo {
+  border: 1px solid #ccc; /* 枠線の色 */
+  border-radius: 4px;      /* 角の丸み */
+  padding: 8px;            /* 内側の余白 */
+  font-family: inherit;    /* サイトと同じフォントを使う */
+  color: var(--muted);     /* 文字色 */
+  background-color: #fff;  /* 背景色 */
+}
+
+/* Googleのロゴを非表示にする */
+.goog-logo-link {
+  display: none !important;
+}
+
+.goog-te-gadget {
+  font-size: 0 !important; /* "Powered by"の文字を非表示に */
+  color: transparent !important;
+}
+
+/* 翻訳後の上部フレームを非表示にする */
+body {
+  top: 0px !important; 
+}
+.skiptranslate {
+  display: none !important;
+}
