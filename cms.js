@@ -60,13 +60,23 @@ async function renderModels() {
       return;
     }
     wrap.innerHTML = data.map(m => {
-      const cover = m.imageUrl || "https://placehold.co/800x1000/E0E0E0/333?text=MODEL";
+      let coverElement = `<img src="https://placehold.co/800x1000/E0E0E0/333?text=MODEL" alt="${m.name || ''}" class="cover">`;
+      
+      // ▼▼▼ 修正点1: videoタグから `autoplay` を削除 ▼▼▼
+      if (m.coverType === 'video' && m.videoUrl) {
+        // `autoplay`を削除し、`muted loop playsinline`のみにする
+        coverElement = `<video src="${m.videoUrl}" muted loop playsinline class="cover"></video>`;
+      } else if (m.imageUrl) {
+        coverElement = `<img src="${m.imageUrl}" alt="${m.name || ''}" class="cover">`;
+      }
+
       const yt = extractYouTubeId(m.youtube || "");
+      
       return `
         <article class="card flip" data-card>
           <div class="wrap3d">
             <div class="face front">
-              <img src="${cover}" alt="${m.name || ''}" class="cover">
+              ${coverElement}
               <div class="meta">
                 <div>
                   <div class="font-serif" style="font-size:20px">${m.name || ''}</div>
@@ -101,6 +111,46 @@ async function renderModels() {
         </article>
       `;
     }).join("");
+
+    // Flip card logicは変更なし
+    const cards = qsa('#modelsCards [data-card]');
+    const closeAll = (except) => cards.forEach(c => { if (c !== except) c.classList.remove('open'); });
+    cards.forEach(card => {
+      card.addEventListener('click', (e) => {
+        const openBtn = e.target.closest('.openbtn');
+        const closeBtn = e.target.closest('.close');
+        if (openBtn) {
+          const isOpen = card.classList.contains('open');
+          closeAll(card);
+          if (!isOpen) card.classList.add('open');
+          return;
+        }
+        if (closeBtn) { card.classList.remove('open'); return; }
+      }, { passive: true });
+    });
+
+    // ▼▼▼ 修正点2: ホバーで動画を再生/停止するロジックを追加 ▼▼▼
+    const modelCards = qsa('#modelsCards .card');
+    modelCards.forEach(card => {
+      const video = card.querySelector('video.cover');
+      if (video) {
+        // マウスがカードに乗った時
+        card.addEventListener('mouseenter', () => {
+          video.play();
+        });
+        // マウスがカードから離れた時
+        card.addEventListener('mouseleave', () => {
+          video.pause();
+          video.currentTime = 0; // 動画を最初に戻す
+        });
+      }
+    });
+
+  } catch (err) {
+    console.error("[CMS] models fetch error:", err);
+    wrap.innerHTML = `<p class="small" style="color:#b91c1c">モデルの読み込みに失敗しました。</p>`;
+  }
+}
 
     // Flip card logic
     const cards = qsa('#modelsCards [data-card]');
