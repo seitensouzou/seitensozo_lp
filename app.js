@@ -35,8 +35,8 @@ export const qsa = (s, sc = document) => [...sc.querySelectorAll(s)];
 (async () => {
   const cfSection = qs(".cf");
   const dd = qs("#dd"), hh = qs("#hh"), mm = qs("#mm"), ss = qs("#ss");
-  const nowEl = qs("#cfNow"), tgtEl = qs("#cfTarget"), bar = qs("#cfBar");
-
+  const nowEl = qs("#cfNow"), tgtEl = qs("#cfTarget"), supEl = qs("#cfSupporters"), bar = qs("#cfBar");
+ 
   if (!cfSection) return; // セクションがなければ処理を中断
 
   try {
@@ -58,12 +58,13 @@ export const qsa = (s, sc = document) => [...sc.querySelectorAll(s)];
       return;
     }
 
-    const { currentAmount, targetAmount, endDate } = data;
+    const { currentAmount, targetAmount, endDate, supporterCount } = data;
     const targetDate = new Date(endDate);
 
     // 取得したデータでUIを更新
     nowEl.textContent = "¥" + (currentAmount || 0).toLocaleString();
     tgtEl.textContent = "¥" + (targetAmount || 0).toLocaleString();
+    supEl.textContent = (supporterCount || 0) + "人";
     requestAnimationFrame(() => {
       const percentage = Math.min(100, ((currentAmount || 0) / (targetAmount || 1)) * 100);
       bar.style.width = percentage + "%";
