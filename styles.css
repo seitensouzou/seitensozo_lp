@@ -206,3 +206,19 @@ body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans JP",
   font-weight: 700;
   line-height: 1.2;
 }
+
+/* ===== Social Icons in Footer ===== */
+.social-icons {
+  display: flex;
+  gap: 16px; /* アイコン間のスペース */
+  align-items: center;
+}
+
+.social-icons a {
+  color: var(--muted); /* アイコンの色 */
+  transition: color 0.2s;
+}
+
+.social-icons a:hover {
+  color: var(--ink); /* ホバー時の色 */
+}
