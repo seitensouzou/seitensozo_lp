@@ -196,3 +196,13 @@ body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans JP",
   z-index: -1; /* 他のコンテンツの背面に配置 */
   background-color: #ffffff; /* 背景色 */
 }
+
+/* CF Supporters Style */
+.cf .meta {
+  align-items: center; /* 要素の高さを中央に揃える */
+}
+.cf-supporters .val {
+  font-size: 22px; /* 金額のフォントサイズより少し小さく */
+  font-weight: 700;
+  line-height: 1.2;
+}
