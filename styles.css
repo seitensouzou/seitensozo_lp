@@ -9,7 +9,26 @@ a{text-decoration:none;color:inherit}
   --ink:#111;--muted:#666;--line:#e5e5e5;--pink:#ec4899;--overlay:rgba(0,0,0,.55);
   --cat-press:#111827;--cat-music:#2563eb;--cat-proj:#059669;
 }
-body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans JP",Helvetica,Arial;color:var(--ink);background:#fff;line-height:1.65}
+body{
+  font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans JP",Helvetica,Arial;
+  color:var(--ink);
+  background:#fff;
+  line-height:1.65;
+  /* ▼▼▼ 全幅レイアウト用のグリッド設定 ▼▼▼ */
+  display: grid;
+  grid-template-columns: 1fr min(1100px, 92vw) 1fr;
+}
+
+/* ▼▼▼ 全幅レイアウト用の制御CSS ▼▼▼ */
+body > * {
+  grid-column: 2; /* 基本的に全要素を中央カラムに配置 */
+}
+.full-width {
+  grid-column: 1 / -1; /* .full-widthを持つ要素だけ全幅に */
+}
+/* ▲▲▲ ここまで ▲▲▲ */
+
+
 .font-serif{font-family:"Noto Serif JP",serif}
 .container{width:min(1100px,92vw);margin-inline:auto}
 .kicker{letter-spacing:.18em;font-variant-caps:all-small-caps}
@@ -88,35 +107,64 @@ body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans JP",
 .pillar{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px;box-shadow:0 6px 20px rgba(0,0,0,.04)}
 @media (max-width:680px){.pillars{grid-template-columns:1fr}}
 
-/* Models */
-.models .cards{display:grid;gap:26px;grid-template-columns:repeat(2,1fr)}
-.card{aspect-ratio:4/5;position:relative;border-radius:16px;overflow:hidden;background:#ddd}
-.cover{width:100%;height:100%;object-fit:cover}
-.flip{position:relative;perspective:1400px;height:100%}
-.wrap3d{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .72s cubic-bezier(.2,.7,0,1)}
-.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden}
-.front{transform:rotateY(0deg) translateZ(0.01px)}
-.back{transform:rotateY(180deg) translateZ(0.01px);background:rgba(255,255,255,.96)}
-.flip.open .wrap3d{transform:rotateY(180deg)}
-.card .meta{position:absolute;inset-inline:0;inset-block-end:0;color:#fff;display:flex;justify-content:space-between;align-items:end;padding:16px;background:linear-gradient(to top,rgba(0,0,0,.6),transparent)}
-.meta-sub{color:#e5e7eb}
-.card .openbtn{width:40px;height:40px;border-radius:999px;display:grid;place-items:center;background:rgba(255,255,255,.22);backdrop-filter:blur(4px);color:#fff;font-size:22px}
-.card .close{position:absolute;right:12px;top:12px;width:40px;height:40px;border:1px solid #d1d5db;border-radius:999px;font-size:22px;display:grid;place-items:center;background:#fff;z-index:2}
-.back-inner{position:absolute;inset:0;padding:18px;display:flex;flex-direction:column;overflow-y:auto}
-.profile.grid{display:grid; gap:14px; grid-template-columns:repeat(2,minmax(0,1fr)); margin-top:12px;}
-@media (max-width:680px){ .profile.grid{ grid-template-columns:1fr; } }
-.profile .carded{ background:#fff; border:1px solid var(--line); border-radius:12px; padding:14px;}
-.profile .carded h5{ font-family:"Noto Serif JP",serif; font-size:15px; margin:0 0 6px; }
-.profile .carded p{ margin:0; font-size:13px; color:#444; }
-.streams .pill{ display:inline-block; color:#fff; font-size:12px; padding:8px 10px; border-radius:999px; font-weight:600; margin:8px 8px 0 0; }
-.yt{ margin-top:12px; }
-.yt iframe{border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,.12)}
-.flip .back{pointer-events:none}
-.flip.open .back{pointer-events:auto}
-.flip.open .front{pointer-events:none}
-.card .meta { pointer-events: none; }
-.card .openbtn, .card .close { pointer-events: auto; z-index: 5; }
-@media (max-width:860px){.models .cards{grid-template-columns:1fr}}
+
+/* ===================================
+   Models Section (Grid Layout Version)
+=================================== */
+/* #models に full-width クラスを適用した際の背景色と余白 */
+#models.full-width {
+  background-color: #f9fafb; /* 背景色の例 */
+  padding-top: 80px;
+  padding-bottom: 80px;
+}
+
+/* JavaScriptが描画するカードのコンテナ */
+.models-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* PCでは3カラム */
+  gap: 26px; /* カード間の隙間 */
+}
+
+/* 既存の.cardスタイルをこちらで再利用・適用 */
+.models-grid .card{aspect-ratio:4/5;position:relative;border-radius:16px;overflow:hidden;background:#ddd}
+.models-grid .cover{width:100%;height:100%;object-fit:cover}
+.models-grid .flip{position:relative;perspective:1400px;height:100%}
+.models-grid .wrap3d{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .72s cubic-bezier(.2,.7,0,1)}
+.models-grid .face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.models-grid .front{transform:rotateY(0deg) translateZ(0.01px)}
+.models-grid .back{transform:rotateY(180deg) translateZ(0.01px);background:rgba(255,255,255,.96)}
+.models-grid .flip.open .wrap3d{transform:rotateY(180deg)}
+.models-grid .card .meta{position:absolute;inset-inline:0;inset-block-end:0;color:#fff;display:flex;justify-content:space-between;align-items:end;padding:16px;background:linear-gradient(to top,rgba(0,0,0,.6),transparent)}
+.models-grid .meta-sub{color:#e5e7eb}
+.models-grid .card .openbtn{width:40px;height:40px;border-radius:999px;display:grid;place-items:center;background:rgba(255,255,255,.22);backdrop-filter:blur(4px);color:#fff;font-size:22px}
+.models-grid .card .close{position:absolute;right:12px;top:12px;width:40px;height:40px;border:1px solid #d1d5db;border-radius:999px;font-size:22px;display:grid;place-items:center;background:#fff;z-index:2}
+.models-grid .back-inner{position:absolute;inset:0;padding:18px;display:flex;flex-direction:column;overflow-y:auto}
+.models-grid .profile.grid{display:grid; gap:14px; grid-template-columns:repeat(2,minmax(0,1fr)); margin-top:12px;}
+@media (max-width:680px){ .models-grid .profile.grid{ grid-template-columns:1fr; } }
+.models-grid .profile .carded{ background:#fff; border:1px solid var(--line); border-radius:12px; padding:14px;}
+.models-grid .profile .carded h5{ font-family:"Noto Serif JP",serif; font-size:15px; margin:0 0 6px; }
+.models-grid .profile .carded p{ margin:0; font-size:13px; color:#444; }
+.models-grid .streams .pill{ display:inline-block; color:#fff; font-size:12px; padding:8px 10px; border-radius:999px; font-weight:600; margin:8px 8px 0 0; }
+.models-grid .yt{ margin-top:12px; }
+.models-grid .yt iframe{border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,.12)}
+.models-grid .flip .back{pointer-events:none}
+.models-grid .flip.open .back{pointer-events:auto}
+.models-grid .flip.open .front{pointer-events:none}
+.models-grid .card .meta { pointer-events: none; }
+.models-grid .card .openbtn, .card .close { pointer-events: auto; z-index: 5; }
+
+/* レスポンシブ設定 */
+@media (max-width: 1024px) {
+  .models-grid {
+    grid-template-columns: repeat(2, 1fr); /* 2カラム */
+  }
+}
+@media (max-width: 860px) {
+  .models-grid {
+    grid-template-columns: 1fr; /* 1カラム */
+  }
+}
+
 
 /* Gallery Styles */
 .gallery-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; }
@@ -221,43 +269,4 @@ body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans JP",
 
 .social-icons a:hover {
   color: var(--ink); /* ホバー時の色 */
-}
-
-/* styles.cssに追記 */
-.models-full-width {
-  width: 100vw;
-  position: relative;
-  left: 50%;
-  right: 50%;
-  margin-left: -50vw;
-  margin-right: -50vw;
-  background-color: #f9fafb;
-  padding-top: 80px;
-  padding-bottom: 80px;
-}
-
-.models-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 30px;
-}
-
-/* 既存のカードスタイルはそのまま活かせます */
-/* .card, .flip, .face など... */
-
-@media (max-width: 1024px) {
-  .models-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 767px) {
-  .models-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* 古い2カラムのスタイルを無効化 */
-.models .cards {
-  display: none;
 }
