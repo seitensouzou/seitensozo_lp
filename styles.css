@@ -9,7 +9,7 @@ a{text-decoration:none;color:inherit}
   --ink:#111;--muted:#666;--line:#e5e5e5;--pink:#ec4899;--overlay:rgba(0,0,0,.55);
   --cat-press:#111827;--cat-music:#2563eb;--cat-proj:#059669;
 }
-body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans JP",Helvetica,Arial;color:var(--ink);background:#fff;line-height:1.65; overflow-x: hidden;} /* 横スクロール防止のため overflow-x を追加 */
+body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans JP",Helvetica,Arial;color:var(--ink);background:#fff;line-height:1.65; overflow-x: hidden;}
 .font-serif{font-family:"Noto Serif JP",serif}
 .container{width:min(1100px,92vw);margin-inline:auto}
 .kicker{letter-spacing:.18em;font-variant-caps:all-small-caps}
@@ -89,33 +89,28 @@ body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans JP",
 @media (max-width:680px){.pillars{grid-template-columns:1fr}}
 
 /* ===================================
-   MODELSセクション（ワイド幅対応版）
+   Models Section (ワイド表示対応版)
 =================================== */
-.models-full-width {
+.full-width {
   width: 100vw;
   position: relative;
   left: 50%;
   right: 50%;
   margin-left: -50vw;
   margin-right: -50vw;
+}
+
+#models.full-width {
   background-color: #f9fafb;
   padding-top: 80px;
   padding-bottom: 80px;
 }
+
+/* JavaScriptがカードを描画するコンテナのスタイル */
 .models-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, 1fr); /* PCでは3カラム */
   gap: 26px;
-}
-@media (max-width: 1024px) {
-  .models-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-@media (max-width: 860px) {
-  .models-grid {
-    grid-template-columns: 1fr;
-  }
 }
 
 /* 既存のカードスタイルを .models-grid の子要素として適用 */
@@ -145,6 +140,19 @@ body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans JP",
 .models-grid .flip.open .front{pointer-events:none}
 .models-grid .card .meta { pointer-events: none; }
 .models-grid .card .openbtn, .card .close { pointer-events: auto; z-index: 5; }
+
+/* Modelsセクションのレスポンシブ設定 */
+@media (max-width: 1024px) {
+  .models-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 860px) {
+  .models-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 
 /* Gallery Styles */
 .gallery-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; }
