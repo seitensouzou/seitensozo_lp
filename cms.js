@@ -48,13 +48,9 @@ const qGallery = `*[_type == "galleryItem"]|order(order asc){ itemType, "imageUr
 
 
 // ===== RENDER FUNCTIONS =====
-
-// ▼▼▼ この renderModels 関数を、新しいロジックに差し替え ▼▼▼
 async function renderModels() {
-  const container = qs('#modelsContainer'); // HTML側の描画先のIDを '#modelsContainer' に変更した場合
-  const wrap = qs('#modelsCards'); // 描画先のコンテナを取得
-  
-  // container と wrap の両方をチェック
+  const container = qs('#modelsContainer');
+  const wrap = qs('#modelsCards');
   const targetElement = container || wrap;
   if (!targetElement) return;
 
@@ -75,52 +71,56 @@ async function renderModels() {
       
       const yt = extractYouTubeId(m.youtube || "");
 
-      // スライダーの場合は card 自体を swiper-slide にする必要がある
-      const slideClass = data.length >= 4 ? 'swiper-slide' : '';
-      
-      return `
-        <div class="${slideClass}">
-          <article class="card flip" data-card>
-            <div class="wrap3d">
-              <div class="face front">
-                ${coverElement}
-                <div class="meta">
-                  <div>
-                    <div class="font-serif" style="font-size:20px">${m.name || ''}</div>
-                    <p class="small meta-sub">${m.role || ""}</p>
-                  </div>
-                  <button class="openbtn" title="開く">＋</button>
+      // ▼▼▼ ここからが修正箇所 ▼▼▼
+      // まずカードの中身だけを生成
+      const cardContentHtml = `
+        <article class="card flip" data-card>
+          <div class="wrap3d">
+            <div class="face front">
+              ${coverElement}
+              <div class="meta">
+                <div>
+                  <div class="font-serif" style="font-size:20px">${m.name || ''}</div>
+                  <p class="small meta-sub">${m.role || ""}</p>
                 </div>
-              </div>
-              <div class="face back">
-                <button class="close" title="閉じる">×</button>
-                <div class="back-inner">
-                  <div><div class="font-serif" style="font-size:20px">${m.name || ''}</div><p class="small">${m.role || ""}</p></div>
-                  <div class="profile grid">
-                    ${(m.sections || []).map(s => `<div class="carded"><h5>${s.title || ''}</h5><p>${safeBR(s.body || '')}</p></div>`).join("")}
-                  </div>
-                  ${yt ? `<div class="yt mt-2"><iframe width="100%" height="260" src="https://www.youtube-nocookie.com/embed/${yt}?rel=0" title="${m.name} YouTube" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div>` : ""}
-                  ${linksToPillsHtml(m.streams)}
-                </div>
+                <button class="openbtn" title="開く">＋</button>
               </div>
             </div>
-          </article>
-        </div>
+            <div class="face back">
+              <button class="close" title="閉じる">×</button>
+              <div class="back-inner">
+                <div><div class="font-serif" style="font-size:20px">${m.name || ''}</div><p class="small">${m.role || ""}</p></div>
+                <div class="profile grid">
+                  ${(m.sections || []).map(s => `<div class="carded"><h5>${s.title || ''}</h5><p>${safeBR(s.body || '')}</p></div>`).join("")}
+                </div>
+                ${yt ? `<div class="yt mt-2"><iframe width="100%" height="260" src="https://www.youtube-nocookie.com/embed/${yt}?rel=0" title="${m.name} YouTube" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div>` : ""}
+                ${linksToPillsHtml(m.streams)}
+              </div>
+            </div>
+          </div>
+        </article>
       `;
+
+      // モデルが4人以上の場合のみ、<div class="swiper-slide">で囲む
+      if (data.length >= 4) {
+        return `<div class="swiper-slide">${cardContentHtml}</div>`;
+      } else {
+        return cardContentHtml; // 3人以下の場合はラッパーなしで返す
+      }
+      // ▲▲▲ ここまでが修正箇所 ▲▲▲
+
     }).join("");
 
 
     if (data.length >= 4) {
-      // 4人以上の場合：SwiperのHTML構造を注入
       targetElement.innerHTML = `
         <div class="swiper models-swiper">
-          <div class="swiper-wrapper">${cardsHtml}</div>
+          <div id="modelsCards" class="swiper-wrapper">${cardsHtml}</div>
           <div class="swiper-button-prev"></div>
           <div class="swiper-button-next"></div>
         </div>
       `;
       
-      // Swiperを初期化
       new Swiper('.models-swiper', {
         loop: true,
         slidesPerView: 3,
@@ -137,11 +137,10 @@ async function renderModels() {
       });
 
     } else {
-      // 3人以下の場合：静的なグリッドとしてそのまま注入
-      targetElement.innerHTML = cardsHtml;
+      // 3人以下の場合は、IDを付けて静的グリッドとして注入
+      targetElement.innerHTML = `<div id="modelsCards" class="models-grid">${cardsHtml}</div>`;
     }
 
-    // Flip card と Hover-to-play のロジックは共通
     const cards = qsa('#modelsCards [data-card]');
     const closeAll = (except) => cards.forEach(c => { if (c !== except) c.classList.remove('open'); });
     cards.forEach(card => {
@@ -172,8 +171,6 @@ async function renderModels() {
     targetElement.innerHTML = `<p class="small" style="color:#b91c1c">モデルの読み込みに失敗しました。</p>`;
   }
 }
-// ▲▲▲ ここまで ▲▲▲
-
 
 async function renderNews() {
   const list = qs("#newsList");
