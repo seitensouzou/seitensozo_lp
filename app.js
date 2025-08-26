@@ -1,5 +1,3 @@
-// app.js (最終完成版 - CFのCMS対応込み)
-
 export const qs = (s, sc = document) => sc.querySelector(s);
 export const qsa = (s, sc = document) => [...sc.querySelectorAll(s)];
 
@@ -36,32 +34,25 @@ export const qsa = (s, sc = document) => [...sc.querySelectorAll(s)];
   const cfSection = qs(".cf");
   const dd = qs("#dd"), hh = qs("#hh"), mm = qs("#mm"), ss = qs("#ss");
   const nowEl = qs("#cfNow"), tgtEl = qs("#cfTarget"), supEl = qs("#cfSupporters"), bar = qs("#cfBar");
- 
-  if (!cfSection) return; // セクションがなければ処理を中断
+  
+  if (!cfSection) return;
 
   try {
-    // Sanityからデータを取得するためのクライアントを初期化
     const { createClient } = await import('https://cdn.jsdelivr.net/npm/@sanity/client@6/+esm');
     const sanityClient = createClient({
-      projectId: "9iu2dx4s", // あなたのプロジェクトID
+      projectId: "9iu2dx4s",
       dataset: "production",
       apiVersion: "2023-10-01",
       useCdn: true,
     });
-
-    // クエリを実行してデータを取得 (cfSettingsは1つしかないので[0]で取得)
     const data = await sanityClient.fetch(`*[_type == "cfSettings"][0]`);
-
     if (!data) {
       console.warn("クラウドファンディング設定が見つかりません。");
-      cfSection.style.display = "none"; // データがなければセクションごと非表示
+      cfSection.style.display = "none";
       return;
     }
-
     const { currentAmount, targetAmount, endDate, supporterCount } = data;
     const targetDate = new Date(endDate);
-
-    // 取得したデータでUIを更新
     nowEl.textContent = "¥" + (currentAmount || 0).toLocaleString();
     tgtEl.textContent = "¥" + (targetAmount || 0).toLocaleString();
     supEl.textContent = (supporterCount || 0) + "人";
@@ -70,8 +61,6 @@ export const qsa = (s, sc = document) => [...sc.querySelectorAll(s)];
       bar.style.width = percentage + "%";
       bar.style.transition = "width 1.2s cubic-bezier(.2,.7,0,1)";
     });
-
-    // カウントダウンタイマーを起動
     const timerInterval = setInterval(() => {
       const d = +targetDate - +new Date();
       const Z = n => String(n).padStart(2, "0");
@@ -82,13 +71,12 @@ export const qsa = (s, sc = document) => [...sc.querySelectorAll(s)];
         ss.textContent = Z(Math.floor(d / 1000) % 60);
       } else {
         dd.textContent = hh.textContent = mm.textContent = ss.textContent = "00";
-        clearInterval(timerInterval); // タイマーを停止
+        clearInterval(timerInterval);
       }
     }, 1000);
-
   } catch (err) {
     console.error("CFデータの読み込みに失敗しました:", err);
-    cfSection.style.display = "none"; // エラー時もセクションを非表示
+    cfSection.style.display = "none";
   }
 })();
 
@@ -102,18 +90,21 @@ export const qsa = (s, sc = document) => [...sc.querySelectorAll(s)];
   });
 })();
 
-/* ===== Services accordion (Static) ===== */
+/* ===== Services accordion (Static) - 修正版 ===== */
 (() => {
     const grid = qs("#services .grid");
     if (!grid) return;
     grid.addEventListener('click', (e) => {
-        const btn = e.target.closest('.svc-toggle');
-        if (!btn) return;
-        const item = btn.closest('.svc-item');
+        const head = e.target.closest('.svc-head');
+        if (!head) return;
+        
+        const item = head.closest('.svc-item');
         if (!item) return;
+
+        const btn = head.querySelector('.svc-toggle');
+        
         const open = !item.classList.contains('open');
         item.classList.toggle('open', open);
-        btn.textContent = open ? '×' : '＋';
         btn.setAttribute('aria-expanded', String(open));
     });
 })();
@@ -178,11 +169,9 @@ if(yearEl) yearEl.textContent = new Date().getFullYear();
   if (!form) return;
 
   form.addEventListener('submit', async (e) => {
-    e.preventDefault(); // ページ遷移をキャンセル
-
+    e.preventDefault();
     formStatus.textContent = '送信中...';
     formStatus.style.color = '#666';
-
     const formData = new FormData(form);
     
     try {
@@ -193,21 +182,18 @@ if(yearEl) yearEl.textContent = new Date().getFullYear();
           'Accept': 'application/json'
         }
       });
-
       if (response.ok) {
         formStatus.textContent = 'ありがとうございます。メッセージは正常に送信されました。';
-        formStatus.style.color = '#059669'; // 成功の色（緑）
-        form.reset(); // フォームの中身をリセット
+        formStatus.style.color = '#059669';
+        form.reset();
       } else {
-        // Formspree側でエラーがあった場合
         formStatus.textContent = '送信に失敗しました。時間をおいて再度お試しください。';
-        formStatus.style.color = '#b91c1c'; // エラーの色（赤）
+        formStatus.style.color = '#b91c1c';
       }
     } catch (error) {
-      // ネットワークエラーなどの場合
       console.error('Form submission error:', error);
       formStatus.textContent = '送信に失敗しました。ネットワーク接続を確認してください。';
-      formStatus.style.color = '#b91c1c'; // エラーの色（赤）
+      form.style.color = '#b91c1c';
     }
   });
 })();
@@ -217,17 +203,17 @@ if (window.particlesJS) {
   particlesJS("particles-js", {
     "particles": {
       "number": {
-        "value": 80, // パーティクルの数
+        "value": 80,
         "density": {
           "enable": true,
           "value_area": 800
         }
       },
       "color": {
-        "value": "#cccccc" // パーティクルの色
+        "value": "#cccccc"
       },
       "shape": {
-        "type": "circle", // 形（円）
+        "type": "circle",
       },
       "opacity": {
         "value": 0.5,
@@ -239,14 +225,14 @@ if (window.particlesJS) {
       },
       "line_linked": {
         "enable": true,
-        "distance": 150, // 線で繋がる距離
-        "color": "#cccccc", // 線の色
+        "distance": 150,
+        "color": "#cccccc",
         "opacity": 0.4,
         "width": 1
       },
       "move": {
         "enable": true,
-        "speed": 2, // 動きの速さ
+        "speed": 2,
         "direction": "none",
         "random": false,
         "straight": false,
@@ -259,11 +245,11 @@ if (window.particlesJS) {
       "events": {
         "onhover": {
           "enable": true,
-          "mode": "repulse" // カーソルが近づくとパーティクルが逃げる
+          "mode": "repulse"
         },
         "onclick": {
           "enable": true,
-          "mode": "push" // クリックするとパーティクルを追加
+          "mode": "push"
         },
         "resize": true
       },
