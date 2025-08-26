@@ -222,3 +222,42 @@ body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans JP",
 .social-icons a:hover {
   color: var(--ink); /* ホバー時の色 */
 }
+
+/* styles.cssに追記 */
+.models-full-width {
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  background-color: #f9fafb;
+  padding-top: 80px;
+  padding-bottom: 80px;
+}
+
+.models-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+}
+
+/* 既存のカードスタイルはそのまま活かせます */
+/* .card, .flip, .face など... */
+
+@media (max-width: 1024px) {
+  .models-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 767px) {
+  .models-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* 古い2カラムのスタイルを無効化 */
+.models .cards {
+  display: none;
+}
