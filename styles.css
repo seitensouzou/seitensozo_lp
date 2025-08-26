@@ -99,20 +99,18 @@ body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans JP",
   margin-left: -50vw;
   margin-right: -50vw;
 }
-
 #models.full-width {
   background-color: #f9fafb;
   padding-top: 80px;
   padding-bottom: 80px;
 }
-
-/* JavaScriptがカードを描画するコンテナのスタイル */
 .models-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr); /* PCでは3カラム */
+  grid-template-columns: repeat(3, 1fr);
   gap: 26px;
+  /* ▼▼▼ 左右に余白を追加 ▼▼▼ */
+  padding: 0 26px; 
 }
-
 /* 既存のカードスタイルを .models-grid の子要素として適用 */
 .models-grid .card{aspect-ratio:4/5;position:relative;border-radius:16px;overflow:hidden;background:#ddd}
 .models-grid .cover{width:100%;height:100%;object-fit:cover}
@@ -140,8 +138,6 @@ body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans JP",
 .models-grid .flip.open .front{pointer-events:none}
 .models-grid .card .meta { pointer-events: none; }
 .models-grid .card .openbtn, .card .close { pointer-events: auto; z-index: 5; }
-
-/* Modelsセクションのレスポンシブ設定 */
 @media (max-width: 1024px) {
   .models-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -152,7 +148,6 @@ body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans JP",
     grid-template-columns: 1fr;
   }
 }
-
 
 /* Gallery Styles */
 .gallery-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; }
@@ -215,12 +210,17 @@ body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans JP",
 @media (max-width:760px){.fbar{flex-direction:column;align-items:flex-start;}}
 
 .modal-mask{position:fixed;inset:0;background:rgba(0,0,0,.45);opacity:0;pointer-events:none;transition:opacity .25s;z-index:70}
-.modal{position:fixed;inset:50% auto auto 50%;transform:translate(-50%,-48%) scale(.98);transition:transform .25s,opacity .25s;z-index:71;background:#fff;border-radius:16px;box-shadow:0 40px 120px rgba(0,0,0,.2);width:min(680px,92vw)}
+.modal{position:fixed;inset:50% auto auto 50%;transform:translate(-50%,-48%) scale(.98);transition:transform .25s,opacity .25s;opacity:0;z-index:71;background:#fff;border-radius:16px;box-shadow:0 40px 120px rgba(0,0,0,.2);width:min(680px,92vw)}
 .modal header{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border-bottom:1px solid var(--line)}
 .modal .body{padding:16px;max-height:70vh;overflow:auto}
 .modal .x{width:36px;height:36px;border:1px solid #d1d5db;border-radius:999px;display:grid;place-items:center}
 .modal-open .modal-mask{opacity:1;pointer-events:auto}
 .modal-open .modal{opacity:1;transform:translate(-50%,-50%) scale(1)}
+
+/* ▼▼▼ 意図しないモーダル表示をCSSで強制的に非表示にする ▼▼▼ */
+#modal[aria-hidden="true"] {
+  display: none !important;
+}
 
 /* ===== Particle Effect Style ===== */
 #particles-js {
