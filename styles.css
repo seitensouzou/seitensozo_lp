@@ -89,8 +89,10 @@ body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans JP",
 @media (max-width:680px){.pillars{grid-template-columns:1fr}}
 
 /* ===================================
-   Models Section (ワイド表示対応版)
+   Models Section (ワイド表示 & スライダー対応版)
 =================================== */
+
+/* セクション全体を画面幅いっぱいに広げる */
 .full-width {
   width: 100vw;
   position: relative;
@@ -100,44 +102,18 @@ body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans JP",
   margin-right: -50vw;
 }
 #models.full-width {
-  background-color: #f9fafb;
+  background-color: #f9fafb; /* 背景色 */
   padding-top: 80px;
   padding-bottom: 80px;
+  overflow: hidden; /* スライダーがはみ出すため重要 */
 }
+
+/* 3人以下の場合の静的グリッド */
 .models-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 26px;
-  /* ▼▼▼ 左右に余白を追加 ▼▼▼ */
-  padding: 0 26px; 
 }
-/* 既存のカードスタイルを .models-grid の子要素として適用 */
-.models-grid .card{aspect-ratio:4/5;position:relative;border-radius:16px;overflow:hidden;background:#ddd}
-.models-grid .cover{width:100%;height:100%;object-fit:cover}
-.models-grid .flip{position:relative;perspective:1400px;height:100%}
-.models-grid .wrap3d{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .72s cubic-bezier(.2,.7,0,1)}
-.models-grid .face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden}
-.models-grid .front{transform:rotateY(0deg) translateZ(0.01px)}
-.models-grid .back{transform:rotateY(180deg) translateZ(0.01px);background:rgba(255,255,255,.96)}
-.models-grid .flip.open .wrap3d{transform:rotateY(180deg)}
-.models-grid .card .meta{position:absolute;inset-inline:0;inset-block-end:0;color:#fff;display:flex;justify-content:space-between;align-items:end;padding:16px;background:linear-gradient(to top,rgba(0,0,0,.6),transparent)}
-.models-grid .meta-sub{color:#e5e7eb}
-.models-grid .card .openbtn{width:40px;height:40px;border-radius:999px;display:grid;place-items:center;background:rgba(255,255,255,.22);backdrop-filter:blur(4px);color:#fff;font-size:22px}
-.models-grid .card .close{position:absolute;right:12px;top:12px;width:40px;height:40px;border:1px solid #d1d5db;border-radius:999px;font-size:22px;display:grid;place-items:center;background:#fff;z-index:2}
-.models-grid .back-inner{position:absolute;inset:0;padding:18px;display:flex;flex-direction:column;overflow-y:auto}
-.models-grid .profile.grid{display:grid; gap:14px; grid-template-columns:repeat(2,minmax(0,1fr)); margin-top:12px;}
-@media (max-width:680px){ .models-grid .profile.grid{ grid-template-columns:1fr; } }
-.models-grid .profile .carded{ background:#fff; border:1px solid var(--line); border-radius:12px; padding:14px;}
-.models-grid .profile .carded h5{ font-family:"Noto Serif JP",serif; font-size:15px; margin:0 0 6px; }
-.models-grid .profile .carded p{ margin:0; font-size:13px; color:#444; }
-.models-grid .streams .pill{ display:inline-block; color:#fff; font-size:12px; padding:8px 10px; border-radius:999px; font-weight:600; margin:8px 8px 0 0; }
-.models-grid .yt{ margin-top:12px; }
-.models-grid .yt iframe{border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,.12)}
-.models-grid .flip .back{pointer-events:none}
-.models-grid .flip.open .back{pointer-events:auto}
-.models-grid .flip.open .front{pointer-events:none}
-.models-grid .card .meta { pointer-events: none; }
-.models-grid .card .openbtn, .card .close { pointer-events: auto; z-index: 5; }
 @media (max-width: 1024px) {
   .models-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -148,6 +124,56 @@ body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans JP",
     grid-template-columns: 1fr;
   }
 }
+
+/* ▼▼▼ 4人以上の場合のスライダー用のスタイル ▼▼▼ */
+.models-swiper {
+  width: 100%;
+  overflow: visible; /* 横のスライドを少し見せるために重要 */
+}
+.models-swiper .swiper-slide {
+  transition: transform 0.4s ease, opacity 0.4s ease;
+  opacity: 0.4;
+  transform: scale(0.85);
+}
+.models-swiper .swiper-slide-active,
+.models-swiper .swiper-slide-next,
+.models-swiper .swiper-slide-prev {
+  opacity: 1;
+  transform: scale(1);
+}
+.models-swiper .swiper-button-next,
+.models-swiper .swiper-button-prev {
+  color: var(--ink); /* ボタンの色 */
+}
+
+
+/* ▼▼▼ カード自体のスタイル（共通）▼▼▼ */
+#modelsCards .card{aspect-ratio:4/5;position:relative;border-radius:16px;overflow:hidden;background:#ddd}
+#modelsCards .cover{width:100%;height:100%;object-fit:cover}
+#modelsCards .flip{position:relative;perspective:1400px;height:100%}
+#modelsCards .wrap3d{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .72s cubic-bezier(.2,.7,0,1)}
+#modelsCards .face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+#modelsCards .front{transform:rotateY(0deg) translateZ(0.01px)}
+#modelsCards .back{transform:rotateY(180deg) translateZ(0.01px);background:rgba(255,255,255,.96)}
+#modelsCards .flip.open .wrap3d{transform:rotateY(180deg)}
+#modelsCards .card .meta{position:absolute;inset-inline:0;inset-block-end:0;color:#fff;display:flex;justify-content:space-between;align-items:end;padding:16px;background:linear-gradient(to top,rgba(0,0,0,.6),transparent)}
+#modelsCards .meta-sub{color:#e5e7eb}
+#modelsCards .card .openbtn{width:40px;height:40px;border-radius:999px;display:grid;place-items:center;background:rgba(255,255,255,.22);backdrop-filter:blur(4px);color:#fff;font-size:22px}
+#modelsCards .card .close{position:absolute;right:12px;top:12px;width:40px;height:40px;border:1px solid #d1d5db;border-radius:999px;font-size:22px;display:grid;place-items:center;background:#fff;z-index:2}
+#modelsCards .back-inner{position:absolute;inset:0;padding:18px;display:flex;flex-direction:column;overflow-y:auto}
+#modelsCards .profile.grid{display:grid; gap:14px; grid-template-columns:repeat(2,minmax(0,1fr)); margin-top:12px;}
+@media (max-width:680px){ #modelsCards .profile.grid{ grid-template-columns:1fr; } }
+#modelsCards .profile .carded{ background:#fff; border:1px solid var(--line); border-radius:12px; padding:14px;}
+#modelsCards .profile .carded h5{ font-family:"Noto Serif JP",serif; font-size:15px; margin:0 0 6px; }
+#modelsCards .profile .carded p{ margin:0; font-size:13px; color:#444; }
+#modelsCards .streams .pill{ display:inline-block; color:#fff; font-size:12px; padding:8px 10px; border-radius:999px; font-weight:600; margin:8px 8px 0 0; }
+#modelsCards .yt{ margin-top:12px; }
+#modelsCards .yt iframe{border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,.12)}
+#modelsCards .flip .back{pointer-events:none}
+#modelsCards .flip.open .back{pointer-events:auto}
+#modelsCards .flip.open .front{pointer-events:none}
+#modelsCards .card .meta { pointer-events: none; }
+#modelsCards .card .openbtn, .card .close { pointer-events: auto; z-index: 5; }
 
 /* Gallery Styles */
 .gallery-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; }
