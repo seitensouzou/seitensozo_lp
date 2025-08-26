@@ -1,5 +1,3 @@
-// cms.js (最終完成版)
-
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@sanity/client@6/+esm';
 import { qs, qsa } from './app.js';
 
@@ -48,68 +46,102 @@ const qModels = `*[_type == "model"]|order(order asc){_id, name, role, coverType
 const qNews = `*[_type == "news"]|order(date desc){_id,title,body,tag,date}`;
 const qGallery = `*[_type == "galleryItem"]|order(order asc){ itemType, "imageUrl": image.asset->url, "videoUrl": videoFile.asset->url, caption }`;
 
+
 // ===== RENDER FUNCTIONS =====
+
+// ▼▼▼ この renderModels 関数を、新しいロジックに差し替え ▼▼▼
 async function renderModels() {
-  const wrap = qs('#modelsCards');
-  if (!wrap) return;
+  const container = qs('#modelsContainer'); // HTML側の描画先のIDを '#modelsContainer' に変更した場合
+  const wrap = qs('#modelsCards'); // 描画先のコンテナを取得
+  
+  // container と wrap の両方をチェック
+  const targetElement = container || wrap;
+  if (!targetElement) return;
+
   try {
     const data = await client.fetch(qModels);
     console.info("[CMS] models fetched:", data);
+
     if (!data || !data.length) {
-      wrap.innerHTML = `<p class="small" style="color:#6b7280">公開済みのモデルはまだありません。</p>`;
+      targetElement.innerHTML = `<p class="small" style="color:#6b7280">公開済みのモデルはまだありません。</p>`;
       return;
     }
-    wrap.innerHTML = data.map(m => {
-      let coverElement = `<img src="https://placehold.co/800x1000/E0E0E0/333?text=MODEL" alt="${m.name || ''}" class="cover">`;
+
+    const cardsHtml = data.map(m => {
+      let coverElement = `<img src="${m.imageUrl || 'https://placehold.co/800x1000/E0E0E0/333?text=MODEL'}" alt="${m.name || ''}" class="cover">`;
       if (m.coverType === 'video' && m.videoUrl) {
         coverElement = `<video src="${m.videoUrl}" muted loop playsinline class="cover"></video>`;
-      } else if (m.imageUrl) {
-        coverElement = `<img src="${m.imageUrl}" alt="${m.name || ''}" class="cover">`;
       }
-
+      
       const yt = extractYouTubeId(m.youtube || "");
+
+      // スライダーの場合は card 自体を swiper-slide にする必要がある
+      const slideClass = data.length >= 4 ? 'swiper-slide' : '';
       
       return `
-        <article class="card flip" data-card>
-          <div class="wrap3d">
-            <div class="face front">
-              ${coverElement}
-              <div class="meta">
-                <div>
-                  <div class="font-serif" style="font-size:20px">${m.name || ''}</div>
-                  <p class="small meta-sub">${m.role || ""}</p>
+        <div class="${slideClass}">
+          <article class="card flip" data-card>
+            <div class="wrap3d">
+              <div class="face front">
+                ${coverElement}
+                <div class="meta">
+                  <div>
+                    <div class="font-serif" style="font-size:20px">${m.name || ''}</div>
+                    <p class="small meta-sub">${m.role || ""}</p>
+                  </div>
+                  <button class="openbtn" title="開く">＋</button>
                 </div>
-                <button class="openbtn" title="開く">＋</button>
+              </div>
+              <div class="face back">
+                <button class="close" title="閉じる">×</button>
+                <div class="back-inner">
+                  <div><div class="font-serif" style="font-size:20px">${m.name || ''}</div><p class="small">${m.role || ""}</p></div>
+                  <div class="profile grid">
+                    ${(m.sections || []).map(s => `<div class="carded"><h5>${s.title || ''}</h5><p>${safeBR(s.body || '')}</p></div>`).join("")}
+                  </div>
+                  ${yt ? `<div class="yt mt-2"><iframe width="100%" height="260" src="https://www.youtube-nocookie.com/embed/${yt}?rel=0" title="${m.name} YouTube" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div>` : ""}
+                  ${linksToPillsHtml(m.streams)}
+                </div>
               </div>
             </div>
-            <div class="face back">
-              <button class="close" title="閉じる">×</button>
-              <div class="back-inner">
-                <div><div class="font-serif" style="font-size:20px">${m.name || ''}</div><p class="small">${m.role || ""}</p></div>
-                <div class="profile grid">
-                  ${(m.sections || []).map(s => `
-                    <div class="carded">
-                      <h5>${s.title || ''}</h5>
-                      <p>${safeBR(s.body || '')}</p>
-                    </div>`).join("")}
-                </div>
-                ${yt ? `
-                <div class="yt mt-2">
-                  <iframe width="100%" height="260"
-                    src="https://www.youtube-nocookie.com/embed/${yt}?rel=0"
-                    title="${m.name} YouTube" frameborder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-                </div>` : ""}
-                ${linksToPillsHtml(m.streams)}
-              </div>
-            </div>
-          </div>
-        </article>
+          </article>
+        </div>
       `;
     }).join("");
 
-    // Flip card logic
+
+    if (data.length >= 4) {
+      // 4人以上の場合：SwiperのHTML構造を注入
+      targetElement.innerHTML = `
+        <div class="swiper models-swiper">
+          <div class="swiper-wrapper">${cardsHtml}</div>
+          <div class="swiper-button-prev"></div>
+          <div class="swiper-button-next"></div>
+        </div>
+      `;
+      
+      // Swiperを初期化
+      new Swiper('.models-swiper', {
+        loop: true,
+        slidesPerView: 3,
+        spaceBetween: 30,
+        centeredSlides: true,
+        navigation: {
+          nextEl: '.swiper-button-next',
+          prevEl: '.swiper-button-prev',
+        },
+        breakpoints: {
+          860: { slidesPerView: 1, spaceBetween: 20 },
+          1024: { slidesPerView: 2, spaceBetween: 20 }
+        }
+      });
+
+    } else {
+      // 3人以下の場合：静的なグリッドとしてそのまま注入
+      targetElement.innerHTML = cardsHtml;
+    }
+
+    // Flip card と Hover-to-play のロジックは共通
     const cards = qsa('#modelsCards [data-card]');
     const closeAll = (except) => cards.forEach(c => { if (c !== except) c.classList.remove('open'); });
     cards.forEach(card => {
@@ -126,26 +158,22 @@ async function renderModels() {
       }, { passive: true });
     });
 
-    // Hover-to-play video logic
-    const modelCards = qsa('#modelsCards .card');
+    const modelCards = qsa('#modelsCards .card, .models-swiper .card');
     modelCards.forEach(card => {
       const video = card.querySelector('video.cover');
       if (video) {
-        card.addEventListener('mouseenter', () => {
-          video.play();
-        });
-        card.addEventListener('mouseleave', () => {
-          video.pause();
-          video.currentTime = 0;
-        });
+        card.addEventListener('mouseenter', () => video.play());
+        card.addEventListener('mouseleave', () => { video.pause(); video.currentTime = 0; });
       }
     });
 
   } catch (err) {
     console.error("[CMS] models fetch error:", err);
-    wrap.innerHTML = `<p class="small" style="color:#b91c1c">モデルの読み込みに失敗しました。</p>`;
+    targetElement.innerHTML = `<p class="small" style="color:#b91c1c">モデルの読み込みに失敗しました。</p>`;
   }
 }
+// ▲▲▲ ここまで ▲▲▲
+
 
 async function renderNews() {
   const list = qs("#newsList");
@@ -177,7 +205,6 @@ async function renderNews() {
       `;
     }).join("");
 
-    // Accordion logic for news
     qsa("#newsList .news").forEach(n => {
       const head = n.querySelector(".news-head");
       const t = n.querySelector(".news-toggle");
@@ -222,7 +249,6 @@ async function renderGallery() {
       `;
     }).join('');
 
-    // Popup logic
     const lightbox = qs('#lightbox');
     const lightboxContent = qs('#lightboxContent');
     const lightboxClose = qs('#lightboxClose');
