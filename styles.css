@@ -91,8 +91,6 @@ body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans JP",
 /* ===================================
    Models Section (ワイド表示 & スライダー対応版)
 =================================== */
-
-/* セクション全体を画面幅いっぱいに広げる */
 .full-width {
   width: 100vw;
   position: relative;
@@ -102,11 +100,22 @@ body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans JP",
   margin-right: -50vw;
 }
 #models.full-width {
-  background-color: #f9fafb; /* 背景色 */
+  background-color: #f9fafb;
   padding-top: 80px;
   padding-bottom: 80px;
-  overflow: hidden; /* スライダーがはみ出すため重要 */
+  overflow: hidden;
 }
+
+/* ▼▼▼ ここからが修正箇所 ▼▼▼ */
+/* グリッドとスライダー、両方のコンテナに適用する共通スタイル */
+.models-grid, .models-swiper {
+  /* サイトの他のコンテンツ幅と合わせる */
+  width: min(1100px, 92vw); 
+  /* 中央に配置 */
+  margin-inline: auto; 
+}
+/* ▲▲▲ ここまでが修正箇所 ▲▲▲ */
+
 
 /* 3人以下の場合の静的グリッド */
 .models-grid {
@@ -125,10 +134,9 @@ body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans JP",
   }
 }
 
-/* ▼▼▼ 4人以上の場合のスライダー用のスタイル ▼▼▼ */
+/* 4人以上の場合のスライダー用のスタイル */
 .models-swiper {
-  width: 100%;
-  overflow: visible; /* 横のスライドを少し見せるために重要 */
+  overflow: visible; 
 }
 .models-swiper .swiper-slide {
   transition: transform 0.4s ease, opacity 0.4s ease;
@@ -143,11 +151,10 @@ body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans JP",
 }
 .models-swiper .swiper-button-next,
 .models-swiper .swiper-button-prev {
-  color: var(--ink); /* ボタンの色 */
+  color: var(--ink);
 }
 
-
-/* ▼▼▼ カード自体のスタイル（共通）▼▼▼ */
+/* カード自体のスタイル（共通）*/
 #modelsCards .card{aspect-ratio:4/5;position:relative;border-radius:16px;overflow:hidden;background:#ddd}
 #modelsCards .cover{width:100%;height:100%;object-fit:cover}
 #modelsCards .flip{position:relative;perspective:1400px;height:100%}
@@ -174,6 +181,7 @@ body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans JP",
 #modelsCards .flip.open .front{pointer-events:none}
 #modelsCards .card .meta { pointer-events: none; }
 #modelsCards .card .openbtn, .card .close { pointer-events: auto; z-index: 5; }
+
 
 /* Gallery Styles */
 .gallery-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; }
