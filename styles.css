@@ -9,26 +9,7 @@ a{text-decoration:none;color:inherit}
   --ink:#111;--muted:#666;--line:#e5e5e5;--pink:#ec4899;--overlay:rgba(0,0,0,.55);
   --cat-press:#111827;--cat-music:#2563eb;--cat-proj:#059669;
 }
-body{
-  font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans JP",Helvetica,Arial;
-  color:var(--ink);
-  background:#fff;
-  line-height:1.65;
-  /* ▼▼▼ 全幅レイアウト用のグリッド設定 ▼▼▼ */
-  display: grid;
-  grid-template-columns: 1fr min(1100px, 92vw) 1fr;
-}
-
-/* ▼▼▼ 全幅レイアウト用の制御CSS ▼▼▼ */
-body > * {
-  grid-column: 2; /* 基本的に全要素を中央カラムに配置 */
-}
-.full-width {
-  grid-column: 1 / -1; /* .full-widthを持つ要素だけ全幅に */
-}
-/* ▲▲▲ ここまで ▲▲▲ */
-
-
+body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans JP",Helvetica,Arial;color:var(--ink);background:#fff;line-height:1.65; overflow-x: hidden;} /* 横スクロール防止のため overflow-x を追加 */
 .font-serif{font-family:"Noto Serif JP",serif}
 .container{width:min(1100px,92vw);margin-inline:auto}
 .kicker{letter-spacing:.18em;font-variant-caps:all-small-caps}
@@ -107,25 +88,37 @@ body > * {
 .pillar{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px;box-shadow:0 6px 20px rgba(0,0,0,.04)}
 @media (max-width:680px){.pillars{grid-template-columns:1fr}}
 
-
 /* ===================================
-   Models Section (Grid Layout Version)
+   MODELSセクション（ワイド幅対応版）
 =================================== */
-/* #models に full-width クラスを適用した際の背景色と余白 */
-#models.full-width {
-  background-color: #f9fafb; /* 背景色の例 */
+.models-full-width {
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  background-color: #f9fafb;
   padding-top: 80px;
   padding-bottom: 80px;
 }
-
-/* JavaScriptが描画するカードのコンテナ */
 .models-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr); /* PCでは3カラム */
-  gap: 26px; /* カード間の隙間 */
+  grid-template-columns: repeat(3, 1fr);
+  gap: 26px;
+}
+@media (max-width: 1024px) {
+  .models-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 860px) {
+  .models-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
-/* 既存の.cardスタイルをこちらで再利用・適用 */
+/* 既存のカードスタイルを .models-grid の子要素として適用 */
 .models-grid .card{aspect-ratio:4/5;position:relative;border-radius:16px;overflow:hidden;background:#ddd}
 .models-grid .cover{width:100%;height:100%;object-fit:cover}
 .models-grid .flip{position:relative;perspective:1400px;height:100%}
@@ -152,19 +145,6 @@ body > * {
 .models-grid .flip.open .front{pointer-events:none}
 .models-grid .card .meta { pointer-events: none; }
 .models-grid .card .openbtn, .card .close { pointer-events: auto; z-index: 5; }
-
-/* レスポンシブ設定 */
-@media (max-width: 1024px) {
-  .models-grid {
-    grid-template-columns: repeat(2, 1fr); /* 2カラム */
-  }
-}
-@media (max-width: 860px) {
-  .models-grid {
-    grid-template-columns: 1fr; /* 1カラム */
-  }
-}
-
 
 /* Gallery Styles */
 .gallery-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; }
@@ -227,7 +207,7 @@ body > * {
 @media (max-width:760px){.fbar{flex-direction:column;align-items:flex-start;}}
 
 .modal-mask{position:fixed;inset:0;background:rgba(0,0,0,.45);opacity:0;pointer-events:none;transition:opacity .25s;z-index:70}
-.modal{position:fixed;inset:50% auto auto 50%;transform:translate(-50%,-48%) scale(.98);transition:transform .25s,opacity .25s;opacity:0;z-index:71;background:#fff;border-radius:16px;box-shadow:0 40px 120px rgba(0,0,0,.2);width:min(680px,92vw)}
+.modal{position:fixed;inset:50% auto auto 50%;transform:translate(-50%,-48%) scale(.98);transition:transform .25s,opacity .25s;z-index:71;background:#fff;border-radius:16px;box-shadow:0 40px 120px rgba(0,0,0,.2);width:min(680px,92vw)}
 .modal header{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border-bottom:1px solid var(--line)}
 .modal .body{padding:16px;max-height:70vh;overflow:auto}
 .modal .x{width:36px;height:36px;border:1px solid #d1d5db;border-radius:999px;display:grid;place-items:center}
