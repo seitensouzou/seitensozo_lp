@@ -45,14 +45,6 @@ body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans JP",
 
 /* Sections */
 .section{padding:80px 0}
-.full-width {
-  width: 100vw;
-  position: relative;
-  left: 50%;
-  right: 50%;
-  margin-left: -50vw;
-  margin-right: -50vw;
-}
 .figgrid{display:grid;gap:40px;grid-template-columns:1.2fr .8fr;align-items:center}
 .figgrid figure{margin:0}.figgrid img{border-radius:14px;box-shadow:0 18px 60px rgba(0,0,0,.12)}
 @media (max-width:960px){.figgrid{grid-template-columns:1fr}}
@@ -99,17 +91,22 @@ body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans JP",
 /* ===================================
    Models Section (ワイド表示 & スライダー対応版)
 =================================== */
-#models.full-width {
+/* styles.css: 137行目以降をこちらに差し替え */
+#models {
   background-color: #f9fafb;
+  padding-top: 80px;
+  padding-bottom: 80px;
 }
 #modelsContainer {
-  width: min(1100px, 92vw);
-  margin-inline: auto;
+  width: 100%;
+  max-width: 100%;
 }
 .models-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 26px;
+  width: min(1100px, 92vw);
+  margin-inline: auto;
 }
 @media (max-width: 1024px) {
   .models-grid {
@@ -122,7 +119,10 @@ body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans JP",
   }
 }
 .models-swiper {
-  overflow: visible; 
+  overflow: visible;
+  /* スライダーの両端に余白を作るための設定 */
+  padding-left: calc((100vw - min(1100px, 92vw)) / 2);
+  padding-right: calc((100vw - min(1100px, 92vw)) / 2);
 }
 .models-swiper .swiper-slide {
   transition: transform 0.4s ease, opacity 0.4s ease;
