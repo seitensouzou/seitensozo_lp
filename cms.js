@@ -125,9 +125,17 @@ async function renderModels() {
           prevEl: '.swiper-button-prev',
         },
         breakpoints: {
-          860: { slidesPerView: 1, spaceBetween: 20 },
-          1024: { slidesPerView: 2, spaceBetween: 20 }
-        }
+  // 860px以下の画面サイズの場合
+  320: { // 最小の画面サイズから指定
+    slidesPerView: 1,
+    spaceBetween: 20
+  },
+  // 861px以上の画面サイズの場合
+  861: {
+    slidesPerView: 3, // 3枚表示に戻す
+    spaceBetween: 30
+  }
+}
       });
 
     } else {
