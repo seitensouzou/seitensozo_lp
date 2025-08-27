@@ -9,7 +9,6 @@ a{text-decoration:none;color:inherit}
   --ink:#111;--muted:#666;--line:#e5e5e5;--pink:#ec4899;--overlay:rgba(0,0,0,.55);
   --cat-press:#111827;--cat-music:#2563eb;--cat-proj:#059669;
 }
-/* ▼▼▼ bodyからoverflow-x: hidden;を削除しました ▼▼▼ */
 body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans JP",Helvetica,Arial;color:var(--ink);background:#fff;line-height:1.65;}
 .font-serif{font-family:"Noto Serif JP",serif}
 .container{width:min(1100px,92vw);margin-inline:auto}
@@ -234,7 +233,7 @@ body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans JP",
 .modal .x{width:36px;height:36px;border:1px solid #d1d5db;border-radius:999px;display:grid;place-items:center}
 .modal-open .modal-mask{opacity:1;pointer-events:auto}
 .modal-open .modal{opacity:1;transform:translate(-50%,-50%) scale(1)}
-#modal[aria-hidden="true"] {
+.modal:not([aria-hidden="false"]) {
   display: none !important;
 }
 
