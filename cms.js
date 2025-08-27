@@ -11,6 +11,9 @@ const SANITY = {
 const client = createClient(SANITY);
 console.info('[CMS] Sanity client initialized');
 
+// Swiperインスタンス（フリップ中のロック用に外で保持）
+let modelsSwiper = null;
+
 // ===== ヘルパー =====
 const safeBR = (t = '') => String(t || '').replace(/\n/g, '<br>');
 
@@ -43,9 +46,16 @@ function linksToPillsHtml(links = []) {
 }
 
 // ===== GROQ =====
-const qModels  = `*[_type == "model"]|order(order asc){_id,name,role,coverType,"imageUrl":coverImage.asset->url,"videoUrl":coverVideo.asset->url,youtube,sections,streams}`;
+const qModels  = `*[_type == "model"]|order(order asc){
+  _id,name,role,coverType,
+  "imageUrl":coverImage.asset->url,
+  "videoUrl":coverVideo.asset->url,
+  youtube,sections,streams
+}`;
 const qNews    = `*[_type == "news"]|order(date desc){_id,title,body,tag,date}`;
-const qGallery = `*[_type == "galleryItem"]|order(order asc){itemType,"imageUrl":image.asset->url,"videoUrl":videoFile.asset->url,caption}`;
+const qGallery = `*[_type == "galleryItem"]|order(order asc){
+  itemType,"imageUrl":image.asset->url,"videoUrl":videoFile.asset->url,caption
+}`;
 const qCF      = `*[_type == "cfSettings"][0]`;
 
 // ===== MODELS =====
@@ -72,7 +82,11 @@ async function renderModels() {
         .join('');
       const streamsHtml  = linksToPillsHtml(m.streams);
       const ytHtml = yt
-        ? `<div class="yt mt-2"><iframe width="100%" height="260" src="https://www.youtube-nocookie.com/embed/${yt}?rel=0" title="${m.name} YouTube" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div>`
+        ? `<div class="yt mt-2"><iframe width="100%" height="260"
+             src="https://www.youtube-nocookie.com/embed/${yt}?rel=0"
+             title="${m.name} YouTube" frameborder="0"
+             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+             referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div>`
         : '';
 
       const card = `
@@ -114,51 +128,79 @@ async function renderModels() {
           <div class="swiper-button-next"></div>
         </div>`;
 
-      // === Swiper（4人以上）===
-      // スマホ：1人目から開始
-      // デスクトップ(>=1100px)：0,1,2を中央に並べ、4人目を右端チラ見せ（= index 1から開始）
-      new Swiper('.models-swiper', {
-        loop: true,                          // オートスライドを無限に回す
+      // === Swiper（4人以上）：自動スライドOFF（autoplayなし） ===
+      modelsSwiper = new Swiper('.models-swiper', {
+        loop: true,                 // ラップは維持（不要なら false に）
         centeredSlides: true,
-        slidesPerView: 1,                    // モバイル基準
+        slidesPerView: 1,
         spaceBetween: 26,
-        autoplay: {
-          delay: 3500,
-          disableOnInteraction: false,
-          pauseOnMouseEnter: true,
-        },
         navigation: {
           nextEl: '.swiper-button-next',
           prevEl: '.swiper-button-prev',
         },
         breakpoints: {
           860:  { slidesPerView: 2, spaceBetween: 24 },
-          1100: { slidesPerView: 3, spaceBetween: 26, slidesOffsetAfter: 100 }
+          // デスクトップ：3枚見せ＋右に少し覗く余白
+          1100: { slidesPerView: 3, spaceBetween: 26, slidesOffsetAfter: 100 },
         },
         on: {
           init(sw) {
-            const isDesktop = window.matchMedia('(min-width:1100px)').matches;
+            // スマホは1人目から、PC(>=1100px) かつ4人以上なら中央= index 1 から
+            const isDesktop = matchMedia('(min-width:1100px)').matches;
             const startIndex = (isDesktop && sw.slides.length >= 4) ? 1 : 0;
-            sw.slideToLoop(startIndex, 0, false); // 1=中央寄せ, 0=最初から
-          }
+            sw.slideToLoop(startIndex, 0, false);
+          },
+          // スワイプでページが動いたらフリップは閉じてロック解除
+          slideChangeTransitionStart() {
+            closeAll();
+            updateSwiperLock();
+          },
         }
       });
-
     } else {
+      // 3人以下はグリッド
       container.innerHTML = `<div id="modelsCards" class="models-grid">${cardsHtml}</div>`;
     }
 
-    // フリップ開閉
+    // ===== フリップ開閉 & Swiperロック =====
     const cards = qsa('#modelsContainer [data-card]');
     const closeAll = (except) => cards.forEach(c => { if (c !== except) c.classList.remove('open'); });
+
+    // ナビボタンも含めてロック/解除
+    const setNavEnabled = (enabled) => {
+      qsa('.models-swiper .swiper-button-prev, .models-swiper .swiper-button-next')
+        .forEach(btn => {
+          btn.style.pointerEvents = enabled ? '' : 'none';
+          btn.style.opacity = enabled ? '' : '0.35';
+          btn.setAttribute('aria-disabled', String(!enabled));
+        });
+    };
+    const updateSwiperLock = () => {
+      const anyOpen = [...cards].some(c => c.classList.contains('open'));
+      if (modelsSwiper) modelsSwiper.allowTouchMove = !anyOpen;
+      setNavEnabled(!anyOpen);
+    };
+
     cards.forEach(card => {
       const openBtn  = card.querySelector('.openbtn');
       const closeBtn = card.querySelector('.close');
-      openBtn?.addEventListener('click', (e) => { e.stopPropagation(); const isOpen = card.classList.contains('open'); closeAll(card); if (!isOpen) card.classList.add('open'); });
-      closeBtn?.addEventListener('click', (e) => { e.stopPropagation(); card.classList.remove('open'); });
+
+      openBtn?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isOpen = card.classList.contains('open');
+        closeAll(card);
+        if (!isOpen) card.classList.add('open');
+        updateSwiperLock();
+      });
+
+      closeBtn?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        card.classList.remove('open');
+        updateSwiperLock();
+      });
     });
 
-    // 動画カバーのホバー再生（PC向け）
+    // ===== 動画カバーのホバー再生 =====
     qsa('#modelsContainer .card').forEach(card => {
       const video = card.querySelector('video.cover');
       if (video) {
@@ -179,7 +221,10 @@ async function renderNews() {
   if (!list) return;
   try {
     const data = await client.fetch(qNews);
-    if (!data?.length) { list.innerHTML = `<p class="small" style="color:#6b7280">お知らせはまだありません。</p>`; return; }
+    if (!data?.length) {
+      list.innerHTML = `<p class="small" style="color:#6b7280">お知らせはまだありません。</p>`;
+      return;
+    }
     list.innerHTML = data.map(n => {
       const tag = (n.tag || '').toLowerCase();
       const tagHtml =
@@ -199,6 +244,7 @@ async function renderNews() {
         <div class="news-panel small">${safeBR(n.body)}</div>
       </article>`;
     }).join('');
+
     qsa('#newsList .news').forEach(n => {
       const head = n.querySelector('.news-head'), t = n.querySelector('.news-toggle');
       head.addEventListener('click', () => {
@@ -221,25 +267,43 @@ async function renderGallery() {
   try {
     const data = await client.fetch(qGallery);
     if (!data?.length) { grid.innerHTML = `<p class="small">まだ作品がありません。</p>`; return; }
+
     grid.innerHTML = data.map(item =>
       item.itemType === 'video'
-        ? `<a href="${item.videoUrl}" class="gallery-item video-item" data-type="video"><video muted playsinline loop autoplay src="${item.videoUrl}#t=0.1" loading="lazy"></video><div class="play-icon">▶</div></a>`
-        : `<a href="${item.imageUrl}" class="gallery-item" data-type="image"><img src="${item.imageUrl}" alt="${item.caption || 'ギャラリー画像'}" loading="lazy"></a>`
+        ? `<a href="${item.videoUrl}" class="gallery-item video-item" data-type="video">
+             <video muted playsinline loop autoplay src="${item.videoUrl}#t=0.1" loading="lazy"></video>
+             <div class="play-icon">▶</div>
+           </a>`
+        : `<a href="${item.imageUrl}" class="gallery-item" data-type="image">
+             <img src="${item.imageUrl}" alt="${item.caption || 'ギャラリー画像'}" loading="lazy">
+           </a>`
     ).join('');
 
-    const lightbox = qs('#lightbox'), lightboxContent = qs('#lightboxContent'), lightboxClose = qs('#lightboxClose');
+    const lightbox = qs('#lightbox'),
+          lightboxContent = qs('#lightboxContent'),
+          lightboxClose = qs('#lightboxClose');
+
     const closeLightbox = () => { lightbox.style.display = 'none'; lightboxContent.innerHTML = ''; };
+
     grid.addEventListener('click', e => {
-      const link = e.target.closest('.gallery-item'); if (!link) return;
+      const link = e.target.closest('.gallery-item');
+      if (!link) return;
       e.preventDefault();
       const type = link.dataset.type, url = link.href;
       lightboxContent.innerHTML = '';
-      if (type === 'video') { const video = document.createElement('video'); video.src = url; video.controls = true; video.autoplay = true; lightboxContent.appendChild(video); }
-      else { const img = document.createElement('img'); img.src = url; lightboxContent.appendChild(img); }
+      if (type === 'video') {
+        const video = document.createElement('video');
+        video.src = url; video.controls = true; video.autoplay = true;
+        lightboxContent.appendChild(video);
+      } else {
+        const img = document.createElement('img');
+        img.src = url; lightboxContent.appendChild(img);
+      }
       lightbox.style.display = 'flex';
     });
     lightboxClose.addEventListener('click', closeLightbox);
     lightbox.addEventListener('click', e => { if (e.target === lightbox) closeLightbox(); });
+
   } catch (err) {
     console.error('[CMS] gallery fetch error:', err);
     grid.innerHTML = `<p class="small" style="color:#b91c1c">ギャラリーの読み込みに失敗しました。</p>`;
@@ -288,7 +352,13 @@ async function renderCF() {
 }
 
 // ===== 実行 =====
-Promise.allSettled([ renderModels(), renderNews(), renderGallery(), renderCF() ]);
+Promise.allSettled([
+  renderModels(),
+  renderNews(),
+  renderGallery(),
+  renderCF(),
+]);
+
 
 
 
