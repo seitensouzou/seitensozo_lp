@@ -96,7 +96,7 @@ body{overflow-x:clip;}
    Models Section (ワイド表示 & スライダー対応版)
 =================================== */
 #models{
-  background:#f9fafb;
+  background:#fff;
   box-shadow:0 0 0 100vmax #f9fafb;
   clip-path:inset(0 -100vmax);
 }
@@ -133,6 +133,22 @@ body{overflow-x:clip;}
   right:24px; left:auto;
 }
 .models-swiper .swiper-button-prev{left:24px; right:auto;}
+
+.models-swiper {
+  --swiper-navigation-color: var(--pink); /* Swiper v11 推奨のカスタムプロパティ */
+}
+
+.models-swiper .swiper-button-next,
+.models-swiper .swiper-button-prev {
+  color: var(--pink);                     /* 念のため直接指定もする */
+  transform: translateY(-4px);
+}
+
+/* 好みでホバー時に少しだけ映える感じ（任意） */
+.models-swiper .swiper-button-next:hover,
+.models-swiper .swiper-button-prev:hover {
+  filter: drop-shadow(0 2px 6px rgba(236, 72, 153, .35));
+}
 
 #modelsContainer .card{aspect-ratio:4/5;position:relative;border-radius:16px;overflow:hidden;background:#ddd}
 #modelsContainer .cover{width:100%;height:100%;object-fit:cover}
