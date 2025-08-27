@@ -166,7 +166,6 @@ body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans JP",
 #modelsContainer .card .meta { pointer-events: none; }
 #modelsContainer .card .openbtn, .card .close { pointer-events: auto; z-index: 5; }
 
-
 /* Gallery Styles */
 .gallery-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; }
 .gallery-item { display: block; aspect-ratio: 1 / 1; border-radius: 8px; overflow: hidden; position: relative; transition: transform 0.2s; }
@@ -234,7 +233,7 @@ body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans JP",
 .modal .x{width:36px;height:36px;border:1px solid #d1d5db;border-radius:999px;display:grid;place-items:center}
 .modal-open .modal-mask{opacity:1;pointer-events:auto}
 .modal-open .modal{opacity:1;transform:translate(-50%,-50%) scale(1)}
-#modal[aria-hidden="true"] {
+#modal:not([aria-hidden="false"]) {
   display: none !important;
 }
 
