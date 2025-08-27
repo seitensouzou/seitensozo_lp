@@ -11,7 +11,7 @@ const SANITY = {
 const client = createClient(SANITY);
 console.info('[CMS] Sanity client initialized');
 
-// Swiperインスタンス（フリップ中のロック用に外で保持）
+// Swiperインスタンス（フリップ中ロック用）
 let modelsSwiper = null;
 
 // ===== ヘルパー =====
@@ -128,37 +128,56 @@ async function renderModels() {
           <div class="swiper-button-next"></div>
         </div>`;
 
-      // === Swiper（4人以上）：自動スライドOFF（autoplayなし） ===
-      modelsSwiper = new Swiper('.models-swiper', {
-        loop: true,                 // ラップは維持（不要なら false に）
+      // 端末タイプ判定（モバイルのみ自動スライドON）
+      const isMobile = matchMedia('(hover: none), (pointer: coarse)').matches;
+
+      const swiperConfig = {
+        loop: true,                 // ループは維持（不要なら false）
         centeredSlides: true,
         slidesPerView: 1,
         spaceBetween: 26,
+        speed: 700, // ★追加：スライドの切り替わり速度（ms）
         navigation: {
           nextEl: '.swiper-button-next',
           prevEl: '.swiper-button-prev',
         },
         breakpoints: {
           860:  { slidesPerView: 2, spaceBetween: 24 },
-          // デスクトップ：3枚見せ＋右に少し覗く余白
+          // PCは3枚表示＋右に少し覗く余白
           1100: { slidesPerView: 3, spaceBetween: 26, slidesOffsetAfter: 100 },
         },
         on: {
           init(sw) {
-            // スマホは1人目から、PC(>=1100px) かつ4人以上なら中央= index 1 から
+            // モバイルは1人目から、PC(>=1100px) かつ 4人以上は index=1 から
             const isDesktop = matchMedia('(min-width:1100px)').matches;
             const startIndex = (isDesktop && sw.slides.length >= 4) ? 1 : 0;
             sw.slideToLoop(startIndex, 0, false);
           },
-          // スワイプでページが動いたらフリップは閉じてロック解除
+          // スライドが動いたらフリップは閉じる（状態のズレ防止）
           slideChangeTransitionStart() {
             closeAll();
             updateSwiperLock();
           },
         }
-      });
+      };
+
+      if (isMobile) {
+        swiperConfig.autoplay = {
+          delay: 6000,
+          disableOnInteraction: false, // 指で操作しても止めない（後述のロックで制御）
+          pauseOnMouseEnter: false
+        };
+      }
+
+      modelsSwiper = new Swiper('.models-swiper', swiperConfig);
+
+      // 念のため：PCでは絶対に自動再生しない
+      if (!isMobile && modelsSwiper?.autoplay?.running) {
+        modelsSwiper.autoplay.stop();
+        modelsSwiper.params.autoplay = false;
+      }
     } else {
-      // 3人以下はグリッド
+      // 3人以下は静的グリッド
       container.innerHTML = `<div id="modelsCards" class="models-grid">${cardsHtml}</div>`;
     }
 
@@ -166,7 +185,7 @@ async function renderModels() {
     const cards = qsa('#modelsContainer [data-card]');
     const closeAll = (except) => cards.forEach(c => { if (c !== except) c.classList.remove('open'); });
 
-    // ナビボタンも含めてロック/解除
+    // ナビボタンもロック対象に
     const setNavEnabled = (enabled) => {
       qsa('.models-swiper .swiper-button-prev, .models-swiper .swiper-button-next')
         .forEach(btn => {
@@ -175,9 +194,24 @@ async function renderModels() {
           btn.setAttribute('aria-disabled', String(!enabled));
         });
     };
+
+    const isMobileRuntime = matchMedia('(hover: none), (pointer: coarse)').matches;
+
     const updateSwiperLock = () => {
       const anyOpen = [...cards].some(c => c.classList.contains('open'));
-      if (modelsSwiper) modelsSwiper.allowTouchMove = !anyOpen;
+      if (modelsSwiper) {
+        // スワイプ操作のロック
+        modelsSwiper.allowTouchMove = !anyOpen;
+
+        // モバイルのみ：フリップ中はオートスライド停止、閉じたら再開
+        if (isMobileRuntime && modelsSwiper.autoplay) {
+          if (anyOpen && modelsSwiper.autoplay.running) {
+            modelsSwiper.autoplay.stop();
+          } else if (!anyOpen && !modelsSwiper.autoplay.running) {
+            modelsSwiper.autoplay.start();
+          }
+        }
+      }
       setNavEnabled(!anyOpen);
     };
 
@@ -358,6 +392,7 @@ Promise.allSettled([
   renderGallery(),
   renderCF(),
 ]);
+
 
 
 
