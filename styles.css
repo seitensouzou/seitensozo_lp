@@ -102,17 +102,20 @@ body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans JP",
 /* すでに .section に左右paddingが無いなら不要だけど、念のため */
 #models.section { padding-left: 0; padding-right: 0; }
 
+/* MODELSコンテナを全幅に拡張 */
 #modelsContainer {
   width: 100%;
   max-width: none;
+  margin-inline: 0;
 }
+
 .models-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 26px;
-  width: min(1100px, 92vw);
-  margin-inline: auto;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 32px;
+  padding-inline: 5vw; /* 端に少し余白 */
 }
+
 @media (max-width: 1024px) {
   .models-grid {
     grid-template-columns: repeat(2, 1fr);
