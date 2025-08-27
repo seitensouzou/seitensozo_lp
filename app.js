@@ -1,6 +1,5 @@
-// 【app.js 全文】
-export const qs = (s, sc = document) => sc.querySelector(s);
-export const qsa = (s, sc = document) => [...sc.querySelectorAll(s)];
+const qs = (s, sc = document) => sc.querySelector(s);
+const qsa = (s, sc = document) => [...sc.querySelectorAll(s)];
 
 /* ===== Mobile menu ===== */
 (() => {
