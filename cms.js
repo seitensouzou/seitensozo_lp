@@ -16,7 +16,6 @@ console.info("[CMS] Sanity client initialized via ES Module");
 const safeBR = (t = "") => String(t || "").replace(/\n/g, "  
 ");
 
-
 function extractYouTubeId(url = "") {
   try {
     const u = new URL(url);
@@ -301,4 +300,5 @@ async function renderGallery() {
 (async () => {
   await Promise.all([renderModels(), renderNews(), renderGallery()]);
 })();
+
 
