@@ -8,7 +8,6 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
 </head>
 <body>
   <div id="particles-js"></div>
@@ -36,7 +35,7 @@
   </aside>
 
   <main id="top">
-    <section class="hero full-width">
+    <section class="hero">
       <video
         id="heroVideo"
         class="bg"
@@ -121,29 +120,7 @@
 
     <section id="philosophy" class="section philo">
       <div class="container">
-        <h3 class="font-serif center" style="font-size:26px">PHILOSOPHY</h3>
-        <div id="acc-phil" class="acc mt-4">
-          <div class="head">
-            <p class="small kicker">CONSIDERATION FOR OTHERS</p>
-            <h4 class="font-serif title mt-2">たった一つの大原則</h4>
-            <p class="font-serif principle">【大原則】相手を想うこと</p>
-            <button class="plus" aria-expanded="false" aria-controls="phil-panel" title="開閉">＋</button>
-          </div>
-          <div id="phil-panel" class="panel">
-            <div class="center small panel-body">
-              <p class="mt-3">私たちの生きる世界や、これから私たちが取り組むエンターテイメント事業は、様々な問題や要因が絡み合い、時に複雑化します。しかし、私たちは、どんなに複雑に見える問題も、その解決の糸口は、常に一つのシンプルな思想にあると信じています。</p>
-              <p class="mt-2">この想いを全ての行動の原点に置くことで、私たち自身の判断は常に明確になり、ファン、クライアント、そして関わる全ての方々との関係が、信頼に基づいた、円滑で温かいものになると、私たちは確信しています。</p>
-              <div class="pillars mt-4">
-                <div class="pillar"><strong>愛 (Love)</strong><p class="small">作品・ファン・仲間・自分自身に、常に愛情と敬意を。</p></div>
-                <div class="pillar"><strong>希望 (Hope)</strong><p class="small">困難の中にも可能性を見出し、諦めない姿勢を。</p></div>
-                <div class="pillar"><strong>平和 (Peace)</strong><p class="small">多様性を尊重し、建設的な対話で調和を目指す。</p></div>
-                <div class="pillar"><strong>誠実 (Integrity)</strong><p class="small">常に正直で透明であることを約束する。</p></div>
-              </div>
-              <p class="mt-3">これらを完璧に体現し続けることは容易ではありません。それでも私たちは、迷ったときに必ず立ち返る「原点」として、この理念を掲げ続けます。</p>
-            </div>
-          </div>
         </div>
-      </div>
     </section>
   </main>
   
@@ -151,16 +128,14 @@
     <div class="container">
       <h3 class="font-serif" style="font-size:26px">MODELS</h3>
     </div>
-    <div id="modelsContainer" class="mt-4">
+    <div id="modelsCards" class="container mt-4">
       </div>
   </section>
 
   <main>
     <section id="gallery" class="section">
       <div class="container">
-        <h3 class="font-serif" style="font-size:26px">GALLERY</h3>
-        <div id="galleryGrid" class="gallery-grid mt-4"></div>
-      </div>
+        </div>
     </section>
 
     <section id="services" class="section services">
@@ -170,17 +145,12 @@
 
     <section id="news" class="section" style="background:#fff">
       <div class="container">
-        <h3 class="font-serif" style="font-size:26px">NEWS</h3>
-        <div id="newsList" class="newslist mt-4"></div>
-      </div>
+        </div>
     </section>
 
     <section id="contact" class="section">
       <div class="container">
-        <h3 class="font-serif" style="font-size:26px">お問い合わせ</h3>
-        <form id="contact-form" class="form mt-4" action="https://formspree.io/f/manbzwok" method="POST">
-          </form>
-      </div>
+        </div>
     </section>
   </main>
 
@@ -200,7 +170,6 @@
     <div id="modalBody" class="body small"></div>
   </div>
   
-  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
   <script type="module" src="./app.js"></script>
   <script type="module" src="./cms.js"></script>
