@@ -6,7 +6,7 @@
   <title>晴天想造ENTERTAINMENT. | LP</title>
   <link rel="icon" type="image/png" href="./favicon.png">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700;900&family=Inter:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
   <link rel="stylesheet" href="styles.css">
 
@@ -20,87 +20,96 @@
     .pillar:hover {
       transform: translateY(-4px);
     }
-    .item-love { background-color: #f7e7e1; }       /* 愛 (テラコッタ系の淡い色) */
-    .item-hope { background-color: #f0f4e8; }       /* 希望 (セージグリーンの淡い色) */
-    .item-peace { background-color: #e6f0ed; }      /* 平和 (ミントグリーンの淡い色) */
-    .item-integrity { background-color: #e1eaf0; }  /* 誠実 (スカイブルー系の淡い色) */
+    .item-love { background-color: #f7e7e1; }
+    .item-hope { background-color: #f0f4e8; }
+    .item-peace { background-color: #e6f0ed; }
+    .item-integrity { background-color: #e1eaf0; }
+
+    /* === ここからが今回の修正箇所 === */
 
     /* ホバー再生動画とメッセージのコンテナ */
     .media-with-text {
       display: flex;
       flex-direction: column; /* スマートフォンでは縦並び */
-      gap: 30px; /* 要素間の隙間 */
-      align-items: center; /* 垂直方向中央揃え */
-      max-width: 1200px;
+      gap: 20px;
+      align-items: center;
+      max-width: 1100px; /* 横幅を少し調整 */
       margin-inline: auto;
       margin-top: 48px;
     }
 
-    @media (min-width: 768px) {
-      .media-with-text {
-        flex-direction: row; /* デスクトップでは横並び */
-        align-items: flex-start; /* 上揃え（画像を基準にテキストを上揃えにするため） */
-      }
-    }
-
     .video-container {
-      flex: 3; /* 動画が利用可能なスペースの約3/5を占める (調整) */
-      width: 100%; /* 小さい画面での幅調整 */
+      width: 100%;
       cursor: pointer;
       border-radius: 12px;
       overflow: hidden;
       box-shadow: 0 8px 24px rgba(0,0,0,0.1);
-      z-index: 1; /* テキストより奥に表示 */
+      z-index: 1;
     }
+
     #hover-video {
       width: 100%;
       height: auto;
       display: block;
     }
 
+    /* スマートフォンでのテキストスタイル（基本） */
     .video-message {
-      flex: 2; /* メッセージが利用可能なスペースの約2/5を占める (調整) */
-      width: 100%; /* 小さい画面での幅調整 */
-      padding: 25px 30px; /* テキストの左右パディングと上下パディング */
-      text-align: left; /* テキストの左寄せ */
-      background-color: rgba(255, 255, 255, 0.9); /* 半透明の背景色を追加して読みやすく */
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      width: 100%;
+      padding: 0 15px;
+      text-align: left;
+    }
+    .video-message h4 {
+      font-family: 'Noto Serif JP', serif;
+      font-size: 1.8em;
+      font-weight: 700;
+      color: #222;
+      margin-bottom: 0.5em;
+    }
+    .video-message p {
+      font-family: 'Noto Serif JP', serif;
+      font-size: 1em;
+      color: #444;
+      line-height: 1.8;
+    }
 
-      /* デスクトップでの重ね合わせ設定 */
-      position: relative;
-      right: 60px; /* 動画の上に重ねる量を調整 (負の値で左に寄る) */
-      margin-top: 40px; /* 動画と重なる位置を調整 */
-      z-index: 2; /* 動画より手前に表示 */
-      
-      /* スマートフォンでは重ね合わせを無効にする */
-      @media (max-width: 767px) {
-        position: static;
-        right: auto;
-        margin-top: 0;
-        background-color: #fff; /* 通常の背景色に戻す */
-        box-shadow: none;
-        padding: 0 15px; /* 元のパディングに戻すか、適切な値に調整 */
+    /* デスクトップでのレイアウト（768px以上） */
+    @media (min-width: 768px) {
+      .media-with-text {
+        flex-direction: row;
+        align-items: center; /* テキストを動画の垂直中央に配置 */
+      }
+
+      .video-container {
+        flex: 3; /* 動画の幅の比率 */
+      }
+
+      .video-message {
+        flex: 2; /* テキストエリアの幅の比率 */
+        position: relative;
+        right: 140px; /* 動画の上に大きく重ねる */
+        z-index: 2;
+        padding: 0; /* 背景がないためパディング不要 */
+      }
+
+      .video-message h4 {
+        font-size: 2.8em; /* フォントをさらに大きく */
+        font-weight: 900; /* 最も太いウェイトでインパクトを出す */
+        color: #fff; /* 文字色を白に */
+        line-height: 1.4;
+        text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8); /* 強い影で視認性を確保 */
+      }
+
+      .video-message p {
+        font-size: 1.2em; /* フォントを大きく */
+        color: #fff; /* 文字色を白に */
+        text-shadow: 1px 1px 6px rgba(0, 0, 0, 0.7); /* 強い影で視認性を確保 */
       }
     }
-    
-    .video-message h4 {
-        font-size: 1.8em; /* 文字を大きく */
-        margin-bottom: 0.7em;
-        font-family: 'Noto Serif JP', serif;
-        font-weight: 700; /* より太く */
-        color: #222;
-        line-height: 1.4;
-    }
-
-    .video-message p {
-        font-size: 1.05em; /* 文字を大きく */
-        line-height: 1.8;
-        color: #444;
-    }
+    /* === ここまでが今回の修正箇所 === */
 
   </style>
-  </head>
+</head>
 <body>
   <div id="particles-js"></div>
   <header class="header">
@@ -135,7 +144,7 @@
       <div class="copy container">
         <div>
           <img src="./logo_white.svg" alt="Seiten Sozo Entertainment Logo" style="max-width: 150px; margin-inline: auto; margin-bottom: 24px;">
-          <h1 class="font-serif">愛とAIが織りなす、  
+          <h1 class="font-serif">愛とAIが織りなす、
 新世代エンタメを世界へ 。</h1>
           <p class="mt-3" style="color:#e5e7eb;max-width:720px;margin-inline:auto">
             LuLuとku No.06の音楽を出発点に、新会社「晴天想造ENTERTAINMENT.」を設立。
@@ -170,6 +179,22 @@
       </div>
     </section>
 
+    <section class="section" style="padding-top: 0; padding-bottom: 48px;">
+      <div class="container">
+        <div class="media-with-text">
+          <div class="video-container">
+            <video id="hover-video" src="seiten.mp4" muted loop playsinline preload="metadata">
+              お使いのブラウザは動画タグをサポートしていません。
+            </video>
+          </div>
+          <div class="video-message">
+            <h4>晴天想造が描く、<br>新たな物語。</h4>
+            <p>AIと人間の共創から生まれる、未だ見ぬエンターテイメント。それは、単なる技術の融合ではなく、心と心が響き合う、普遍的な感動を追求する旅です。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section id="philosophy" class="section philo">
       <div class="container">
         <h3 class="font-serif center" style="font-size:26px">PHILOSOPHY</h3>
@@ -197,23 +222,6 @@
       </div>
     </section>
 
-    <section class="section" style="padding-top: 0; padding-bottom: 48px;">
-      <div class="container">
-        <div class="media-with-text">
-          <div class="video-container">
-            <video id="hover-video" src="seiten.mp4" muted loop playsinline preload="metadata">
-              お使いのブラウザは動画タグをサポートしていません。
-            </video>
-          </div>
-          <div class="video-message">
-            <h4>晴天想造が描く、新たな物語。</h4>
-            <p>AIと人間の共創から生まれる、未だ見ぬエンターテイメント。それは、単なる技術の融合ではなく、心と心が響き合う、普遍的な感動を追求する旅です。映像を通して、私たちはその片鱗をお見せします。</p>
-            <p>この映像は、私たちの創造的なアプローチと、AIアーティストたちの可能性を示すものです。マウスを乗せて、未来のエンタメを体感してください。</p>
-          </div>
-        </div>
-      </div>
-    </section>
-    
     <section id="models" class="section">
       <div class="container">
         <h3 class="font-serif" style="font-size:26px">MODELS</h3>
@@ -241,8 +249,8 @@
               </div>
               <button class="svc-toggle" type="button" aria-label="開閉">＋</button>
             </div>
-            <div class="svc-panel small">・オリジナル楽曲制作（作詞作曲/編曲）  
-・各種配信プラットフォームへの展開  
+            <div class="svc-panel small">・オリジナル楽曲制作（作詞作曲/編曲）
+・各種配信プラットフォームへの展開
 ・オンライン/オフラインでのライブ企画運営</div>
           </div>
           <div class="svc-item">
@@ -253,8 +261,8 @@
               </div>
               <button class="svc-toggle" aria-label="開閉">＋</button>
             </div>
-            <div class="svc-panel small">・AIアーティストの映像/音声出演キャスティング  
-・CMソング/劇伴/主題歌制作  
+            <div class="svc-panel small">・AIアーティストの映像/音声出演キャスティング
+・CMソング/劇伴/主題歌制作
 ・MV/ティザー/Behind the Scenes 企画制作</div>
           </div>
           <div class="svc-item">
@@ -265,8 +273,8 @@
               </div>
               <button class="svc-toggle" aria-label="開閉">＋</button>
             </div>
-            <div class="svc-panel small">・AIモデル/キャラクター開発と運用  
-・ブランドアンバサダー/広報起用  
+            <div class="svc-panel small">・AIモデル/キャラクター開発と運用
+・ブランドアンバサダー/広報起用
 ・自治体/施設のAI受付・案内導入支援</div>
           </div>
           <div class="svc-item">
@@ -277,8 +285,8 @@
               </div>
               <button class="svc-toggle" aria-label="開閉">＋</button>
             </div>
-            <div class="svc-panel small">・キービジュアル撮影/レタッチ  
-・LP/バナー/ポスター/空間デザイン  
+            <div class="svc-panel small">・キービジュアル撮影/レタッチ
+・LP/バナー/ポスター/空間デザイン
 ・SNSクリエイティブ（短尺動画/静止画）</div>
           </div>
           <div class="svc-item">
@@ -289,8 +297,8 @@
               </div>
               <button class="svc-toggle" aria-label="開閉">＋</button>
             </div>
-            <div class="svc-panel small">・記念日ソング/ムービー制作  
-・パーソナルAIキャラクター設計  
+            <div class="svc-panel small">・記念日ソング/ムービー制作
+・パーソナルAIキャラクター設計
 ・サプライズ企画/演出サポート</div>
           </div>
         </div>
@@ -367,19 +375,17 @@
     <header><strong class="font-serif" id="modalTitle">Title</strong><button class="x" id="modalClose" aria-label="閉じる">×</button></header>
     <div id="modalBody" class="body small"></div>
   </div>
-  
+
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
-  
+
   <script>
   document.addEventListener('DOMContentLoaded', function() {
     const video = document.getElementById('hover-video');
     if (video) {
-      // マウスが動画の上に乗った時の処理
       video.addEventListener('mouseover', () => {
         video.play();
       });
-      // マウスが動画から離れた時の処理
       video.addEventListener('mouseout', () => {
         video.pause();
       });
