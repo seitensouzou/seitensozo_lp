@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="styles.css">
 
   <style>
-    /* Philosophy 4項目の背景色 */
+    /* Philosophy 4項目の背景色（アースカラー） */
     .pillar {
       padding: 1.5em;
       border-radius: 12px;
@@ -20,27 +20,64 @@
     .pillar:hover {
       transform: translateY(-4px);
     }
-    .item-love { background-color: #fff0f5; }       /* 愛 (薄いピンク) */
-    .item-hope { background-color: #fffaf0; }       /* 希望 (薄い黄色) */
-    .item-peace { background-color: #f0fff0; }      /* 平和 (薄い緑) */
-    .item-integrity { background-color: #f0f8ff; }  /* 誠実 (薄い水色) */
+    .item-love { background-color: #f7e7e1; }       /* 愛 (テラコッタ系の淡い色) */
+    .item-hope { background-color: #f0f4e8; }       /* 希望 (セージグリーンの淡い色) */
+    .item-peace { background-color: #e6f0ed; }      /* 平和 (ミントグリーンの淡い色) */
+    .item-integrity { background-color: #e1eaf0; }  /* 誠実 (スカイブルー系の淡い色) */
 
-    /* ホバー再生動画のスタイル */
+    /* ホバー再生動画とメッセージのコンテナ */
+    .media-with-text {
+      display: flex;
+      flex-direction: column; /* スマートフォンでは縦並び */
+      gap: 30px; /* 要素間の隙間 */
+      align-items: center; /* 垂直方向中央揃え */
+      max-width: 1200px;
+      margin-inline: auto;
+      margin-top: 48px;
+    }
+
+    @media (min-width: 768px) {
+      .media-with-text {
+        flex-direction: row; /* デスクトップでは横並び */
+        align-items: flex-start; /* 上揃え */
+      }
+    }
+
     .video-container {
-      width: 100%;
-      max-width: 960px; /* 動画の最大幅 */
-      margin-inline: auto; /* 中央寄せ */
-      cursor: pointer; /* ポインターを指マークに */
-      border-radius: 12px; /* 角を丸くする */
-      overflow: hidden; /* コンテナの角丸をビデオに適用 */
+      flex: 2; /* 動画が利用可能なスペースの2/3を占める */
+      width: 100%; /* 小さい画面での幅調整 */
+      cursor: pointer;
+      border-radius: 12px;
+      overflow: hidden;
       box-shadow: 0 8px 24px rgba(0,0,0,0.1);
-      margin-top: 48px; /* 上のセクションとの余白 */
     }
     #hover-video {
       width: 100%;
       height: auto;
-      display: block; /* 余分な隙間を削除 */
+      display: block;
     }
+
+    .video-message {
+      flex: 1; /* メッセージが利用可能なスペースの1/3を占める */
+      width: 100%; /* 小さい画面での幅調整 */
+      padding: 0 15px; /* テキストの左右パディング */
+      text-align: left; /* テキストの左寄せ */
+    }
+    
+    .video-message h4 {
+        font-size: 1.5em;
+        margin-bottom: 0.5em;
+        font-family: 'Noto Serif JP', serif;
+        font-weight: 600;
+        color: #333;
+    }
+
+    .video-message p {
+        font-size: 0.95em;
+        line-height: 1.7;
+        color: #555;
+    }
+
   </style>
   </head>
 <body>
@@ -174,13 +211,21 @@
 
     <section class="section" style="padding-top: 0;">
       <div class="container">
-        <div class="video-container">
-          <video id="hover-video" src="seiten.mp4" muted loop playsinline preload="metadata">
-            お使いのブラウザは動画タグをサポートしていません。
-          </video>
+        <div class="media-with-text">
+          <div class="video-container">
+            <video id="hover-video" src="seiten.mp4" muted loop playsinline preload="metadata">
+              お使いのブラウザは動画タグをサポートしていません。
+            </video>
+          </div>
+          <div class="video-message">
+            <h4>晴天想造が描く、新たな物語。</h4>
+            <p>AIと人間の共創から生まれる、未だ見ぬエンターテイメント。それは、単なる技術の融合ではなく、心と心が響き合う、普遍的な感動を追求する旅です。映像を通して、私たちはその片鱗をお見せします。</p>
+            <p class="mt-2">この映像は、私たちの創造的なアプローチと、AIアーティストたちの可能性を示すものです。マウスを乗せて、未来のエンタメを体感してください。</p>
+          </div>
         </div>
       </div>
     </section>
+    
     <section id="models" class="section">
       <div class="container">
         <h3 class="font-serif" style="font-size:26px">MODELS</h3>
