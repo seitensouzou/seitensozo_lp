@@ -1,8 +1,6 @@
-(function () {
-  'use strict';
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@sanity/client@6/+esm';
+import { qs, qsa } from './app.js';
 
-  // Sanity ClientはHTMLで直接読み込むので、グローバル変数の `SanityClient` を使う
-  const { createClient } = window.SanityClient;
 
   // ====== 設定 ======
   const SANITY = {
