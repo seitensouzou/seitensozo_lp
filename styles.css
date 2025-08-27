@@ -263,3 +263,23 @@ html, body { overflow-x: clip; }
   }
 }
 
+/* 禁則: この中は改行させない */
+.nowrap{ white-space: nowrap; }
+
+/* 重なりテキストの箱を広げる＆禁則を強める */
+@media (min-width: 768px){
+  .media-with-text{ gap: 40px; }
+  .video-message{
+    /* できる限り広く（画面に応じて最大値で制御） */
+    width: min(56vw, 780px);
+    max-width: 780px;
+    flex: 2.6;
+    right: 80px;       /* 重なり具合は維持しつつ余裕を持たせる */
+  }
+  .video-message h4{
+    line-break: strict;   /* 和文の禁則処理を強める */
+    word-break: keep-all; /* なるべく文字の途中で折り返さない */
+  }
+}
+
+
