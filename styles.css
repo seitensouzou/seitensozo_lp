@@ -92,11 +92,16 @@ body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans JP",
    Models Section (ワイド表示 & スライダー対応版)
 =================================== */
 /* styles.css: 137行目以降をこちらに差し替え */
+/* 背景を左右に無限に広げて（100vmax）、はみ出しは clip で見せる */
 #models {
-  background-color: #f9fafb;
-  padding-top: 80px;
-  padding-bottom: 80px;
+  background: #f9fafb;                   /* 帯の色 */
+  box-shadow: 0 0 0 100vmax #f9fafb;     /* 背景を左右へ巨大に延ばす */
+  clip-path: inset(0 -100vmax);          /* はみ出しを可視化（スクロールを増やさない） */
 }
+
+/* すでに .section に左右paddingが無いなら不要だけど、念のため */
+#models.section { padding-left: 0; padding-right: 0; }
+
 #modelsContainer {
   width: 100%;
   max-width: 100%;
@@ -120,9 +125,7 @@ body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans JP",
 }
 .models-swiper {
   overflow: visible;
-  /* スライダーの両端に余白を作るための設定 */
-  padding-left: calc((100vw - min(1100px, 92vw)) / 2);
-  padding-right: calc((100vw - min(1100px, 92vw)) / 2);
+  padding-inline: calc((100vw - min(1100px, 92vw)) / 2);
 }
 .models-swiper .swiper-slide {
   transition: transform 0.4s ease, opacity 0.4s ease;
