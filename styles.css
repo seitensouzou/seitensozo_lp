@@ -126,10 +126,7 @@ body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans JP",
     grid-template-columns: 1fr;
   }
 }
-.models-swiper {
-  overflow: visible;
-  padding-inline: calc((100vw - min(1100px, 92vw)) / 2);
-}
+.models-swiper { overflow: visible; }
 .models-swiper .swiper-slide {
   transition: transform 0.4s ease, opacity 0.4s ease;
   opacity: 0.4;
@@ -142,9 +139,8 @@ body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans JP",
   transform: scale(1);
 }
 .models-swiper .swiper-button-next,
-.models-swiper .swiper-button-prev {
-  color: var(--ink);
-}
+.models-swiper .swiper-button-prev { transform: translateY(-4px); }
+
 #modelsContainer .card{aspect-ratio:4/5;position:relative;border-radius:16px;overflow:hidden;background:#ddd}
 #modelsContainer .cover{width:100%;height:100%;object-fit:cover}
 #modelsContainer .flip{position:relative;perspective:1400px;height:100%}
