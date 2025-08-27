@@ -113,26 +113,37 @@ async function renderModels() {
           <div class="swiper-button-prev"></div>
           <div class="swiper-button-next"></div>
         </div>`;
-      // data.length >= 4 の分岐の中
-new Swiper('.models-swiper', {
-  // ループは切って初期位置を決め打ち（扱いが安定）
-  loop: false,
-  centeredSlides: true,
-  spaceBetween: 26,
-  slidesPerView: 1,  // モバイル基準
-  navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
-  breakpoints: {
-    860:  { slidesPerView: 2, spaceBetween: 24 },
-    // デスクトップは3枚表示＋右端に“次の1枚が少し覗く”オフセット
-    1100: { slidesPerView: 3, spaceBetween: 26, slidesOffsetAfter: 80 }
-  },
-  on: {
-    init(sw) {
-      // 4人以上のときは「0,1,2の3枚を中央寄せ」で開始（= アクティブは1）
-      if (sw.slides.length >= 4) sw.slideTo(1, 0, false);
-    }
-  }
-});
+
+      // === Swiper（4人以上）===
+      // スマホ：1人目から開始
+      // デスクトップ(>=1100px)：0,1,2を中央に並べ、4人目を右端チラ見せ（= index 1から開始）
+      new Swiper('.models-swiper', {
+        loop: true,                          // オートスライドを無限に回す
+        centeredSlides: true,
+        slidesPerView: 1,                    // モバイル基準
+        spaceBetween: 26,
+        autoplay: {
+          delay: 3500,
+          disableOnInteraction: false,
+          pauseOnMouseEnter: true,
+        },
+        navigation: {
+          nextEl: '.swiper-button-next',
+          prevEl: '.swiper-button-prev',
+        },
+        breakpoints: {
+          860:  { slidesPerView: 2, spaceBetween: 24 },
+          1100: { slidesPerView: 3, spaceBetween: 26, slidesOffsetAfter: 100 }
+        },
+        on: {
+          init(sw) {
+            const isDesktop = window.matchMedia('(min-width:1100px)').matches;
+            const startIndex = (isDesktop && sw.slides.length >= 4) ? 1 : 0;
+            sw.slideToLoop(startIndex, 0, false); // 1=中央寄せ, 0=最初から
+          }
+        }
+      });
+
     } else {
       container.innerHTML = `<div id="modelsCards" class="models-grid">${cardsHtml}</div>`;
     }
@@ -147,7 +158,7 @@ new Swiper('.models-swiper', {
       closeBtn?.addEventListener('click', (e) => { e.stopPropagation(); card.classList.remove('open'); });
     });
 
-    // 動画カバーのホバー再生
+    // 動画カバーのホバー再生（PC向け）
     qsa('#modelsContainer .card').forEach(card => {
       const video = card.querySelector('video.cover');
       if (video) {
@@ -278,6 +289,7 @@ async function renderCF() {
 
 // ===== 実行 =====
 Promise.allSettled([ renderModels(), renderNews(), renderGallery(), renderCF() ]);
+
 
 
 
