@@ -38,7 +38,7 @@ export const qsa = (s, sc = document) => [...sc.querySelectorAll(s)];
   if (!cfSection) return;
 
   try {
-    const { createClient } = await import('https://cdn.jsdelivr.net/npm/@sanity/client@6/+esm');
+    const { createClient } = await import('https://cdn.jsdelivr.net/npm/@sanity/client@6/+esm' );
     const sanityClient = createClient({
       projectId: "9iu2dx4s",
       dataset: "production",
@@ -266,3 +266,4 @@ if (window.particlesJS) {
     "retina_detect": true
   });
 }
+
