@@ -10,6 +10,10 @@ a{text-decoration:none;color:inherit}
   --cat-press:#111827;--cat-music:#2563eb;--cat-proj:#059669;
 }
 body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans JP",Helvetica,Arial;color:var(--ink);background:#fff;line-height:1.65;}
+/* 横スクロールを出さない（チラ見せ維持） */
+body{overflow-x:clip;}
+@supports not (overflow: clip){ body{overflow-x:hidden;} }
+
 .font-serif{font-family:"Noto Serif JP",serif}
 .container{width:min(1100px,92vw);margin-inline:auto}
 .kicker{letter-spacing:.18em;font-variant-caps:all-small-caps}
@@ -91,55 +95,44 @@ body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans JP",
 /* ===================================
    Models Section (ワイド表示 & スライダー対応版)
 =================================== */
-/* styles.css: 137行目以降をこちらに差し替え */
-/* 背景を左右に無限に広げて（100vmax）、はみ出しは clip で見せる */
-#models {
-  background: #f9fafb;                   /* 帯の色 */
-  box-shadow: 0 0 0 100vmax #f9fafb;     /* 背景を左右へ巨大に延ばす */
-  clip-path: inset(0 -100vmax);          /* はみ出しを可視化（スクロールを増やさない） */
+#models{
+  background:#f9fafb;
+  box-shadow:0 0 0 100vmax #f9fafb;
+  clip-path:inset(0 -100vmax);
 }
-
-/* すでに .section に左右paddingが無いなら不要だけど、念のため */
-#models.section { padding-left: 0; padding-right: 0; }
+#models.section{padding-left:0;padding-right:0}
 
 /* MODELSコンテナを全幅に拡張 */
-#modelsContainer {
-  width: 100%;
-  max-width: none;
-  margin-inline: 0;
-}
+#modelsContainer{width:100%;max-width:none;margin-inline:0}
 
-.models-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 32px;
-  padding-inline: 5vw; /* 端に少し余白 */
+.models-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:32px;
+  padding-inline:5vw; /* 端に少し余白 */
 }
+@media (max-width:1024px){.models-grid{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:860px){.models-grid{grid-template-columns:1fr}}
 
-@media (max-width: 1024px) {
-  .models-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
+.models-swiper{
+  overflow:visible;
+  padding-inline:clamp(16px,4vw,48px); /* 両サイドのガターを確保 */
 }
-@media (max-width: 860px) {
-  .models-grid {
-    grid-template-columns: 1fr;
-  }
-}
-.models-swiper { overflow: visible; }
-.models-swiper .swiper-slide {
-  transition: transform 0.4s ease, opacity 0.4s ease;
-  opacity: 0.4;
-  transform: scale(0.85);
+.models-swiper .swiper-slide{
+  transition:transform .4s ease,opacity .4s ease;
+  opacity:.4;transform:scale(.85);
 }
 .models-swiper .swiper-slide-active,
 .models-swiper .swiper-slide-next,
-.models-swiper .swiper-slide-prev {
-  opacity: 1;
-  transform: scale(1);
+.models-swiper .swiper-slide-prev{
+  opacity:1;transform:scale(1);
 }
 .models-swiper .swiper-button-next,
-.models-swiper .swiper-button-prev { transform: translateY(-4px); }
+.models-swiper .swiper-button-prev{
+  transform:translateY(-4px);
+  right:24px; left:auto;
+}
+.models-swiper .swiper-button-prev{left:24px; right:auto;}
 
 #modelsContainer .card{aspect-ratio:4/5;position:relative;border-radius:16px;overflow:hidden;background:#ddd}
 #modelsContainer .cover{width:100%;height:100%;object-fit:cover}
@@ -235,41 +228,17 @@ body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans JP",
 .modal .x{width:36px;height:36px;border:1px solid #d1d5db;border-radius:999px;display:grid;place-items:center}
 .modal-open .modal-mask{opacity:1;pointer-events:auto}
 .modal-open .modal{opacity:1;transform:translate(-50%,-50%) scale(1)}
-.modal:not([aria-hidden="false"]) {
-  display: none !important;
-}
+.modal:not([aria-hidden="false"]){display:none !important}
 
 /* ===== Particle Effect Style ===== */
-#particles-js {
-  position: fixed;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  z-index: -1;
-  background-color: #ffffff;
-}
+#particles-js{position:fixed;width:100%;height:100%;top:0;left:0;z-index:-1;background-color:#ffffff}
 
 /* CF Supporters Style */
-.cf .meta {
-  align-items: center;
-}
-.cf-supporters .val {
-  font-size: 22px;
-  font-weight: 700;
-  line-height: 1.2;
-}
+.cf .meta{align-items:center}
+.cf-supporters .val{font-size:22px;font-weight:700;line-height:1.2}
 
 /* ===== Social Icons in Footer ===== */
-.social-icons {
-  display: flex;
-  gap: 16px;
-  align-items: center;
-}
-.social-icons a {
-  color: var(--muted);
-  transition: color 0.2s;
-}
-.social-icons a:hover {
-  color: var(--ink);
-}
+.social-icons{display:flex;gap:16px;align-items:center}
+.social-icons a{color:var(--muted);transition:color .2s}
+.social-icons a:hover{color:var(--ink)}
+
