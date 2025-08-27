@@ -6,6 +6,7 @@
   <title>晴天想造ENTERTAINMENT. | LP</title>
   <link rel="icon" type="image/png" href="./favicon.png">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- 見出しを細くするために 400 を使います -->
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700;900&family=Inter:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
   <link rel="stylesheet" href="styles.css">
@@ -17,27 +18,33 @@
       border-radius: 12px;
       transition: transform 0.3s ease;
     }
-    .pillar:hover {
-      transform: translateY(-4px);
-    }
+    .pillar:hover { transform: translateY(-4px); }
     .item-love { background-color: #f7e7e1; }
     .item-hope { background-color: #f0f4e8; }
     .item-peace { background-color: #e6f0ed; }
     .item-integrity { background-color: #e1eaf0; }
 
-    /* === ここからが今回の修正箇所 === */
+    /* === 今回のリクエスト対応: ヒーロー見出し/メッセージ調整 === */
+
+    /* ヒーロー見出しを「細く・黒・影なし」、サイズはstyles.cssのまま */
+    .hero .copy h1 {
+      font-weight: 400;     /* 細く */
+      color: #111;          /* 黒 */
+      text-shadow: none;    /* 影なし */
+      line-height: 1.2;
+      letter-spacing: .02em;
+    }
 
     /* ホバー再生動画とメッセージのコンテナ */
     .media-with-text {
       display: flex;
-      flex-direction: column; /* スマートフォンでは縦並び */
+      flex-direction: column; /* スマホでは縦並び */
       gap: 20px;
       align-items: center;
-      max-width: 1100px; /* 横幅を少し調整 */
+      max-width: 1100px;
       margin-inline: auto;
       margin-top: 48px;
     }
-
     .video-container {
       width: 100%;
       cursor: pointer;
@@ -46,31 +53,24 @@
       box-shadow: 0 8px 24px rgba(0,0,0,0.1);
       z-index: 1;
     }
+    #hover-video { width: 100%; height: auto; display: block; }
 
-    #hover-video {
-      width: 100%;
-      height: auto;
-      display: block;
-    }
-
-    /* スマートフォンでのテキストスタイル（基本） */
-    .video-message {
-      width: 100%;
-      padding: 0 15px;
-      text-align: left;
-    }
+    /* スマホのテキスト（基本は細く黒） */
+    .video-message { width: 100%; padding: 0 15px; text-align: left; }
     .video-message h4 {
       font-family: 'Noto Serif JP', serif;
       font-size: 1.8em;
-      font-weight: 700;
-      color: #222;
+      font-weight: 400;   /* 細く */
+      color: #111;        /* 黒 */
       margin-bottom: 0.5em;
+      text-shadow: none;  /* 影なし */
     }
     .video-message p {
       font-family: 'Noto Serif JP', serif;
       font-size: 1em;
       color: #444;
       line-height: 1.8;
+      text-shadow: none;  /* 影なし */
     }
 
     /* デスクトップでのレイアウト（768px以上） */
@@ -79,35 +79,28 @@
         flex-direction: row;
         align-items: center; /* テキストを動画の垂直中央に配置 */
       }
-
-      .video-container {
-        flex: 3; /* 動画の幅の比率 */
-      }
-
+      .video-container { flex: 3; }
       .video-message {
-        flex: 2; /* テキストエリアの幅の比率 */
+        flex: 2;
         position: relative;
-        right: 140px; /* 動画の上に大きく重ねる */
+        right: 140px;        /* 動画の上に重ねる（重なり維持） */
         z-index: 2;
-        padding: 0; /* 背景がないためパディング不要 */
+        padding: 0;
       }
-
       .video-message h4 {
-        font-size: 2.8em; /* フォントをさらに大きく */
-        font-weight: 900; /* 最も太いウェイトでインパクトを出す */
-        color: #fff; /* 文字色を白に */
+        font-size: 2.8em;
+        font-weight: 400;    /* デスクトップでも細く */
+        color: #111;         /* 黒 */
         line-height: 1.4;
-        text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8); /* 強い影で視認性を確保 */
+        text-shadow: none;   /* 影なし */
       }
-
       .video-message p {
-        font-size: 1.2em; /* フォントを大きく */
-        color: #fff; /* 文字色を白に */
-        text-shadow: 1px 1px 6px rgba(0, 0, 0, 0.7); /* 強い影で視認性を確保 */
+        font-size: 1.2em;
+        color: #111;         /* 黒に統一 */
+        text-shadow: none;   /* 影なし */
       }
     }
-    /* === ここまでが今回の修正箇所 === */
-
+    /* === 修正ここまで === */
   </style>
 </head>
 <body>
@@ -144,8 +137,8 @@
       <div class="copy container">
         <div>
           <img src="./logo_white.svg" alt="Seiten Sozo Entertainment Logo" style="max-width: 150px; margin-inline: auto; margin-bottom: 24px;">
-          <h1 class="font-serif">愛とAIが織りなす、
-新世代エンタメを世界へ 。</h1>
+          <!-- ★ 改行位置を固定：「織りなす、」で改行 -->
+          <h1 class="font-serif">愛とAIが織りなす、<br>新世代エンタメを世界へ。</h1>
           <p class="mt-3" style="color:#e5e7eb;max-width:720px;margin-inline:auto">
             LuLuとku No.06の音楽を出発点に、新会社「晴天想造ENTERTAINMENT.」を設立。
             音楽・映像・広告・イベントまで、ジャンルを超えた新しい表現の場を切り拓きます。
@@ -179,6 +172,7 @@
       </div>
     </section>
 
+    <!-- メッセージ重なりセクション（テキストは黒・細・影なし） -->
     <section class="section" style="padding-top: 0; padding-bottom: 48px;">
       <div class="container">
         <div class="media-with-text">
@@ -195,6 +189,7 @@
       </div>
     </section>
 
+    <!-- ★★ 次に PHILOSOPHY を表示（入れ替え完了） ★★ -->
     <section id="philosophy" class="section philo">
       <div class="container">
         <h3 class="font-serif center" style="font-size:26px">PHILOSOPHY</h3>
@@ -221,13 +216,15 @@
         </div>
       </div>
     </section>
+    <!-- ★★ 入れ替えここまで ★★ -->
 
+
+    <!-- ★★ セクション入れ替え：まず MODELS を先に表示 ★★ -->
     <section id="models" class="section">
       <div class="container">
         <h3 class="font-serif" style="font-size:26px">MODELS</h3>
       </div>
-      <div id="modelsContainer" class="mt-4">
-        </div>
+      <div id="modelsContainer" class="mt-4"></div>
     </section>
 
     <section id="gallery" class="section">
@@ -383,13 +380,12 @@
   document.addEventListener('DOMContentLoaded', function() {
     const video = document.getElementById('hover-video');
     if (video) {
-      video.addEventListener('mouseover', () => {
-        video.play();
-      });
-      video.addEventListener('mouseout', () => {
-        video.pause();
-      });
+      video.addEventListener('mouseover', () => { video.play(); });
+      video.addEventListener('mouseout', () => { video.pause(); });
     }
+    // フッター年号
+    const y = document.getElementById('year');
+    if (y) y.textContent = new Date().getFullYear();
   });
   </script>
   <script type="module" src="./app.js"></script>
@@ -397,3 +393,4 @@
 
 </body>
 </html>
+
