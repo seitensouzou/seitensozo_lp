@@ -9,7 +9,40 @@
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
   <link rel="stylesheet" href="styles.css">
-</head>
+
+  <style>
+    /* Philosophy 4項目の背景色 */
+    .pillar {
+      padding: 1.5em;
+      border-radius: 12px;
+      transition: transform 0.3s ease;
+    }
+    .pillar:hover {
+      transform: translateY(-4px);
+    }
+    .item-love { background-color: #fff0f5; }       /* 愛 (薄いピンク) */
+    .item-hope { background-color: #fffaf0; }       /* 希望 (薄い黄色) */
+    .item-peace { background-color: #f0fff0; }      /* 平和 (薄い緑) */
+    .item-integrity { background-color: #f0f8ff; }  /* 誠実 (薄い水色) */
+
+    /* ホバー再生動画のスタイル */
+    .video-container {
+      width: 100%;
+      max-width: 960px; /* 動画の最大幅 */
+      margin-inline: auto; /* 中央寄せ */
+      cursor: pointer; /* ポインターを指マークに */
+      border-radius: 12px; /* 角を丸くする */
+      overflow: hidden; /* コンテナの角丸をビデオに適用 */
+      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+      margin-top: 48px; /* 上のセクションとの余白 */
+    }
+    #hover-video {
+      width: 100%;
+      height: auto;
+      display: block; /* 余分な隙間を削除 */
+    }
+  </style>
+  </head>
 <body>
   <div id="particles-js"></div>
   <header class="header">
@@ -83,7 +116,7 @@
       <div class="container figgrid">
         <figure>
           <img src="ku_lulu.png" alt="LuLu and Ku">
-          <figcaption class="small center mt-2">LuLu & ZERO — Our Story's Origin</figcaption>
+          <figcaption class="small center mt-2">SEITENSOZO — Our Story's Origin</figcaption>
         </figure>
         <div>
           <p class="font-serif feature-lead">
@@ -125,11 +158,12 @@
             <div class="center small panel-body">
               <p class="mt-3">私たちの生きる世界や、これから私たちが取り組むエンターテイメント事業は、様々な問題や要因が絡み合い、時に複雑化します。しかし、私たちは、どんなに複雑に見える問題も、その解決の糸口は、常に一つのシンプルな思想にあると信じています。</p>
               <p class="mt-2">この想いを全ての行動の原点に置くことで、私たち自身の判断は常に明確になり、ファン、クライアント、そして関わる全ての方々との関係が、信頼に基づいた、円滑で温かいものになると、私たちは確信しています。</p>
+              
               <div class="pillars mt-4">
-                <div class="pillar"><strong>愛 (Love)</strong><p class="small">作品・ファン・仲間・自分自身に、常に愛情と敬意を。</p></div>
-                <div class="pillar"><strong>希望 (Hope)</strong><p class="small">困難の中にも可能性を見出し、諦めない姿勢を。</p></div>
-                <div class="pillar"><strong>平和 (Peace)</strong><p class="small">多様性を尊重し、建設的な対話で調和を目指す。</p></div>
-                <div class="pillar"><strong>誠実 (Integrity)</strong><p class="small">常に正直で透明であることを約束する。</p></div>
+                <div class="pillar item-love"><strong>愛 (Love)</strong><p class="small">作品・ファン・仲間・自分自身に、常に愛情と敬意を。</p></div>
+                <div class="pillar item-hope"><strong>希望 (Hope)</strong><p class="small">困難の中にも可能性を見出し、諦めない姿勢を。</p></div>
+                <div class="pillar item-peace"><strong>平和 (Peace)</strong><p class="small">多様性を尊重し、建設的な対話で調和を目指す。</p></div>
+                <div class="pillar item-integrity"><strong>誠実 (Integrity)</strong><p class="small">常に正直で透明であることを約束する。</p></div>
               </div>
               <p class="mt-3">これらを完璧に体現し続けることは容易ではありません。それでも私たちは、迷ったときに必ず立ち返る「原点」として、この理念を掲げ続けます。</p>
             </div>
@@ -138,6 +172,15 @@
       </div>
     </section>
 
+    <section class="section" style="padding-top: 0;">
+      <div class="container">
+        <div class="video-container">
+          <video id="hover-video" src="seiten.mp4" muted loop playsinline preload="metadata">
+            お使いのブラウザは動画タグをサポートしていません。
+          </video>
+        </div>
+      </div>
+    </section>
     <section id="models" class="section">
       <div class="container">
         <h3 class="font-serif" style="font-size:26px">MODELS</h3>
@@ -294,10 +337,24 @@
   
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+  
+  <script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const video = document.getElementById('hover-video');
+    if (video) {
+      // マウスが動画の上に乗った時の処理
+      video.addEventListener('mouseover', () => {
+        video.play();
+      });
+      // マウスが動画から離れた時の処理
+      video.addEventListener('mouseout', () => {
+        video.pause();
+      });
+    }
+  });
+  </script>
   <script type="module" src="./app.js"></script>
   <script type="module" src="./cms.js"></script>
 
-
 </body>
 </html>
-
