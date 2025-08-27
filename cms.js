@@ -9,11 +9,12 @@ const SANITY = {
   useCdn: true,
 };
 
-const client = createClient(SANITY);
+const client = createClient(SANITY );
 console.info("[CMS] Sanity client initialized via ES Module");
 
 // ===== ヘルパー =====
-const safeBR = (t = "") => String(t || "").replace(/\n/g, "<br>");
+const safeBR = (t = "") => String(t || "").replace(/\n/g, "  
+");
 
 function extractYouTubeId(url = "") {
   try {
@@ -63,7 +64,7 @@ async function renderModels() {
 
     const cardsHtml = data.map(m => {
       let coverElement = `<img src="${m.imageUrl || 'https://placehold.co/800x1000/E0E0E0/333?text=MODEL'}" alt="${m.name || ''}" class="cover">`;
-      if (m.coverType === 'video' && m.videoUrl) {
+      if (m.coverType === 'video' && m.videoUrl ) {
         coverElement = `<video src="${m.videoUrl}" muted loop playsinline class="cover"></video>`;
       }
       
@@ -90,7 +91,7 @@ async function renderModels() {
                   ${(m.sections || []).map(s => `<div class="carded"><h5>${s.title || ''}</h5><p>${safeBR(s.body || '')}</p></div>`).join("")}
                 </div>
                 ${yt ? `<div class="yt mt-2"><iframe width="100%" height="260" src="https://www.youtube-nocookie.com/embed/${yt}?rel=0" title="${m.name} YouTube" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div>` : ""}
-                ${linksToPillsHtml(m.streams)}
+                ${linksToPillsHtml(m.streams )}
               </div>
             </div>
           </div>
@@ -125,17 +126,15 @@ async function renderModels() {
           prevEl: '.swiper-button-prev',
         },
         breakpoints: {
-  // 860px以下の画面サイズの場合
-  320: { // 最小の画面サイズから指定
-    slidesPerView: 1,
-    spaceBetween: 20
-  },
-  // 861px以上の画面サイズの場合
-  861: {
-    slidesPerView: 3, // 3枚表示に戻す
-    spaceBetween: 30
-  }
-}
+          320: {
+            slidesPerView: 1,
+            spaceBetween: 20
+          },
+          861: {
+            slidesPerView: 3,
+            spaceBetween: 30
+          }
+        }
       });
 
     } else {
@@ -301,3 +300,4 @@ async function renderGallery() {
 (async () => {
   await Promise.all([renderModels(), renderNews(), renderGallery()]);
 })();
+
