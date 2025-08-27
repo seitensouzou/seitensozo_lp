@@ -29,57 +29,6 @@ export const qsa = (s, sc = document) => [...sc.querySelectorAll(s)];
   });
 })();
 
-/* ===== CF counter & progress (CMS対応版) ===== */
-(async () => {
-  const cfSection = qs(".cf");
-  const dd = qs("#dd"), hh = qs("#hh"), mm = qs("#mm"), ss = qs("#ss");
-  const nowEl = qs("#cfNow"), tgtEl = qs("#cfTarget"), supEl = qs("#cfSupporters"), bar = qs("#cfBar");
-  
-  if (!cfSection) return;
-
-  try {
-    const { createClient } = await import('https://cdn.jsdelivr.net/npm/@sanity/client@6/+esm' );
-    const sanityClient = createClient({
-      projectId: "9iu2dx4s",
-      dataset: "production",
-      apiVersion: "2023-10-01",
-      useCdn: true,
-    });
-    const data = await sanityClient.fetch(`*[_type == "cfSettings"][0]`);
-    if (!data) {
-      console.warn("クラウドファンディング設定が見つかりません。");
-      cfSection.style.display = "none";
-      return;
-    }
-    const { currentAmount, targetAmount, endDate, supporterCount } = data;
-    const targetDate = new Date(endDate);
-    nowEl.textContent = "¥" + (currentAmount || 0).toLocaleString();
-    tgtEl.textContent = "¥" + (targetAmount || 0).toLocaleString();
-    supEl.textContent = (supporterCount || 0) + "人";
-    requestAnimationFrame(() => {
-      const percentage = Math.min(100, ((currentAmount || 0) / (targetAmount || 1)) * 100);
-      bar.style.width = percentage + "%";
-      bar.style.transition = "width 1.2s cubic-bezier(.2,.7,0,1)";
-    });
-    const timerInterval = setInterval(() => {
-      const d = +targetDate - +new Date();
-      const Z = n => String(n).padStart(2, "0");
-      if (d > 0) {
-        dd.textContent = Z(Math.floor(d / 86400000));
-        hh.textContent = Z(Math.floor(d / 3600000) % 24);
-        mm.textContent = Z(Math.floor(d / 60000) % 60);
-        ss.textContent = Z(Math.floor(d / 1000) % 60);
-      } else {
-        dd.textContent = hh.textContent = mm.textContent = ss.textContent = "00";
-        clearInterval(timerInterval);
-      }
-    }, 1000);
-  } catch (err) {
-    console.error("CFデータの読み込みに失敗しました:", err);
-    cfSection.style.display = "none";
-  }
-})();
-
 /* ===== Philosophy accordion ===== */
 (() => {
   const acc = qs("#acc-phil"),
@@ -266,4 +215,5 @@ if (window.particlesJS) {
     "retina_detect": true
   });
 }
+
 
