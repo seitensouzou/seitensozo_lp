@@ -1,4 +1,3 @@
-// 【cms.js 全文】
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@sanity/client@6/+esm';
 import { qs, qsa } from './app.js';
 
@@ -34,21 +33,21 @@ function linksToPillsHtml(links = []) {
         deezer: { label: 'Deezer', color: '#FF1F1F' },
         amazon: { label: 'Amazon Music', color: '#146EB4' }
     };
-    const pills = (links || []).map(link => {
+    return (links || []).map(link => {
         const service = serviceMap[link.service];
         if (!service) return '';
         return `<a class="pill" style="background:${service.color}" href="${link.url}" target="_blank" rel="noopener">${service.label}</a>`;
     }).join('');
-    return pills ? `<div class="streams mt-4">${pills}</div>` : '';
 }
 
-// ===== GROQ =====
+// ===== GROQ クエリ =====
 const qModels = `*[_type == "model"]|order(order asc){_id, name, role, coverType, "imageUrl": coverImage.asset->url, "videoUrl": coverVideo.asset->url, youtube, sections, streams}`;
 const qNews = `*[_type == "news"]|order(date desc){_id,title,body,tag,date}`;
 const qGallery = `*[_type == "galleryItem"]|order(order asc){ itemType, "imageUrl": image.asset->url, "videoUrl": videoFile.asset->url, caption }`;
 const qCF = `*[_type == "cfSettings"][0]`;
 
-// ===== RENDER FUNCTIONS =====
+// ===== レンダリング関数 =====
+
 async function renderModels() {
   const container = qs('#modelsContainer');
   if (!container) return;
@@ -58,14 +57,51 @@ async function renderModels() {
       container.innerHTML = `<p class="small" style="color:#6b7280">公開済みのモデルはまだありません。</p>`;
       return;
     }
+
     const cardsHtml = data.map(m => {
-      let coverElement = `<img src="${m.imageUrl || 'https://placehold.co/800x1000/E0E0E0/333?text=MODEL'}" alt="${m.name || ''}" class="cover">`;
-      if (m.coverType === 'video' && m.videoUrl ) {
-        coverElement = `<video src="${m.videoUrl}" muted loop playsinline class="cover"></video>`;
+      const coverElement = (m.coverType === 'video' && m.videoUrl)
+        ? `<video src="${m.videoUrl}" muted loop playsinline class="cover"></video>`
+        : `<img src="${m.imageUrl || 'https://placehold.co/800x1000/E0E0E0/333?text=MODEL'}" alt="${m.name || ''}" class="cover">`;
+
+      const yt = extractYouTubeId(m.youtube || "" );
+      const sectionsHtml = (m.sections || []).map(s => `<div class="carded"><h5>${s.title || ''}</h5><p>${safeBR(s.body || '')}</p></div>`).join("");
+      const streamsHtml = linksToPillsHtml(m.streams);
+      const ytHtml = yt ? `<div class="yt mt-2"><iframe width="100%" height="260" src="https://www.youtube-nocookie.com/embed/${yt}?rel=0" title="${m.name} YouTube" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div>` : "";
+
+      const cardContentHtml = `
+        <article class="card flip" data-card>
+          <div class="wrap3d">
+            <div class="face front">
+              ${coverElement}
+              <div class="meta">
+                <div>
+                  <div class="font-serif" style="font-size:20px">${m.name || ''}</div>
+                  <p class="small meta-sub">${m.role || ""}</p>
+                </div>
+                <button class="openbtn" title="開く">＋</button>
+              </div>
+            </div>
+            <div class="face back">
+              <button class="close" title="閉じる">×</button>
+              <div class="back-inner">
+                <div>
+                  <div class="font-serif" style="font-size:20px">${m.name || ''}</div>
+                  <p class="small">${m.role || ""}</p>
+                </div>
+                <div class="profile grid">${sectionsHtml}</div>
+                ${ytHtml}
+                <div class="streams mt-4">${streamsHtml}</div>
+              </div>
+            </div>
+          </div>
+        </article>`;
+      
+      // 構文エラーを修正：三項演算子をif文に置き換え、より安全な記述に変更
+      if (data.length >= 4 ) {
+        return `<div class="swiper-slide">${cardContentHtml}</div>`;
+      } else {
+        return cardContentHtml;
       }
-      const yt = extractYouTubeId(m.youtube || "");
-      const cardContentHtml = `<article class="card flip" data-card><div class="wrap3d"><div class="face front">${coverElement}<div class="meta"><div><div class="font-serif" style="font-size:20px">${m.name || ''}</div><p class="small meta-sub">${m.role || ""}</p></div><button class="openbtn" title="開く">＋</button></div></div><div class="face back"><button class="close" title="閉じる">×</button><div class="back-inner"><div><div class="font-serif" style="font-size:20px">${m.name || ''}</div><p class="small">${m.role || ""}</p></div><div class="profile grid">${(m.sections || []).map(s => `<div class="carded"><h5>${s.title || ''}</h5><p>${safeBR(s.body || '')}</p></div>`).join("")}</div>${yt ? `<div class="yt mt-2"><iframe width="100%" height="260" src="https://www.youtube-nocookie.com/embed/${yt}?rel=0" title="${m.name} YouTube" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></div>` : ""}${linksToPillsHtml(m.streams )}</div></div></div></article>`;
-      return (data.length >= 4) ? `<div class="swiper-slide">${cardContentHtml}</div>` : cardContentHtml;
     }).join("");
 
     if (data.length >= 4) {
@@ -80,15 +116,19 @@ async function renderModels() {
     }
 
     const cards = qsa('#modelsContainer [data-card]');
-    const closeAll = (except) => cards.forEach(c => { if (c !== except) c.classList.remove('open'); });
     cards.forEach(card => {
-      card.addEventListener('click', (e) => {
-        const openBtn = e.target.closest('.openbtn');
-        const closeBtn = e.target.closest('.close');
-        if (openBtn) { const isOpen = card.classList.contains('open'); closeAll(card); if (!isOpen) card.classList.add('open'); return; }
-        if (closeBtn) { card.classList.remove('open'); return; }
-      }, { passive: true });
+      const openBtn = card.querySelector('.openbtn');
+      const closeBtn = card.querySelector('.close');
+      const closeAll = (except) => cards.forEach(c => { if (c !== except) c.classList.remove('open'); });
+      
+      openBtn?.addEventListener('click', () => {
+        const isOpen = card.classList.contains('open');
+        closeAll(card);
+        if (!isOpen) card.classList.add('open');
+      });
+      closeBtn?.addEventListener('click', () => card.classList.remove('open'));
     });
+
     qsa('#modelsContainer .card').forEach(card => {
       const video = card.querySelector('video.cover');
       if (video) {
@@ -105,7 +145,13 @@ async function renderNews() {
   try {
     const data = await client.fetch(qNews);
     if (!data?.length) { list.innerHTML = "<p class='small' style='color:#6b7280'>お知らせはまだありません。</p>"; return; }
-    list.innerHTML = data.map(n => `<article class="news"><button class="news-head" aria-expanded="false"><div class="news-date small">${(n.date || "").split('T')[0].replaceAll("-", ".")}</div><div class="news-main"><div class="news-title">${n.title}</div><div class="badges mt-2">${(n.tag || "").toLowerCase() === "press" ? '<span class="badge press">PRESS</span>' : (n.tag || "").toLowerCase() === "music" ? '<span class="badge music">MUSIC</span>' : (n.tag || "").toLowerCase() === "project" ? '<span class="badge project">PROJECT</span>' : n.tag ? `<span class="badge press">${String(n.tag).toUpperCase()}</span>` : ""}</div></div><span class="news-toggle">＋</span></button><div class="news-panel small">${safeBR(n.body)}</div></article>`).join("");
+    list.innerHTML = data.map(n => {
+      const tagHtml = (n.tag || "").toLowerCase() === "press" ? '<span class="badge press">PRESS</span>' :
+                      (n.tag || "").toLowerCase() === "music" ? '<span class="badge music">MUSIC</span>' :
+                      (n.tag || "").toLowerCase() === "project" ? '<span class="badge project">PROJECT</span>' :
+                      n.tag ? `<span class="badge press">${String(n.tag).toUpperCase()}</span>` : "";
+      return `<article class="news"><button class="news-head" aria-expanded="false"><div class="news-date small">${(n.date || "").split('T')[0].replaceAll("-", ".")}</div><div class="news-main"><div class="news-title">${n.title}</div><div class="badges mt-2">${tagHtml}</div></div><span class="news-toggle">＋</span></button><div class="news-panel small">${safeBR(n.body)}</div></article>`;
+    }).join("");
     qsa("#newsList .news").forEach(n => {
       const head = n.querySelector(".news-head"), t = n.querySelector(".news-toggle");
       head.addEventListener("click", () => { n.classList.toggle("open"); head.setAttribute("aria-expanded", n.classList.contains("open")); t.textContent = n.classList.contains("open") ? "×" : "＋"; });
@@ -174,10 +220,11 @@ async function renderCF() {
 }
 
 // ===== 実行 =====
-// すべてのレンダリング処理を並行して実行
-Promise.all([
+// すべてのレンダリング処理を並行して実行し、エラーが発生しても他の処理を止めない
+Promise.allSettled([
   renderModels(),
   renderNews(),
   renderGallery(),
   renderCF()
 ]);
+
