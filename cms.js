@@ -113,14 +113,26 @@ async function renderModels() {
           <div class="swiper-button-prev"></div>
           <div class="swiper-button-next"></div>
         </div>`;
-      new Swiper('.models-swiper', {
-        loop: true,
-        centeredSlides: true,
-        spaceBetween: 26,
-        slidesPerView: 1,
-        navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
-        breakpoints: { 860: { slidesPerView: 2, spaceBetween: 22 }, 1100: { slidesPerView: 3, spaceBetween: 26 } }
-      });
+      // data.length >= 4 の分岐の中
+new Swiper('.models-swiper', {
+  // ループは切って初期位置を決め打ち（扱いが安定）
+  loop: false,
+  centeredSlides: true,
+  spaceBetween: 26,
+  slidesPerView: 1,  // モバイル基準
+  navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
+  breakpoints: {
+    860:  { slidesPerView: 2, spaceBetween: 24 },
+    // デスクトップは3枚表示＋右端に“次の1枚が少し覗く”オフセット
+    1100: { slidesPerView: 3, spaceBetween: 26, slidesOffsetAfter: 80 }
+  },
+  on: {
+    init(sw) {
+      // 4人以上のときは「0,1,2の3枚を中央寄せ」で開始（= アクティブは1）
+      if (sw.slides.length >= 4) sw.slideTo(1, 0, false);
+    }
+  }
+});
     } else {
       container.innerHTML = `<div id="modelsCards" class="models-grid">${cardsHtml}</div>`;
     }
