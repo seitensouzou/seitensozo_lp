@@ -53,9 +53,6 @@ body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans JP",
   margin-left: -50vw;
   margin-right: -50vw;
 }
-#models.full-width {
-  background-color: #f9fafb;
-}
 .figgrid{display:grid;gap:40px;grid-template-columns:1.2fr .8fr;align-items:center}
 .figgrid figure{margin:0}.figgrid img{border-radius:14px;box-shadow:0 18px 60px rgba(0,0,0,.12)}
 @media (max-width:960px){.figgrid{grid-template-columns:1fr}}
@@ -103,8 +100,7 @@ body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans JP",
    Models Section (ワイド表示 & スライダー対応版)
 =================================== */
 #models.full-width {
-  padding-top: 80px;
-  padding-bottom: 80px;
+  background-color: #f9fafb;
 }
 #modelsContainer {
   width: min(1100px, 92vw);
@@ -170,9 +166,9 @@ body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans JP",
 #modelsContainer .card .meta { pointer-events: none; }
 #modelsContainer .card .openbtn, .card .close { pointer-events: auto; z-index: 5; }
 
+
 /* Gallery Styles */
 .gallery-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; }
-/* ... (以下、変更なし) ... */
 .gallery-item { display: block; aspect-ratio: 1 / 1; border-radius: 8px; overflow: hidden; position: relative; transition: transform 0.2s; }
 .gallery-item:hover { transform: scale(1.05); }
 .gallery-item img, .gallery-item video { width: 100%; height: 100%; object-fit: cover; }
@@ -238,6 +234,9 @@ body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans JP",
 .modal .x{width:36px;height:36px;border:1px solid #d1d5db;border-radius:999px;display:grid;place-items:center}
 .modal-open .modal-mask{opacity:1;pointer-events:auto}
 .modal-open .modal{opacity:1;transform:translate(-50%,-50%) scale(1)}
+#modal[aria-hidden="true"] {
+  display: none !important;
+}
 
 /* ===== Particle Effect Style ===== */
 #particles-js {
