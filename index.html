@@ -39,17 +39,18 @@
     @media (min-width: 768px) {
       .media-with-text {
         flex-direction: row; /* デスクトップでは横並び */
-        align-items: flex-start; /* 上揃え */
+        align-items: flex-start; /* 上揃え（画像を基準にテキストを上揃えにするため） */
       }
     }
 
     .video-container {
-      flex: 2; /* 動画が利用可能なスペースの2/3を占める */
+      flex: 3; /* 動画が利用可能なスペースの約3/5を占める (調整) */
       width: 100%; /* 小さい画面での幅調整 */
       cursor: pointer;
       border-radius: 12px;
       overflow: hidden;
       box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+      z-index: 1; /* テキストより奥に表示 */
     }
     #hover-video {
       width: 100%;
@@ -58,24 +59,44 @@
     }
 
     .video-message {
-      flex: 1; /* メッセージが利用可能なスペースの1/3を占める */
+      flex: 2; /* メッセージが利用可能なスペースの約2/5を占める (調整) */
       width: 100%; /* 小さい画面での幅調整 */
-      padding: 0 15px; /* テキストの左右パディング */
+      padding: 25px 30px; /* テキストの左右パディングと上下パディング */
       text-align: left; /* テキストの左寄せ */
+      background-color: rgba(255, 255, 255, 0.9); /* 半透明の背景色を追加して読みやすく */
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+
+      /* デスクトップでの重ね合わせ設定 */
+      position: relative;
+      right: 60px; /* 動画の上に重ねる量を調整 (負の値で左に寄る) */
+      margin-top: 40px; /* 動画と重なる位置を調整 */
+      z-index: 2; /* 動画より手前に表示 */
+      
+      /* スマートフォンでは重ね合わせを無効にする */
+      @media (max-width: 767px) {
+        position: static;
+        right: auto;
+        margin-top: 0;
+        background-color: #fff; /* 通常の背景色に戻す */
+        box-shadow: none;
+        padding: 0 15px; /* 元のパディングに戻すか、適切な値に調整 */
+      }
     }
     
     .video-message h4 {
-        font-size: 1.5em;
-        margin-bottom: 0.5em;
+        font-size: 1.8em; /* 文字を大きく */
+        margin-bottom: 0.7em;
         font-family: 'Noto Serif JP', serif;
-        font-weight: 600;
-        color: #333;
+        font-weight: 700; /* より太く */
+        color: #222;
+        line-height: 1.4;
     }
 
     .video-message p {
-        font-size: 0.95em;
-        line-height: 1.7;
-        color: #555;
+        font-size: 1.05em; /* 文字を大きく */
+        line-height: 1.8;
+        color: #444;
     }
 
   </style>
@@ -163,7 +184,6 @@
             <div class="center small panel-body">
               <p class="mt-3">私たちの生きる世界や、これから私たちが取り組むエンターテイメント事業は、様々な問題や要因が絡み合い、時に複雑化します。しかし、私たちは、どんなに複雑に見える問題も、その解決の糸口は、常に一つのシンプルな思想にあると信じています。</p>
               <p class="mt-2">この想いを全ての行動の原点に置くことで、私たち自身の判断は常に明確になり、ファン、クライアント、そして関わる全ての方々との関係が、信頼に基づいた、円滑で温かいものになると、私たちは確信しています。</p>
-              
               <div class="pillars mt-4">
                 <div class="pillar item-love"><strong>愛 (Love)</strong><p class="small">作品・ファン・仲間・自分自身に、常に愛情と敬意を。</p></div>
                 <div class="pillar item-hope"><strong>希望 (Hope)</strong><p class="small">困難の中にも可能性を見出し、諦めない姿勢を。</p></div>
@@ -177,7 +197,7 @@
       </div>
     </section>
 
-    <section class="section" style="padding-top: 0;">
+    <section class="section" style="padding-top: 0; padding-bottom: 48px;">
       <div class="container">
         <div class="media-with-text">
           <div class="video-container">
@@ -188,29 +208,7 @@
           <div class="video-message">
             <h4>晴天想造が描く、新たな物語。</h4>
             <p>AIと人間の共創から生まれる、未だ見ぬエンターテイメント。それは、単なる技術の融合ではなく、心と心が響き合う、普遍的な感動を追求する旅です。映像を通して、私たちはその片鱗をお見せします。</p>
-            <p class="mt-2">この映像は、私たちの創造的なアプローチと、AIアーティストたちの可能性を示すものです。マウスを乗せて、未来のエンタメを体感してください。</p>
-          </div>
-          <div>
-          <p class="font-serif feature-lead">
-            私たちは、AIという新たな感性と、人間の深い感情を掛け合わせることで、これまでにないエンターテイメントを創造します 。テクノロジーの先に描くのは、心を晴れやかにする音楽と、時代を超える物語。静謐なアートの中に、確かな希望の光を灯します。
-          </p>
-          <div class="mt-4 feature-cols">
-            <div>
-              <h4 class="font-serif feature-title">創造の指針</h4>
-              <ul class="small feature-list">
-                <li>AIと人間の共創</li>
-                <li>普遍的な物語の探求</li>
-                <li>心に響く芸術性</li>
-              </ul>
-            </div>
-            <div>
-              <h4 class="font-serif feature-title">大切にする価値観</h4>
-              <ul class="small feature-list">
-                <li>愛と誠実さ</li>
-                <li>静謐さと、希望</li>
-                <li>本質を追求する品質</li>
-              </ul>
-            </div>
+            <p>この映像は、私たちの創造的なアプローチと、AIアーティストたちの可能性を示すものです。マウスを乗せて、未来のエンタメを体感してください。</p>
           </div>
         </div>
       </div>
