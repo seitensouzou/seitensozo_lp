@@ -68,10 +68,8 @@ async function renderModels() {
       }
       
       const yt = extractYouTubeId(m.youtube || "");
-
-      // ▼▼▼ 修正箇所 ▼▼▼
-      // 常に <article> タグでカードの中身を生成
-      return `
+      
+      const cardContentHtml = `
         <article class="card flip" data-card>
           <div class="wrap3d">
             <div class="face front">
@@ -98,15 +96,20 @@ async function renderModels() {
           </div>
         </article>
       `;
+
+      if (data.length >= 4) {
+        return `<div class="swiper-slide">${cardContentHtml}</div>`;
+      } else {
+        return cardContentHtml;
+      }
+
     }).join("");
 
 
     if (data.length >= 4) {
-      // 4人以上の場合：SwiperのHTML構造を生成し、その中にカードを注入
-      const swiperSlidesHtml = data.map(m => `<div class="swiper-slide">${m}</div>`).join('');
       container.innerHTML = `
         <div class="swiper models-swiper">
-          <div id="modelsCards" class="swiper-wrapper">${swiperSlidesHtml}</div>
+          <div id="modelsCards" class="swiper-wrapper">${cardsHtml}</div>
           <div class="swiper-button-prev"></div>
           <div class="swiper-button-next"></div>
         </div>
@@ -128,7 +131,6 @@ async function renderModels() {
       });
 
     } else {
-      // 3人以下の場合：静的グリッドのコンテナを生成し、その中にカードを注入
       container.innerHTML = `<div id="modelsCards" class="models-grid">${cardsHtml}</div>`;
     }
 
@@ -148,7 +150,7 @@ async function renderModels() {
       }, { passive: true });
     });
 
-    const modelCards = qsa('#modelsCards .card, .models-swiper .card');
+    const modelCards = qsa('#modelsContainer .card');
     modelCards.forEach(card => {
       const video = card.querySelector('video.cover');
       if (video) {
