@@ -57,6 +57,7 @@ const qGallery = `*[_type == "galleryItem"]|order(order asc){
   itemType,"imageUrl":image.asset->url,"videoUrl":videoFile.asset->url,caption
 }`;
 const qCF      = `*[_type == "cfSettings"][0]`;
+const qQA = `*[_type == "qa"]|order(orderRank asc){_id, question, answer}`; // ★ Q&Aのクエリを追加
 
 // ===== MODELS =====
 async function renderModels() {
@@ -385,14 +386,60 @@ async function renderCF() {
   }
 }
 
+// ★ Q&Aを描画する関数を追加
+async function renderQA() {
+  const container = qs('#qa-container');
+  if (!container) return;
+  try {
+    const data = await client.fetch(qQA);
+    if (!data?.length) {
+      container.innerHTML = `<p class="small" style="color:#6b7280">現在、公開中のQ&Aはありません。</p>`;
+      return;
+    }
+    container.innerHTML = data.map(item => `
+      <div class="qa-item">
+        <button class="qa-question" aria-expanded="false">
+          <span>${item.question}</span>
+          <span class="icon"></span>
+        </button>
+        <div class="qa-answer">
+          <p>${safeBR(item.answer)}</p>
+        </div>
+      </div>
+    `).join('');
+
+    // アコーディオンのクリックイベントを設定
+    qsa('#qa-container .qa-question').forEach(question => {
+      question.addEventListener('click', () => {
+        const item = question.closest('.qa-item');
+        const answer = question.nextElementSibling;
+        const open = !item.classList.contains('open');
+
+        item.classList.toggle('open', open);
+        question.setAttribute('aria-expanded', String(open));
+        
+        if (open) {
+          answer.style.maxHeight = answer.scrollHeight + 'px';
+        } else {
+          answer.style.maxHeight = null;
+        }
+      });
+    });
+
+  } catch (err) {
+    console.error('[CMS] Q&A fetch error:', err);
+    container.innerHTML = `<p class="small" style="color:#b91c1c">Q&Aの読み込みに失敗しました。</p>`;
+  }
+}
+
 // ===== 実行 =====
 Promise.allSettled([
   renderModels(),
   renderNews(),
   renderGallery(),
   renderCF(),
+  renderQA(), // ★ 追加
 ]);
-
 
 
 
