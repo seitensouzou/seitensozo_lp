@@ -57,7 +57,8 @@ const qGallery = `*[_type == "galleryItem"]|order(order asc){
   itemType,"imageUrl":image.asset->url,"videoUrl":videoFile.asset->url,caption
 }`;
 const qCF      = `*[_type == "cfSettings"][0]`;
-const qQA = `*[_type == "qa"]|order(orderRank asc){_id, question, answer}`; // ★ Q&Aのクエリを追加
+// ★ Q&Aの並び順を order フィールドで指定するように修正
+const qQA = `*[_type == "qa"]|order(order asc){_id, question, answer, order}`;
 
 // ===== MODELS =====
 async function renderModels() {
@@ -137,24 +138,21 @@ async function renderModels() {
         centeredSlides: true,
         slidesPerView: 1,
         spaceBetween: 26,
-        speed: 700, // ★追加：スライドの切り替わり速度（ms）
+        speed: 700,
         navigation: {
           nextEl: '.swiper-button-next',
           prevEl: '.swiper-button-prev',
         },
         breakpoints: {
           860:  { slidesPerView: 2, spaceBetween: 24 },
-          // PCは3枚表示＋右に少し覗く余白
           1100: { slidesPerView: 3, spaceBetween: 26, slidesOffsetAfter: 100 },
         },
         on: {
           init(sw) {
-            // モバイルは1人目から、PC(>=1100px) かつ 4人以上は index=1 から
             const isDesktop = matchMedia('(min-width:1100px)').matches;
             const startIndex = (isDesktop && sw.slides.length >= 4) ? 1 : 0;
             sw.slideToLoop(startIndex, 0, false);
           },
-          // スライドが動いたらフリップは閉じる（状態のズレ防止）
           slideChangeTransitionStart() {
             closeAll();
             updateSwiperLock();
@@ -165,28 +163,24 @@ async function renderModels() {
       if (isMobile) {
         swiperConfig.autoplay = {
           delay: 6000,
-          disableOnInteraction: false, // 指で操作しても止めない（後述のロックで制御）
+          disableOnInteraction: false,
           pauseOnMouseEnter: false
         };
       }
 
       modelsSwiper = new Swiper('.models-swiper', swiperConfig);
 
-      // 念のため：PCでは絶対に自動再生しない
       if (!isMobile && modelsSwiper?.autoplay?.running) {
         modelsSwiper.autoplay.stop();
         modelsSwiper.params.autoplay = false;
       }
     } else {
-      // 3人以下は静的グリッド
       container.innerHTML = `<div id="modelsCards" class="models-grid">${cardsHtml}</div>`;
     }
 
-    // ===== フリップ開閉 & Swiperロック =====
     const cards = qsa('#modelsContainer [data-card]');
     const closeAll = (except) => cards.forEach(c => { if (c !== except) c.classList.remove('open'); });
 
-    // ナビボタンもロック対象に
     const setNavEnabled = (enabled) => {
       qsa('.models-swiper .swiper-button-prev, .models-swiper .swiper-button-next')
         .forEach(btn => {
@@ -201,10 +195,7 @@ async function renderModels() {
     const updateSwiperLock = () => {
       const anyOpen = [...cards].some(c => c.classList.contains('open'));
       if (modelsSwiper) {
-        // スワイプ操作のロック
         modelsSwiper.allowTouchMove = !anyOpen;
-
-        // モバイルのみ：フリップ中はオートスライド停止、閉じたら再開
         if (isMobileRuntime && modelsSwiper.autoplay) {
           if (anyOpen && modelsSwiper.autoplay.running) {
             modelsSwiper.autoplay.stop();
@@ -235,7 +226,6 @@ async function renderModels() {
       });
     });
 
-    // ===== 動画カバーのホバー再生 =====
     qsa('#modelsContainer .card').forEach(card => {
       const video = card.querySelector('video.cover');
       if (video) {
@@ -386,7 +376,7 @@ async function renderCF() {
   }
 }
 
-// ★ Q&Aを描画する関数を追加
+// ===== Q&A =====
 async function renderQA() {
   const container = qs('#qa-container');
   if (!container) return;
@@ -438,7 +428,7 @@ Promise.allSettled([
   renderNews(),
   renderGallery(),
   renderCF(),
-  renderQA(), // ★ 追加
+  renderQA(),
 ]);
 
 
